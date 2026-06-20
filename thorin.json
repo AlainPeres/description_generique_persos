@@ -1,7 +1,7 @@
 {
   "name": "Thorin Ironforge",
-  "player": "Marie",
-  "backstory": "Dwarf blacksmith exiled from his mountain",
+  "description": "Muscular dwarf with a long beard and a hammer",
+  "background": "Dwarf blacksmith exiled from his mountain",
   "stats": {
     "system": "dnd5e",
     "character_class": "Fighter",
@@ -15,6 +15,8 @@
     "charisma": 8,
     "armor_class": 17,
     "hit_points": 28,
+    "feats": [],
+    "skills": {},
     "spells": []
   }
 }

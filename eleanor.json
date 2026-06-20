@@ -1,7 +1,7 @@
 {
   "name": "Eleanor Whitfield",
-  "player": "Tom",
-  "backstory": "Librarian in Arkham",
+  "description": "50 years old, blond hair, green eyes",
+  "background": "Librarian in Arkham",
   "stats": {
     "system": "cthulhu",
     "occupation": "Librarian",
@@ -11,6 +11,7 @@
       "Library Use": 70,
       "Psychology": 45,
       "Firearms": 25
-    }
+    },
+    "spells": []
   }
 }

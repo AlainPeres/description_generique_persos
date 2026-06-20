@@ -31,7 +31,9 @@ class StatsDnD(BaseModel):
     wisdom: int = Field(ge=1, le=20)
     charisma: int = Field(ge=1, le=20)
     armor_class: int
-    hit_points: int
+    hit_points: int    
+    feats: List[str] = Field(default_factory=list)
+    skills: Dict[str, int] = Field(default_factory=dict)
     spells: List[str] = Field(default_factory=list)
 
 
@@ -42,8 +44,9 @@ class StatsCthulhu(BaseModel):
     system: Literal["cthulhu"]
     occupation: str
     sanity: int = Field(ge=0, le=99)
-    hit_points: int
+    hit_points: int   
     skills: Dict[str, int] = Field(default_factory=dict)
+    spells: List[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -51,8 +54,8 @@ class StatsCthulhu(BaseModel):
 # ---------------------------------------------------------------------------
 class Character(BaseModel):
     name: str
-    player: str
-    backstory: str = ""
+    description: str = ""
+    background: str = ""
     stats: Union[StatsDnD, StatsCthulhu] = Field(discriminator="system")
 
 
@@ -61,8 +64,8 @@ class Character(BaseModel):
 # ---------------------------------------------------------------------------
 thorin = Character(
     name="Thorin Ironforge",
-    player="Marie",
-    backstory="Dwarf blacksmith exiled from his mountain",
+    description="Muscular dwarf with a long beard and a hammer",
+    background="Dwarf blacksmith exiled from his mountain",
     stats=StatsDnD(
         system="dnd5e",
         character_class="Fighter",
@@ -75,15 +78,17 @@ thorin = Character(
         wisdom=11,
         charisma=8,
         armor_class=17,
-        hit_points=28,
+        hit_points=28,        
+        feats=[],
+        skills={},
         spells=[],
     ),
 )
 
 eleanor = Character(
     name="Eleanor Whitfield",
-    player="Tom",
-    backstory="Librarian in Arkham",
+    description="50 years old, blond hair, green eyes",
+    background="Librarian in Arkham",  
     stats=StatsCthulhu(
         system="cthulhu",
         occupation="Librarian",
@@ -94,6 +99,7 @@ eleanor = Character(
             "Psychology": 45,
             "Firearms": 25,
         },
+        spells=[]
     ),
 )
 

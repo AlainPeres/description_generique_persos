@@ -27,6 +27,13 @@
           },
           "title": "Skills",
           "type": "object"
+        },
+        "spells": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Spells",
+          "type": "array"
         }
       },
       "required": [
@@ -103,6 +110,20 @@
           "title": "Hit Points",
           "type": "integer"
         },
+        "feats": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Feats",
+          "type": "array"
+        },
+        "skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Skills",
+          "type": "object"
+        },
         "spells": {
           "items": {
             "type": "string"
@@ -134,13 +155,14 @@
       "title": "Name",
       "type": "string"
     },
-    "player": {
-      "title": "Player",
+    "description": {
+      "default": "",
+      "title": "Description",
       "type": "string"
     },
-    "backstory": {
+    "background": {
       "default": "",
-      "title": "Backstory",
+      "title": "Background",
       "type": "string"
     },
     "stats": {
@@ -164,7 +186,6 @@
   },
   "required": [
     "name",
-    "player",
     "stats"
   ],
   "title": "Character",
