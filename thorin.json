@@ -1,0 +1,20 @@
+{
+  "nom": "Thorin Forgefer",
+  "joueur": "Marie",
+  "historique": "Nain forgeron exilé de sa montagne",
+  "stats": {
+    "systeme": "dnd5e",
+    "classe": "Guerrier",
+    "race": "Nain",
+    "niveau": 3,
+    "force": 16,
+    "dexterite": 12,
+    "constitution": 15,
+    "intelligence": 10,
+    "sagesse": 11,
+    "charisme": 8,
+    "classe_armure": 17,
+    "points_de_vie": 28,
+    "sorts": []
+  }
+}
