@@ -1,5 +1,65 @@
 {
   "$defs": {
+    "EquipmentItem": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/ItemCategory"
+        },
+        "quantity": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "weight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weight"
+        },
+        "equipped": {
+          "default": false,
+          "title": "Equipped",
+          "type": "boolean"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true,
+          "title": "Properties"
+        }
+      },
+      "required": [
+        "name",
+        "category"
+      ],
+      "title": "EquipmentItem",
+      "type": "object"
+    },
+    "ItemCategory": {
+      "enum": [
+        "weapon",
+        "armor",
+        "item",
+        "consumable"
+      ],
+      "title": "ItemCategory",
+      "type": "string"
+    },
     "StatsCthulhu": {
       "properties": {
         "system": {
@@ -182,6 +242,13 @@
         }
       ],
       "title": "Stats"
+    },
+    "equipment": {
+      "items": {
+        "$ref": "#/$defs/EquipmentItem"
+      },
+      "title": "Equipment",
+      "type": "array"
     }
   },
   "required": [

@@ -4,22 +4,43 @@ Multi-system RPG character modeling with **Pydantic v2**.
 
 ## Architecture
 
-A shared `Character` base model holds common fields. System-specific stats are selected automatically via a **discriminated union** on the `system` field — adding a new system requires only a new model and a one-line change to the `Union`.
+A shared `Character` base model holds common fields. System-specific stats are selected automatically via a **discriminated union** on the `system` field — adding a new system requires only a new model and a one-line union change.
 
 ```text
 Character
-├── name, player, backstory
-└── stats: Union[StatsDnD, StatsCthulhu]  ← discriminated on "system"
-    ├── StatsDnD      (system="dnd5e")
-    └── StatsCthulhu  (system="cthulhu")
+├── name, description, background
+├── stats: StatsDnD | StatsCthulhu  ← discriminated on "system"
+│   ├── StatsDnD      (system="dnd5e")
+│   └── StatsCthulhu  (system="cthulhu")
+└── equipment: list[EquipmentItem]
+    └── EquipmentItem
+        ├── name, quantity, weight, equipped, description
+        ├── category: ItemCategory  (weapon | armor | item | consumable)
+        └── properties: dict[str, Any]
 ```
 
-## Supported systems
+## Models
+
+### System-specific stats
 
 | System | Model | Key fields |
 | --- | --- | --- |
-| D&D 5e | `StatsDnD` | class, race, level, ability scores, armor class, hit points, spells |
-| Call of Cthulhu | `StatsCthulhu` | occupation, sanity, hit points, skills |
+| D&D 5e | `StatsDnD` | class, race, level, ability scores, armor class, hit points, feats, skills, spells |
+| Call of Cthulhu | `StatsCthulhu` | occupation, sanity, hit points, skills, spells |
+
+### Equipment
+
+`EquipmentItem` is system-agnostic and shared across all characters. The `properties` field (`dict[str, Any]`) holds any system-specific metadata.
+
+## Type annotations
+
+Uses Python 3.10+ native syntax throughout — no `List`, `Dict`, `Optional`, or `Union` from `typing`:
+
+```python
+weight: float | None = None
+stats: StatsDnD | StatsCthulhu
+equipment: list[EquipmentItem]
+```
 
 ## Requirements
 

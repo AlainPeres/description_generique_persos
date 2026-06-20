@@ -11,8 +11,9 @@ import sys
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
+from enum import Enum
 from pydantic import BaseModel, Field
-from typing import Literal, Union, Dict, List
+from typing import Literal, Any
 import json
 
 
@@ -32,9 +33,9 @@ class StatsDnD(BaseModel):
     charisma: int = Field(ge=1, le=20)
     armor_class: int
     hit_points: int    
-    feats: List[str] = Field(default_factory=list)
-    skills: Dict[str, int] = Field(default_factory=dict)
-    spells: List[str] = Field(default_factory=list)
+    feats: list[str] = Field(default_factory=list)
+    skills: dict[str, int] = Field(default_factory=dict)
+    spells: list[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -45,10 +46,25 @@ class StatsCthulhu(BaseModel):
     occupation: str
     sanity: int = Field(ge=0, le=99)
     hit_points: int   
-    skills: Dict[str, int] = Field(default_factory=dict)
-    spells: List[str] = Field(default_factory=list)
+    skills: dict[str, int] = Field(default_factory=dict)
+    spells: list[str] = Field(default_factory=list)
 
-
+class ItemCategory(str, Enum):
+    WEAPON = "weapon"
+    ARMOR = "armor"
+    ITEM = "item"
+    CONSUMABLE = "consumable"
+ 
+ 
+class EquipmentItem(BaseModel):
+    name: str
+    category: ItemCategory
+    quantity: int = Field(default=1, ge=1)
+    weight: float | None = None  # in kg
+    equipped: bool = False
+    description: str = ""
+    properties: dict[str, Any] = Field(default_factory=dict)
+    
 # ---------------------------------------------------------------------------
 # Common base
 # ---------------------------------------------------------------------------
@@ -56,7 +72,8 @@ class Character(BaseModel):
     name: str
     description: str = ""
     background: str = ""
-    stats: Union[StatsDnD, StatsCthulhu] = Field(discriminator="system")
+    stats: StatsDnD | StatsCthulhu = Field(discriminator="system")
+    equipment: list[EquipmentItem] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
