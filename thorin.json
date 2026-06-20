@@ -1,20 +1,20 @@
 {
-  "nom": "Thorin Forgefer",
-  "joueur": "Marie",
-  "historique": "Nain forgeron exilé de sa montagne",
+  "name": "Thorin Ironforge",
+  "player": "Marie",
+  "backstory": "Dwarf blacksmith exiled from his mountain",
   "stats": {
-    "systeme": "dnd5e",
-    "classe": "Guerrier",
-    "race": "Nain",
-    "niveau": 3,
-    "force": 16,
-    "dexterite": 12,
+    "system": "dnd5e",
+    "character_class": "Fighter",
+    "race": "Dwarf",
+    "level": 3,
+    "strength": 16,
+    "dexterity": 12,
     "constitution": 15,
     "intelligence": 10,
-    "sagesse": 11,
-    "charisme": 8,
-    "classe_armure": 17,
-    "points_de_vie": 28,
-    "sorts": []
+    "wisdom": 11,
+    "charisma": 8,
+    "armor_class": 17,
+    "hit_points": 28,
+    "spells": []
   }
 }

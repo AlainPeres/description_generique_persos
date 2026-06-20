@@ -1,0 +1,172 @@
+{
+  "$defs": {
+    "StatsCthulhu": {
+      "properties": {
+        "system": {
+          "const": "cthulhu",
+          "title": "System",
+          "type": "string"
+        },
+        "occupation": {
+          "title": "Occupation",
+          "type": "string"
+        },
+        "sanity": {
+          "maximum": 99,
+          "minimum": 0,
+          "title": "Sanity",
+          "type": "integer"
+        },
+        "hit_points": {
+          "title": "Hit Points",
+          "type": "integer"
+        },
+        "skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Skills",
+          "type": "object"
+        }
+      },
+      "required": [
+        "system",
+        "occupation",
+        "sanity",
+        "hit_points"
+      ],
+      "title": "StatsCthulhu",
+      "type": "object"
+    },
+    "StatsDnD": {
+      "properties": {
+        "system": {
+          "const": "dnd5e",
+          "title": "System",
+          "type": "string"
+        },
+        "character_class": {
+          "title": "Character Class",
+          "type": "string"
+        },
+        "race": {
+          "title": "Race",
+          "type": "string"
+        },
+        "level": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "strength": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Strength",
+          "type": "integer"
+        },
+        "dexterity": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Dexterity",
+          "type": "integer"
+        },
+        "constitution": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Constitution",
+          "type": "integer"
+        },
+        "intelligence": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Intelligence",
+          "type": "integer"
+        },
+        "wisdom": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Wisdom",
+          "type": "integer"
+        },
+        "charisma": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Charisma",
+          "type": "integer"
+        },
+        "armor_class": {
+          "title": "Armor Class",
+          "type": "integer"
+        },
+        "hit_points": {
+          "title": "Hit Points",
+          "type": "integer"
+        },
+        "spells": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Spells",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "character_class",
+        "race",
+        "level",
+        "strength",
+        "dexterity",
+        "constitution",
+        "intelligence",
+        "wisdom",
+        "charisma",
+        "armor_class",
+        "hit_points"
+      ],
+      "title": "StatsDnD",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "player": {
+      "title": "Player",
+      "type": "string"
+    },
+    "backstory": {
+      "default": "",
+      "title": "Backstory",
+      "type": "string"
+    },
+    "stats": {
+      "discriminator": {
+        "mapping": {
+          "cthulhu": "#/$defs/StatsCthulhu",
+          "dnd5e": "#/$defs/StatsDnD"
+        },
+        "propertyName": "system"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/StatsDnD"
+        },
+        {
+          "$ref": "#/$defs/StatsCthulhu"
+        }
+      ],
+      "title": "Stats"
+    }
+  },
+  "required": [
+    "name",
+    "player",
+    "stats"
+  ],
+  "title": "Character",
+  "type": "object"
+}

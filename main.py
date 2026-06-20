@@ -1,10 +1,10 @@
 """
-Génération de personnages de jeu de rôle (multi-systèmes) avec Pydantic.
+RPG character generation (multi-system) with Pydantic.
 
-Architecture :
-- Un tronc commun (Personnage) partagé par tous les systèmes
-- Un bloc "stats" spécifique au système, choisi automatiquement
-  grâce à une union discriminée sur le champ "systeme"
+Architecture:
+- A common base (Character) shared across all systems
+- A system-specific "stats" block, automatically selected
+  via a discriminated union on the "system" field
 """
 
 import sys
@@ -17,128 +17,128 @@ import json
 
 
 # ---------------------------------------------------------------------------
-# Bloc spécifique : Donjons & Dragons 5e
+# System-specific block: Dungeons & Dragons 5e
 # ---------------------------------------------------------------------------
 class StatsDnD(BaseModel):
-    systeme: Literal["dnd5e"]
-    classe: str
+    system: Literal["dnd5e"]
+    character_class: str
     race: str
-    niveau: int = Field(ge=1, le=20)
-    force: int = Field(ge=1, le=20)
-    dexterite: int = Field(ge=1, le=20)
+    level: int = Field(ge=1, le=20)
+    strength: int = Field(ge=1, le=20)
+    dexterity: int = Field(ge=1, le=20)
     constitution: int = Field(ge=1, le=20)
     intelligence: int = Field(ge=1, le=20)
-    sagesse: int = Field(ge=1, le=20)
-    charisme: int = Field(ge=1, le=20)
-    classe_armure: int
-    points_de_vie: int
-    sorts: List[str] = Field(default_factory=list)
+    wisdom: int = Field(ge=1, le=20)
+    charisma: int = Field(ge=1, le=20)
+    armor_class: int
+    hit_points: int
+    spells: List[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
-# Bloc spécifique : L'Appel de Cthulhu
+# System-specific block: Call of Cthulhu
 # ---------------------------------------------------------------------------
 class StatsCthulhu(BaseModel):
-    systeme: Literal["cthulhu"]
-    profession: str
-    sante_mentale: int = Field(ge=0, le=99)
-    points_de_vie: int
-    competences: Dict[str, int] = Field(default_factory=dict)
+    system: Literal["cthulhu"]
+    occupation: str
+    sanity: int = Field(ge=0, le=99)
+    hit_points: int
+    skills: Dict[str, int] = Field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
-# Tronc commun
+# Common base
 # ---------------------------------------------------------------------------
-class Personnage(BaseModel):
-    nom: str
-    joueur: str
-    historique: str = ""
-    stats: Union[StatsDnD, StatsCthulhu] = Field(discriminator="systeme")
+class Character(BaseModel):
+    name: str
+    player: str
+    backstory: str = ""
+    stats: Union[StatsDnD, StatsCthulhu] = Field(discriminator="system")
 
 
 # ---------------------------------------------------------------------------
-# Création des personnages
+# Character creation
 # ---------------------------------------------------------------------------
-thorin = Personnage(
-    nom="Thorin Forgefer",
-    joueur="Marie",
-    historique="Nain forgeron exilé de sa montagne",
+thorin = Character(
+    name="Thorin Ironforge",
+    player="Marie",
+    backstory="Dwarf blacksmith exiled from his mountain",
     stats=StatsDnD(
-        systeme="dnd5e",
-        classe="Guerrier",
-        race="Nain",
-        niveau=3,
-        force=16,
-        dexterite=12,
+        system="dnd5e",
+        character_class="Fighter",
+        race="Dwarf",
+        level=3,
+        strength=16,
+        dexterity=12,
         constitution=15,
         intelligence=10,
-        sagesse=11,
-        charisme=8,
-        classe_armure=17,
-        points_de_vie=28,
-        sorts=[],
+        wisdom=11,
+        charisma=8,
+        armor_class=17,
+        hit_points=28,
+        spells=[],
     ),
 )
 
-eleanor = Personnage(
-    nom="Eleanor Whitfield",
-    joueur="Tom",
-    historique="Bibliothécaire à Arkham",
+eleanor = Character(
+    name="Eleanor Whitfield",
+    player="Tom",
+    backstory="Librarian in Arkham",
     stats=StatsCthulhu(
-        systeme="cthulhu",
-        profession="Bibliothécaire",
-        sante_mentale=65,
-        points_de_vie=11,
-        competences={
-            "Bibliotheque": 70,
-            "Psychologie": 45,
-            "Tir": 25,
+        system="cthulhu",
+        occupation="Librarian",
+        sanity=65,
+        hit_points=11,
+        skills={
+            "Library Use": 70,
+            "Psychology": 45,
+            "Firearms": 25,
         },
     ),
 )
 
 
 # ---------------------------------------------------------------------------
-# Affichage : templates JSON générés + JSON Schema global
+# Display: generated JSON + global JSON Schema
 # ---------------------------------------------------------------------------
-def afficher_separateur(titre: str) -> None:
+def print_separator(title: str) -> None:
     print("\n" + "=" * 60)
-    print(titre)
+    print(title)
     print("=" * 60)
 
 
-def exporter_json(chemin: str, contenu: str) -> None:
-    with open(chemin, "w", encoding="utf-8") as f:
-        f.write(contenu)
-    print(f"  -> exporté : {chemin}")
+def export_json(path: str, content: str) -> None:
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  -> exported: {path}")
 
 
 if __name__ == "__main__":
-    afficher_separateur("PERSONNAGE D&D 5e (JSON généré)")
+    print_separator("D&D 5e CHARACTER (generated JSON)")
     print(thorin.model_dump_json(indent=2))
 
-    afficher_separateur("PERSONNAGE CTHULHU (JSON généré)")
+    print_separator("CTHULHU CHARACTER (generated JSON)")
     print(eleanor.model_dump_json(indent=2))
 
-    afficher_separateur("JSON SCHEMA (commun aux deux systèmes)")
-    print(json.dumps(Personnage.model_json_schema(), indent=2, ensure_ascii=False))
+    print_separator("JSON SCHEMA (common to both systems)")
+    print(json.dumps(Character.model_json_schema(), indent=2, ensure_ascii=False))
 
-    afficher_separateur("EXPORT FICHIERS JSON")
-    exporter_json("thorin.json", thorin.model_dump_json(indent=2))
-    exporter_json("eleanor.json", eleanor.model_dump_json(indent=2))
-    exporter_json("schema_personnage.json", json.dumps(Personnage.model_json_schema(), indent=2, ensure_ascii=False))
+    print_separator("JSON FILE EXPORT")
+    export_json("thorin.json", thorin.model_dump_json(indent=2))
+    export_json("eleanor.json", eleanor.model_dump_json(indent=2))
+    export_json("schema_character.json", json.dumps(Character.model_json_schema(), indent=2, ensure_ascii=False))
 
-    afficher_separateur("VALIDATION : rechargement depuis du JSON brut")
-    brut = eleanor.model_dump_json()
-    relu = Personnage.model_validate_json(brut)
-    print(f"Personnage relu : {relu.nom} ({relu.stats.systeme})")
+    print_separator("VALIDATION: reload from raw JSON")
+    raw = eleanor.model_dump_json()
+    reloaded = Character.model_validate_json(raw)
+    print(f"Reloaded character: {reloaded.name} ({reloaded.stats.system})")
 
-    afficher_separateur("VALIDATION : erreur si données incohérentes")
+    print_separator("VALIDATION: error on inconsistent data")
     try:
-        Personnage(
-            nom="Test",
-            joueur="X",
-            stats={"systeme": "dnd5e", "classe": "Mage"},  # champs manquants
+        Character(
+            name="Test",
+            player="X",
+            stats={"system": "dnd5e", "character_class": "Mage"},  # missing fields
         )
     except Exception as e:
-        print(f"Erreur détectée comme attendu :\n{e}")
+        print(f"Error detected as expected:\n{e}")

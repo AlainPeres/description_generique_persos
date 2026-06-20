@@ -1,16 +1,16 @@
 {
-  "nom": "Eleanor Whitfield",
-  "joueur": "Tom",
-  "historique": "Bibliothécaire à Arkham",
+  "name": "Eleanor Whitfield",
+  "player": "Tom",
+  "backstory": "Librarian in Arkham",
   "stats": {
-    "systeme": "cthulhu",
-    "profession": "Bibliothécaire",
-    "sante_mentale": 65,
-    "points_de_vie": 11,
-    "competences": {
-      "Bibliotheque": 70,
-      "Psychologie": 45,
-      "Tir": 25
+    "system": "cthulhu",
+    "occupation": "Librarian",
+    "sanity": 65,
+    "hit_points": 11,
+    "skills": {
+      "Library Use": 70,
+      "Psychology": 45,
+      "Firearms": 25
     }
   }
 }
