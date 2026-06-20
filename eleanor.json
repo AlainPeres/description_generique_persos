@@ -1,12 +1,20 @@
 {
   "name": "Eleanor Whitfield",
   "description": "50 years old, blond hair, green eyes",
+  "occupation": "",
   "background": "Librarian in Arkham",
   "stats": {
     "system": "cthulhu",
-    "occupation": "Librarian",
+    "strength": 10,
+    "dexterity": 12,
+    "constitution": 14,
+    "size": 10,
+    "intelligence": 16,
+    "charisma": 12,
+    "education": 70,
     "sanity": 65,
     "hit_points": 11,
+    "move": 8,
     "skills": {
       "Library Use": 70,
       "Psychology": 45,

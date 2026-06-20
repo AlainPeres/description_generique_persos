@@ -1,6 +1,7 @@
 {
   "name": "Thorin Ironforge",
   "description": "Muscular dwarf with a long beard and a hammer",
+  "occupation": "",
   "background": "Dwarf blacksmith exiled from his mountain",
   "stats": {
     "system": "dnd5e",
@@ -15,9 +16,13 @@
     "charisma": 8,
     "armor_class": 17,
     "hit_points": 28,
+    "size": null,
+    "movt_type_and_speed": {},
     "feats": [],
     "skills": {},
-    "spells": []
+    "spells": [],
+    "origin_abilities": [],
+    "class_abilities": []
   },
   "equipment": []
 }

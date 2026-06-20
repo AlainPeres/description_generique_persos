@@ -24,28 +24,39 @@ class StatsDnD(BaseModel):
     system: Literal["dnd5e"]
     character_class: str
     race: str
-    level: int = Field(ge=1, le=20)
-    strength: int = Field(ge=1, le=20)
-    dexterity: int = Field(ge=1, le=20)
-    constitution: int = Field(ge=1, le=20)
-    intelligence: int = Field(ge=1, le=20)
-    wisdom: int = Field(ge=1, le=20)
-    charisma: int = Field(ge=1, le=20)
+    level: int 
+    strength: int 
+    dexterity: int 
+    constitution: int 
+    intelligence: int 
+    wisdom: int 
+    charisma: int 
     armor_class: int
     hit_points: int    
+    size: str | None = None
+    movt_type_and_speed: dict[str, int] = Field(default_factory=dict)
     feats: list[str] = Field(default_factory=list)
     skills: dict[str, int] = Field(default_factory=dict)
     spells: list[str] = Field(default_factory=list)
+    origin_abilities: list[str] = Field(default_factory=list)
+    class_abilities: list[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
 # System-specific block: Call of Cthulhu
 # ---------------------------------------------------------------------------
 class StatsCthulhu(BaseModel):
-    system: Literal["cthulhu"]
-    occupation: str
-    sanity: int = Field(ge=0, le=99)
+    system: Literal["cthulhu"]   
+    strength: int 
+    dexterity: int
+    constitution: int 
+    size: int 
+    intelligence: int 
+    charisma: int 
+    education: int    
+    sanity: int | None = None
     hit_points: int   
+    move:int
     skills: dict[str, int] = Field(default_factory=dict)
     spells: list[str] = Field(default_factory=list)
 
@@ -71,6 +82,7 @@ class EquipmentItem(BaseModel):
 class Character(BaseModel):
     name: str
     description: str = ""
+    occupation: str = ""
     background: str = ""
     stats: StatsDnD | StatsCthulhu = Field(discriminator="system")
     equipment: list[EquipmentItem] = Field(default_factory=list)
@@ -98,7 +110,7 @@ thorin = Character(
         hit_points=28,        
         feats=[],
         skills={},
-        spells=[],
+        spells=[]
     ),
 )
 
@@ -108,15 +120,21 @@ eleanor = Character(
     background="Librarian in Arkham",  
     stats=StatsCthulhu(
         system="cthulhu",
-        occupation="Librarian",
+        strength=10,
+        dexterity=12,
+        constitution=14,
+        size=10,
+        intelligence=16,
+        charisma=12,
+        education=70,
         sanity=65,
         hit_points=11,
+        move=8,
         skills={
             "Library Use": 70,
             "Psychology": 45,
             "Firearms": 25,
-        },
-        spells=[]
+        },    
     ),
 )
 
