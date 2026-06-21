@@ -3,36 +3,60 @@
   "description": "Muscular dwarf with a long beard and a hammer",
   "occupation": "",
   "background": "Dwarf blacksmith exiled from his mountain",
-  "stats": {
-    "system": "dnd5e",
-    "character_class": "Fighter",
-    "race": "Dwarf",
-    "level": 3,
-    "alignment": "Lawful Good",
-    "Strength": 16,
-    "Dexterity": 12,
-    "Constitution": 15,
-    "Intelligence": 10,
-    "Wisdom": 11,
-    "Charisma": 8,
-    "Armor_Class": 17,
-    "Hit_Points": 28,
-    "size": "Medium",
-    "movement": {},
-    "base_feats": [
-      "Action Surge",
-      "Second Wind"
-    ],
-    "new_feats": [],
-    "base_skills": {
-      "Climb": 30
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 16
     },
-    "new_skills": {},
-    "specialized_skills": {},
-    "base_spells": [],
-    "new_spells": [],
-    "origin_abilities": [],
-    "class_abilities": []
-  },
+    {
+      "name": "Dexterity",
+      "value": 12
+    },
+    {
+      "name": "Constitution",
+      "value": 15
+    },
+    {
+      "name": "Intelligence",
+      "value": 10
+    },
+    {
+      "name": "Wisdom",
+      "value": 11
+    },
+    {
+      "name": "Charisma",
+      "value": 8
+    },
+    {
+      "name": "Armor Class",
+      "value": 17
+    },
+    {
+      "name": "Hit Points",
+      "value": 28
+    }
+  ],
+  "skills": [
+    {
+      "name": "Climb",
+      "category": "Base",
+      "value": 30
+    }
+  ],
+  "abilities": [
+    {
+      "name": "Action Surge",
+      "category": "Class Ability",
+      "value": 1
+    },
+    {
+      "name": "Second Wind",
+      "category": "Class Ability",
+      "value": 1
+    }
+  ],
+  "stats": null,
+  "spells": [],
   "equipment": []
 }

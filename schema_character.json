@@ -1,5 +1,57 @@
 {
   "$defs": {
+    "Ability": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/AbilityCategory"
+        },
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "category",
+        "value"
+      ],
+      "title": "Ability",
+      "type": "object"
+    },
+    "AbilityCategory": {
+      "enum": [
+        "Feat",
+        "Origin Ability",
+        "Class Ability",
+        "Power",
+        "Advantage",
+        "Disadvantage"
+      ],
+      "title": "AbilityCategory",
+      "type": "string"
+    },
+    "Attribute": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "title": "Attribute",
+      "type": "object"
+    },
     "EquipmentItem": {
       "properties": {
         "name": {
@@ -58,6 +110,62 @@
         "consumable"
       ],
       "title": "ItemCategory",
+      "type": "string"
+    },
+    "Skill": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/SkillCategory"
+        },
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "category",
+        "value"
+      ],
+      "title": "Skill",
+      "type": "object"
+    },
+    "SkillCategory": {
+      "enum": [
+        "Base",
+        "New",
+        "Specialization"
+      ],
+      "title": "SkillCategory",
+      "type": "string"
+    },
+    "Spell": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/SpellCategory"
+        }
+      },
+      "required": [
+        "name",
+        "category"
+      ],
+      "title": "Spell",
+      "type": "object"
+    },
+    "SpellCategory": {
+      "enum": [
+        "Base",
+        "New"
+      ],
+      "title": "SpellCategory",
       "type": "string"
     },
     "StatsCthulhu": {
@@ -325,6 +433,7 @@
   },
   "properties": {
     "name": {
+      "default": "",
       "title": "Name",
       "type": "string"
     },
@@ -343,23 +452,48 @@
       "title": "Background",
       "type": "string"
     },
-    "stats": {
-      "discriminator": {
-        "mapping": {
-          "cthulhu": "#/$defs/StatsCthulhu",
-          "dnd5e": "#/$defs/StatsDnD"
-        },
-        "propertyName": "system"
+    "attributes": {
+      "items": {
+        "$ref": "#/$defs/Attribute"
       },
-      "oneOf": [
+      "title": "Attributes",
+      "type": "array"
+    },
+    "skills": {
+      "items": {
+        "$ref": "#/$defs/Skill"
+      },
+      "title": "Skills",
+      "type": "array"
+    },
+    "abilities": {
+      "items": {
+        "$ref": "#/$defs/Ability"
+      },
+      "title": "Abilities",
+      "type": "array"
+    },
+    "stats": {
+      "anyOf": [
         {
           "$ref": "#/$defs/StatsDnD"
         },
         {
           "$ref": "#/$defs/StatsCthulhu"
+        },
+        {
+          "type": "null"
         }
       ],
+      "default": null,
       "title": "Stats"
+    },
+    "spells": {
+      "items": {
+        "$ref": "#/$defs/Spell"
+      },
+      "title": "Spells",
+      "type": "array"
     },
     "equipment": {
       "items": {
@@ -369,10 +503,6 @@
       "type": "array"
     }
   },
-  "required": [
-    "name",
-    "stats"
-  ],
   "title": "Character",
   "type": "object"
 }

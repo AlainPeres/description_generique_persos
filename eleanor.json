@@ -1,29 +1,69 @@
 {
   "name": "Eleanor Whitfield",
   "description": "50 years old, blond hair, green eyes",
-  "occupation": "",
+  "occupation": "Librarian",
   "background": "Librarian in Arkham",
-  "stats": {
-    "system": "cthulhu",
-    "Strength": 10,
-    "Dexterity": 12,
-    "Constitution": 14,
-    "Size": 10,
-    "Intelligence": 16,
-    "Charisma": 12,
-    "Education": 70,
-    "Sanity": 65,
-    "Hit_Points": 11,
-    "Move": 8,
-    "base_skills": {
-      "Library Use": 70,
-      "Psychology": 45,
-      "Firearms": 25
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 10
     },
-    "new_skills": {},
-    "specialized_skills": {},
-    "base_spells": [],
-    "new_spells": []
-  },
+    {
+      "name": "Dexterity",
+      "value": 12
+    },
+    {
+      "name": "Constitution",
+      "value": 14
+    },
+    {
+      "name": "Size",
+      "value": 10
+    },
+    {
+      "name": "Intelligence",
+      "value": 16
+    },
+    {
+      "name": "Charisma",
+      "value": 12
+    },
+    {
+      "name": "Education",
+      "value": 70
+    },
+    {
+      "name": "Sanity",
+      "value": 65
+    },
+    {
+      "name": "Hit Points",
+      "value": 11
+    },
+    {
+      "name": "Move",
+      "value": 8
+    }
+  ],
+  "skills": [
+    {
+      "name": "Library Use",
+      "category": "Base",
+      "value": 70
+    },
+    {
+      "name": "Psychology",
+      "category": "Base",
+      "value": 45
+    },
+    {
+      "name": "Firearms",
+      "category": "Base",
+      "value": 25
+    }
+  ],
+  "abilities": [],
+  "stats": null,
+  "spells": [],
   "equipment": []
 }
