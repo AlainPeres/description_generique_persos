@@ -17,11 +17,16 @@
     "Charisma": 8,
     "Armor_Class": 17,
     "Hit_Points": 28,
-    "size": null,
+    "size": "Medium",
     "movement": {},
-    "base_feats": [],
+    "base_feats": [
+      "Action Surge",
+      "Second Wind"
+    ],
     "new_feats": [],
-    "base_skills": {},
+    "base_skills": {
+      "Climb": 30
+    },
     "new_skills": {},
     "specialized_skills": {},
     "base_spells": [],

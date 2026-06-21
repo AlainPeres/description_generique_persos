@@ -108,6 +108,7 @@ thorin = Character(
         character_class="Fighter",
         race="Dwarf",
         alignment="Lawful Good",
+        size="Medium",
         level=3,
         Strength=16,
         Dexterity=12,
@@ -117,8 +118,8 @@ thorin = Character(
         Charisma=8,
         Armor_Class=17,
         Hit_Points=28,        
-        base_feats=[],       
-        base_skills={}      
+        base_feats=["Action Surge", "Second Wind"],       
+        base_skills={"Climb": 30}      
     ),
 )
 
