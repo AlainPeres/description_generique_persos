@@ -67,35 +67,35 @@
           "title": "System",
           "type": "string"
         },
-        "strength": {
+        "Strength": {
           "title": "Strength",
           "type": "integer"
         },
-        "dexterity": {
+        "Dexterity": {
           "title": "Dexterity",
           "type": "integer"
         },
-        "constitution": {
+        "Constitution": {
           "title": "Constitution",
           "type": "integer"
         },
-        "size": {
+        "Size": {
           "title": "Size",
           "type": "integer"
         },
-        "intelligence": {
+        "Intelligence": {
           "title": "Intelligence",
           "type": "integer"
         },
-        "charisma": {
+        "Charisma": {
           "title": "Charisma",
           "type": "integer"
         },
-        "education": {
+        "Education": {
           "title": "Education",
           "type": "integer"
         },
-        "sanity": {
+        "Sanity": {
           "anyOf": [
             {
               "type": "integer"
@@ -107,40 +107,61 @@
           "default": null,
           "title": "Sanity"
         },
-        "hit_points": {
+        "Hit_Points": {
           "title": "Hit Points",
           "type": "integer"
         },
-        "move": {
+        "Move": {
           "title": "Move",
           "type": "integer"
         },
-        "skills": {
+        "base_skills": {
           "additionalProperties": {
             "type": "integer"
           },
-          "title": "Skills",
+          "title": "Base Skills",
           "type": "object"
         },
-        "spells": {
+        "new_skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "New Skills",
+          "type": "object"
+        },
+        "specialized_skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Specialized Skills",
+          "type": "object"
+        },
+        "base_spells": {
           "items": {
             "type": "string"
           },
-          "title": "Spells",
+          "title": "Base Spells",
+          "type": "array"
+        },
+        "new_spells": {
+          "items": {
+            "type": "string"
+          },
+          "title": "New Spells",
           "type": "array"
         }
       },
       "required": [
         "system",
-        "strength",
-        "dexterity",
-        "constitution",
-        "size",
-        "intelligence",
-        "charisma",
-        "education",
-        "hit_points",
-        "move"
+        "Strength",
+        "Dexterity",
+        "Constitution",
+        "Size",
+        "Intelligence",
+        "Charisma",
+        "Education",
+        "Hit_Points",
+        "Move"
       ],
       "title": "StatsCthulhu",
       "type": "object"
@@ -164,35 +185,39 @@
           "title": "Level",
           "type": "integer"
         },
-        "strength": {
+        "alignment": {
+          "title": "Alignment",
+          "type": "string"
+        },
+        "Strength": {
           "title": "Strength",
           "type": "integer"
         },
-        "dexterity": {
+        "Dexterity": {
           "title": "Dexterity",
           "type": "integer"
         },
-        "constitution": {
+        "Constitution": {
           "title": "Constitution",
           "type": "integer"
         },
-        "intelligence": {
+        "Intelligence": {
           "title": "Intelligence",
           "type": "integer"
         },
-        "wisdom": {
+        "Wisdom": {
           "title": "Wisdom",
           "type": "integer"
         },
-        "charisma": {
+        "Charisma": {
           "title": "Charisma",
           "type": "integer"
         },
-        "armor_class": {
+        "Armor_Class": {
           "title": "Armor Class",
           "type": "integer"
         },
-        "hit_points": {
+        "Hit_Points": {
           "title": "Hit Points",
           "type": "integer"
         },
@@ -208,32 +233,60 @@
           "default": null,
           "title": "Size"
         },
-        "movt_type_and_speed": {
+        "movement": {
           "additionalProperties": {
             "type": "integer"
           },
-          "title": "Movt Type And Speed",
+          "title": "Movement",
           "type": "object"
         },
-        "feats": {
+        "base_feats": {
           "items": {
             "type": "string"
           },
-          "title": "Feats",
+          "title": "Base Feats",
           "type": "array"
         },
-        "skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "Skills",
-          "type": "object"
-        },
-        "spells": {
+        "new_feats": {
           "items": {
             "type": "string"
           },
-          "title": "Spells",
+          "title": "New Feats",
+          "type": "array"
+        },
+        "base_skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Base Skills",
+          "type": "object"
+        },
+        "new_skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "New Skills",
+          "type": "object"
+        },
+        "specialized_skills": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Specialized Skills",
+          "type": "object"
+        },
+        "base_spells": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Base Spells",
+          "type": "array"
+        },
+        "new_spells": {
+          "items": {
+            "type": "string"
+          },
+          "title": "New Spells",
           "type": "array"
         },
         "origin_abilities": {
@@ -256,14 +309,15 @@
         "character_class",
         "race",
         "level",
-        "strength",
-        "dexterity",
-        "constitution",
-        "intelligence",
-        "wisdom",
-        "charisma",
-        "armor_class",
-        "hit_points"
+        "alignment",
+        "Strength",
+        "Dexterity",
+        "Constitution",
+        "Intelligence",
+        "Wisdom",
+        "Charisma",
+        "Armor_Class",
+        "Hit_Points"
       ],
       "title": "StatsDnD",
       "type": "object"

@@ -25,19 +25,24 @@ class StatsDnD(BaseModel):
     character_class: str
     race: str
     level: int 
-    strength: int 
-    dexterity: int 
-    constitution: int 
-    intelligence: int 
-    wisdom: int 
-    charisma: int 
-    armor_class: int
-    hit_points: int    
+    alignment: str
+    Strength: int 
+    Dexterity: int 
+    Constitution: int 
+    Intelligence: int 
+    Wisdom: int 
+    Charisma: int 
+    Armor_Class: int
+    Hit_Points: int    
     size: str | None = None
-    movt_type_and_speed: dict[str, int] = Field(default_factory=dict)
-    feats: list[str] = Field(default_factory=list)
-    skills: dict[str, int] = Field(default_factory=dict)
-    spells: list[str] = Field(default_factory=list)
+    movement: dict[str, int] = Field(default_factory=dict)
+    base_feats: list[str] = Field(default_factory=list)
+    new_feats: list[str] = Field(default_factory=list)
+    base_skills: dict[str, int] = Field(default_factory=dict)
+    new_skills: dict[str, int] = Field(default_factory=dict)
+    specialized_skills: dict[str, int] = Field(default_factory=dict)   
+    base_spells: list[str] = Field(default_factory=list)
+    new_spells: list[str] = Field(default_factory=list)
     origin_abilities: list[str] = Field(default_factory=list)
     class_abilities: list[str] = Field(default_factory=list)
 
@@ -47,18 +52,21 @@ class StatsDnD(BaseModel):
 # ---------------------------------------------------------------------------
 class StatsCthulhu(BaseModel):
     system: Literal["cthulhu"]   
-    strength: int 
-    dexterity: int
-    constitution: int 
-    size: int 
-    intelligence: int 
-    charisma: int 
-    education: int    
-    sanity: int | None = None
-    hit_points: int   
-    move:int
-    skills: dict[str, int] = Field(default_factory=dict)
-    spells: list[str] = Field(default_factory=list)
+    Strength: int 
+    Dexterity: int
+    Constitution: int 
+    Size: int 
+    Intelligence: int 
+    Charisma: int 
+    Education: int    
+    Sanity: int | None = None
+    Hit_Points: int   
+    Move:int
+    base_skills: dict[str, int] = Field(default_factory=dict)
+    new_skills: dict[str, int] = Field(default_factory=dict)
+    specialized_skills: dict[str, int] = Field(default_factory=dict)
+    base_spells: list[str] = Field(default_factory=list)
+    new_spells: list[str] = Field(default_factory=list)
 
 class ItemCategory(str, Enum):
     WEAPON = "weapon"
@@ -99,18 +107,18 @@ thorin = Character(
         system="dnd5e",
         character_class="Fighter",
         race="Dwarf",
+        alignment="Lawful Good",
         level=3,
-        strength=16,
-        dexterity=12,
-        constitution=15,
-        intelligence=10,
-        wisdom=11,
-        charisma=8,
-        armor_class=17,
-        hit_points=28,        
-        feats=[],
-        skills={},
-        spells=[]
+        Strength=16,
+        Dexterity=12,
+        Constitution=15,
+        Intelligence=10,
+        Wisdom=11,
+        Charisma=8,
+        Armor_Class=17,
+        Hit_Points=28,        
+        base_feats=[],       
+        base_skills={}      
     ),
 )
 
@@ -120,17 +128,17 @@ eleanor = Character(
     background="Librarian in Arkham",  
     stats=StatsCthulhu(
         system="cthulhu",
-        strength=10,
-        dexterity=12,
-        constitution=14,
-        size=10,
-        intelligence=16,
-        charisma=12,
-        education=70,
-        sanity=65,
-        hit_points=11,
-        move=8,
-        skills={
+        Strength=10,
+        Dexterity=12,
+        Constitution=14,
+        Size=10,
+        Intelligence=16,
+        Charisma=12,
+        Education=70,
+        Sanity=65,
+        Hit_Points=11,
+        Move=8,
+        base_skills={
             "Library Use": 70,
             "Psychology": 45,
             "Firearms": 25,

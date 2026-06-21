@@ -5,22 +5,25 @@
   "background": "Librarian in Arkham",
   "stats": {
     "system": "cthulhu",
-    "strength": 10,
-    "dexterity": 12,
-    "constitution": 14,
-    "size": 10,
-    "intelligence": 16,
-    "charisma": 12,
-    "education": 70,
-    "sanity": 65,
-    "hit_points": 11,
-    "move": 8,
-    "skills": {
+    "Strength": 10,
+    "Dexterity": 12,
+    "Constitution": 14,
+    "Size": 10,
+    "Intelligence": 16,
+    "Charisma": 12,
+    "Education": 70,
+    "Sanity": 65,
+    "Hit_Points": 11,
+    "Move": 8,
+    "base_skills": {
       "Library Use": 70,
       "Psychology": 45,
       "Firearms": 25
     },
-    "spells": []
+    "new_skills": {},
+    "specialized_skills": {},
+    "base_spells": [],
+    "new_spells": []
   },
   "equipment": []
 }
