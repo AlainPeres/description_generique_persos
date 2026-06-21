@@ -2,9 +2,13 @@
 RPG character generation (multi-system) with Pydantic.
 
 Architecture:
-- A common base (Character) shared across all systems
-- A system-specific "stats" block, automatically selected
-  via a discriminated union on the "system" field
+- A common base (Character) with two complementary layers:
+  1. Generic layer: attributes, skills, abilities, spells, equipment
+     (system-agnostic, usable across all RPGs)
+  2. Optional system-specific block (stats: StatsDnD | StatsCthulhu | None)
+     for systems whose structure cannot be expressed as name+value pairs
+     (e.g. FATE Aspects, Stunts, Extras)
+- All Character fields are optional (default to empty / None)
 """
 
 import sys
@@ -24,49 +28,17 @@ class StatsDnD(BaseModel):
     system: Literal["dnd5e"]
     character_class: str
     race: str
-    level: int 
+    level: int
     alignment: str
-    Strength: int 
-    Dexterity: int 
-    Constitution: int 
-    Intelligence: int 
-    Wisdom: int 
-    Charisma: int 
-    Armor_Class: int
-    Hit_Points: int    
     size: str | None = None
     movement: dict[str, int] = Field(default_factory=dict)
-    base_feats: list[str] = Field(default_factory=list)
-    new_feats: list[str] = Field(default_factory=list)
-    base_skills: dict[str, int] = Field(default_factory=dict)
-    new_skills: dict[str, int] = Field(default_factory=dict)
-    specialized_skills: dict[str, int] = Field(default_factory=dict)   
-    base_spells: list[str] = Field(default_factory=list)
-    new_spells: list[str] = Field(default_factory=list)
-    origin_abilities: list[str] = Field(default_factory=list)
-    class_abilities: list[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
 # System-specific block: Call of Cthulhu
 # ---------------------------------------------------------------------------
 class StatsCthulhu(BaseModel):
-    system: Literal["cthulhu"]   
-    Strength: int 
-    Dexterity: int
-    Constitution: int 
-    Size: int 
-    Intelligence: int 
-    Charisma: int 
-    Education: int    
-    Sanity: int | None = None
-    Hit_Points: int   
-    Move:int
-    base_skills: dict[str, int] = Field(default_factory=dict)
-    new_skills: dict[str, int] = Field(default_factory=dict)
-    specialized_skills: dict[str, int] = Field(default_factory=dict)
-    base_spells: list[str] = Field(default_factory=list)
-    new_spells: list[str] = Field(default_factory=list)
+    system: Literal["cthulhu"]
 
 # ---------------------------------------------------------------------------
 #Utility Classes: common to large number of systems

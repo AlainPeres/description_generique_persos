@@ -174,102 +174,10 @@
           "const": "cthulhu",
           "title": "System",
           "type": "string"
-        },
-        "Strength": {
-          "title": "Strength",
-          "type": "integer"
-        },
-        "Dexterity": {
-          "title": "Dexterity",
-          "type": "integer"
-        },
-        "Constitution": {
-          "title": "Constitution",
-          "type": "integer"
-        },
-        "Size": {
-          "title": "Size",
-          "type": "integer"
-        },
-        "Intelligence": {
-          "title": "Intelligence",
-          "type": "integer"
-        },
-        "Charisma": {
-          "title": "Charisma",
-          "type": "integer"
-        },
-        "Education": {
-          "title": "Education",
-          "type": "integer"
-        },
-        "Sanity": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Sanity"
-        },
-        "Hit_Points": {
-          "title": "Hit Points",
-          "type": "integer"
-        },
-        "Move": {
-          "title": "Move",
-          "type": "integer"
-        },
-        "base_skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "Base Skills",
-          "type": "object"
-        },
-        "new_skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "New Skills",
-          "type": "object"
-        },
-        "specialized_skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "Specialized Skills",
-          "type": "object"
-        },
-        "base_spells": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Base Spells",
-          "type": "array"
-        },
-        "new_spells": {
-          "items": {
-            "type": "string"
-          },
-          "title": "New Spells",
-          "type": "array"
         }
       },
       "required": [
-        "system",
-        "Strength",
-        "Dexterity",
-        "Constitution",
-        "Size",
-        "Intelligence",
-        "Charisma",
-        "Education",
-        "Hit_Points",
-        "Move"
+        "system"
       ],
       "title": "StatsCthulhu",
       "type": "object"
@@ -297,38 +205,6 @@
           "title": "Alignment",
           "type": "string"
         },
-        "Strength": {
-          "title": "Strength",
-          "type": "integer"
-        },
-        "Dexterity": {
-          "title": "Dexterity",
-          "type": "integer"
-        },
-        "Constitution": {
-          "title": "Constitution",
-          "type": "integer"
-        },
-        "Intelligence": {
-          "title": "Intelligence",
-          "type": "integer"
-        },
-        "Wisdom": {
-          "title": "Wisdom",
-          "type": "integer"
-        },
-        "Charisma": {
-          "title": "Charisma",
-          "type": "integer"
-        },
-        "Armor_Class": {
-          "title": "Armor Class",
-          "type": "integer"
-        },
-        "Hit_Points": {
-          "title": "Hit Points",
-          "type": "integer"
-        },
         "size": {
           "anyOf": [
             {
@@ -347,69 +223,6 @@
           },
           "title": "Movement",
           "type": "object"
-        },
-        "base_feats": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Base Feats",
-          "type": "array"
-        },
-        "new_feats": {
-          "items": {
-            "type": "string"
-          },
-          "title": "New Feats",
-          "type": "array"
-        },
-        "base_skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "Base Skills",
-          "type": "object"
-        },
-        "new_skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "New Skills",
-          "type": "object"
-        },
-        "specialized_skills": {
-          "additionalProperties": {
-            "type": "integer"
-          },
-          "title": "Specialized Skills",
-          "type": "object"
-        },
-        "base_spells": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Base Spells",
-          "type": "array"
-        },
-        "new_spells": {
-          "items": {
-            "type": "string"
-          },
-          "title": "New Spells",
-          "type": "array"
-        },
-        "origin_abilities": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Origin Abilities",
-          "type": "array"
-        },
-        "class_abilities": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Class Abilities",
-          "type": "array"
         }
       },
       "required": [
@@ -417,15 +230,7 @@
         "character_class",
         "race",
         "level",
-        "alignment",
-        "Strength",
-        "Dexterity",
-        "Constitution",
-        "Intelligence",
-        "Wisdom",
-        "Charisma",
-        "Armor_Class",
-        "Hit_Points"
+        "alignment"
       ],
       "title": "StatsDnD",
       "type": "object"
