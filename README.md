@@ -14,7 +14,7 @@ Two files coexist intentionally:
 `Character` holds two complementary layers:
 
 - **Generic layer** — system-agnostic lists usable across all RPGs
-- **System-specific layer** (`stats`) — optional block for systems whose structure doesn't fit the generic model (e.g. FATE Aspects, Stunts, Extras)
+- **System-specific layer** (`stats`) — optional block for systems whose structure doesn't fit the generic model
 
 ```text
 Character
@@ -37,37 +37,31 @@ Character
 | `Spell` | `SpellCategory` | Base / New |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable |
 
-## System-specific layer — when to use `stats`
+## System-specific layer — `stats` models
 
-Use `stats` when a system has data structures that can't be expressed as `name + int value`:
+`stats` is used only for data that cannot be expressed as `name + int value`:
 
-```python
-# FATE example — Aspects are narrative strings, not numbers
-class StatsFATE(BaseModel):
-    system: Literal["fate"]
-    aspects: list[str]
-    stunts: list[str]
-    refresh: int
-    fate_points: int
-    stress: dict[str, int] = Field(default_factory=dict)
-    consequences: dict[str, str] = Field(default_factory=dict)
-```
-
-Adding a new system: create the model, add it to the union in `Character.stats`. No other change needed.
-
-## Supported systems
-
-| System | Model | Notes |
+| System | Model | Champs système-spécifiques |
 | --- | --- | --- |
-| D&D 5e | `StatsDnD` | class, race, level, alignment, ability scores, feats, skills, spells |
-| Call of Cthulhu | `StatsCthulhu` | occupation, sanity, education, move, skills, spells |
+| D&D 5e | `StatsDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `movement` |
+| Call of Cthulhu | `StatsCthulhu` | marqueur système uniquement (données dans la couche générique) |
+| FATE | `StatsFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
+| SagaS | `StatsSagas` | marqueur système (à compléter) |
+
+FATE illustre le cas d'usage principal de `stats` : les Aspects sont des phrases narratives (`list[str]`), incompatibles avec `Attribute(name, value: int)`.
+
+## Ajouter un nouveau système
+
+1. Créer le modèle `StatsXxx(BaseModel)` avec `system: Literal["xxx"]`
+2. L'ajouter à l'union dans `Character.stats`
+3. Instancier les données communes dans la couche générique (`attributes`, `skills`…)
 
 ## Type annotations
 
-Python 3.10+ native syntax throughout — no `List`, `Dict`, `Optional`, or `Union` from `typing`:
+Python 3.10+ native syntax — no `List`, `Dict`, `Optional`, or `Union` from `typing`:
 
 ```python
-weight: float | None = None
+size: str | None = None
 stats: StatsDnD | StatsCthulhu | None = None
 skills: list[Skill]
 ```

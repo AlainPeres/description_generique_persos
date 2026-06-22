@@ -123,7 +123,7 @@ class Character(BaseModel):
     attributes: list[Attribute] = Field(default_factory=list)
     skills: list[Skill] = Field(default_factory=list)
     abilities: list[Ability] = Field(default_factory=list)
-    stats: StatsDnD | StatsCthulhu | None = None
+    stats: StatsDnD | StatsCthulhu | StatsFate | StatsSagas | None = None
     spells: list[Spell] = Field(default_factory=list)
     equipment: list[EquipmentItem] = Field(default_factory=list)   
 

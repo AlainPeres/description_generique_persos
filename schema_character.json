@@ -234,6 +234,65 @@
       ],
       "title": "StatsDnD",
       "type": "object"
+    },
+    "StatsFate": {
+      "properties": {
+        "system": {
+          "const": "fate",
+          "title": "System",
+          "type": "string"
+        },
+        "Concept": {
+          "title": "Concept",
+          "type": "string"
+        },
+        "Aspects": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aspects",
+          "type": "array"
+        },
+        "Stunts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Stunts",
+          "type": "array"
+        },
+        "Extras": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Extras",
+          "type": "array"
+        },
+        "FatePoints": {
+          "title": "Fatepoints",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "system",
+        "Concept",
+        "FatePoints"
+      ],
+      "title": "StatsFate",
+      "type": "object"
+    },
+    "StatsSagas": {
+      "properties": {
+        "system": {
+          "const": "SagaS",
+          "title": "System",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system"
+      ],
+      "title": "StatsSagas",
+      "type": "object"
     }
   },
   "properties": {
@@ -285,6 +344,12 @@
         },
         {
           "$ref": "#/$defs/StatsCthulhu"
+        },
+        {
+          "$ref": "#/$defs/StatsFate"
+        },
+        {
+          "$ref": "#/$defs/StatsSagas"
         },
         {
           "type": "null"
