@@ -1,4 +1,15 @@
 {
+  "specific_values": {
+    "system": "dnd5e",
+    "character_class": "Fighter",
+    "race": "Dwarf",
+    "level": 3,
+    "alignment": "Lawful Good",
+    "size": "Medium",
+    "movement": {
+      "walk": 25
+    }
+  },
   "name": "Thorin Ironforge",
   "description": "Muscular dwarf with a long beard and a hammer",
   "occupation": "",
@@ -47,26 +58,15 @@
   "abilities": [
     {
       "name": "Action Surge",
-      "category": "Class Ability",
+      "category": "Feat",
       "value": 1
     },
     {
       "name": "Second Wind",
-      "category": "Class Ability",
+      "category": "Feat",
       "value": 1
     }
   ],
-  "stats": {
-    "system": "dnd5e",
-    "character_class": "Fighter",
-    "race": "Dwarf",
-    "level": 3,
-    "alignment": "Lawful Good",
-    "size": "Medium",
-    "movement": {
-      "walk": 25
-    }
-  },
   "spells": [],
   "equipment": []
 }

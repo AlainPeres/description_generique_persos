@@ -1,4 +1,7 @@
 {
+  "specific_values": {
+    "system": "cthulhu"
+  },
   "name": "Eleanor Whitfield",
   "description": "50 years old, blond hair, green eyes",
   "occupation": "Librarian",
@@ -63,9 +66,6 @@
     }
   ],
   "abilities": [],
-  "stats": {
-    "system": "cthulhu"
-  },
   "spells": [],
   "equipment": []
 }

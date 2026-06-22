@@ -5,7 +5,7 @@ Architecture:
 - A common base (Character) with two complementary layers:
   1. Generic layer: attributes, skills, abilities, spells, equipment
      (system-agnostic, usable across all RPGs)
-  2. Optional system-specific block (stats: StatsDnD | StatsCthulhu | None)
+  2. Optional system-specific block (specific_values: SpecificValuesDnD | SpecificValuesCthulhu | None)
      for systems whose structure cannot be expressed as name+value pairs
      (e.g. FATE Aspects, Stunts, Extras)
 - All Character fields are optional (default to empty / None)
@@ -24,7 +24,7 @@ import json
 # ---------------------------------------------------------------------------
 # System-specific block: Dungeons & Dragons 5e
 # ---------------------------------------------------------------------------
-class StatsDnD(BaseModel):
+class SpecificValuesDnD(BaseModel):
     system: Literal["dnd5e"]
     character_class: str
     race: str
@@ -37,13 +37,13 @@ class StatsDnD(BaseModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Call of Cthulhu
 # ---------------------------------------------------------------------------
-class StatsCthulhu(BaseModel):
+class SpecificValuesCthulhu(BaseModel):
     system: Literal["cthulhu"]
 
 # ---------------------------------------------------------------------------
 # System-specific block: Fate
 # ---------------------------------------------------------------------------
-class StatsFate(BaseModel):
+class SpecificValuesFate(BaseModel):
     system: Literal["fate"]
     Concept:str
     Aspects: list[str] = Field(default_factory=list)
@@ -54,7 +54,7 @@ class StatsFate(BaseModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Fate
 # ---------------------------------------------------------------------------
-class StatsSagas(BaseModel):
+class SpecificValuesSagas(BaseModel):
     system: Literal["SagaS"]  
 # ---------------------------------------------------------------------------
 #Utility Classes: common to large number of systems
@@ -116,16 +116,16 @@ class Spell(BaseModel):
 # Common base
 # ---------------------------------------------------------------------------
 class Character(BaseModel):
+    specific_values: SpecificValuesDnD | SpecificValuesCthulhu | SpecificValuesFate | SpecificValuesSagas | None = None
     name: str = ""
     description: str = ""
     occupation: str = ""
-    background: str = ""
+    background: str = ""    
     attributes: list[Attribute] = Field(default_factory=list)
     skills: list[Skill] = Field(default_factory=list)
-    abilities: list[Ability] = Field(default_factory=list)
-    stats: StatsDnD | StatsCthulhu | StatsFate | StatsSagas | None = None
+    abilities: list[Ability] = Field(default_factory=list)   
     spells: list[Spell] = Field(default_factory=list)
-    equipment: list[EquipmentItem] = Field(default_factory=list)   
+    equipment: list[EquipmentItem] = Field(default_factory=list)  
 
 # ---------------------------------------------------------------------------
 # Character creation
@@ -134,7 +134,7 @@ thorin = Character(
     name="Thorin Ironforge",
     description="Muscular dwarf with a long beard and a hammer",
     background="Dwarf blacksmith exiled from his mountain",
-    stats=StatsDnD(
+    specific_values=SpecificValuesDnD(
         system="dnd5e",
         character_class="Fighter",
         race="Dwarf",
@@ -157,8 +157,8 @@ thorin = Character(
         Skill(name="Climb", category=SkillCategory.BASE, value=30),
     ],
     abilities=[
-        Ability(name="Action Surge", category=AbilityCategory.CLASS_ABILITY, value=1),
-        Ability(name="Second Wind", category=AbilityCategory.CLASS_ABILITY, value=1),
+        Ability(name="Action Surge", category=AbilityCategory.FEAT, value=1),
+        Ability(name="Second Wind", category=AbilityCategory.FEAT, value=1),
     ],
 )
 
@@ -167,7 +167,7 @@ eleanor = Character(
     description="50 years old, blond hair, green eyes",
     background="Librarian in Arkham",
     occupation="Librarian",
-    stats=StatsCthulhu(system="cthulhu"),
+    specific_values=SpecificValuesCthulhu(system="cthulhu"),
     attributes=[
         Attribute(name="Strength", value=10),
         Attribute(name="Dexterity", value=12),
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     print_separator("VALIDATION: reload from raw JSON")
     raw = eleanor.model_dump_json()
     reloaded = Character.model_validate_json(raw)
-    system = reloaded.stats.system if reloaded.stats else "no system"
+    system = reloaded.specific_values.system if reloaded.specific_values else "no system"
     print(f"Reloaded character: {reloaded.name} ({system})")
 
     print_separator("VALIDATION: error on inconsistent data")
@@ -229,7 +229,7 @@ if __name__ == "__main__":
         Character(
             name="Test",
             player="X",
-            stats={"system": "dnd5e", "character_class": "Mage"},  # missing fields
+            specific_values={"system": "dnd5e", "character_class": "Mage"},  # missing fields
         )
     except Exception as e:
         print(f"Error detected as expected:\n{e}")

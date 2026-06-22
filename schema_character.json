@@ -143,32 +143,7 @@
       "title": "SkillCategory",
       "type": "string"
     },
-    "Spell": {
-      "properties": {
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "category": {
-          "$ref": "#/$defs/SpellCategory"
-        }
-      },
-      "required": [
-        "name",
-        "category"
-      ],
-      "title": "Spell",
-      "type": "object"
-    },
-    "SpellCategory": {
-      "enum": [
-        "Base",
-        "New"
-      ],
-      "title": "SpellCategory",
-      "type": "string"
-    },
-    "StatsCthulhu": {
+    "SpecificValuesCthulhu": {
       "properties": {
         "system": {
           "const": "cthulhu",
@@ -179,10 +154,10 @@
       "required": [
         "system"
       ],
-      "title": "StatsCthulhu",
+      "title": "SpecificValuesCthulhu",
       "type": "object"
     },
-    "StatsDnD": {
+    "SpecificValuesDnD": {
       "properties": {
         "system": {
           "const": "dnd5e",
@@ -232,10 +207,10 @@
         "level",
         "alignment"
       ],
-      "title": "StatsDnD",
+      "title": "SpecificValuesDnD",
       "type": "object"
     },
-    "StatsFate": {
+    "SpecificValuesFate": {
       "properties": {
         "system": {
           "const": "fate",
@@ -277,10 +252,10 @@
         "Concept",
         "FatePoints"
       ],
-      "title": "StatsFate",
+      "title": "SpecificValuesFate",
       "type": "object"
     },
-    "StatsSagas": {
+    "SpecificValuesSagas": {
       "properties": {
         "system": {
           "const": "SagaS",
@@ -291,11 +266,57 @@
       "required": [
         "system"
       ],
-      "title": "StatsSagas",
+      "title": "SpecificValuesSagas",
       "type": "object"
+    },
+    "Spell": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/SpellCategory"
+        }
+      },
+      "required": [
+        "name",
+        "category"
+      ],
+      "title": "Spell",
+      "type": "object"
+    },
+    "SpellCategory": {
+      "enum": [
+        "Base",
+        "New"
+      ],
+      "title": "SpellCategory",
+      "type": "string"
     }
   },
   "properties": {
+    "specific_values": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SpecificValuesDnD"
+        },
+        {
+          "$ref": "#/$defs/SpecificValuesCthulhu"
+        },
+        {
+          "$ref": "#/$defs/SpecificValuesFate"
+        },
+        {
+          "$ref": "#/$defs/SpecificValuesSagas"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Specific Values"
+    },
     "name": {
       "default": "",
       "title": "Name",
@@ -336,27 +357,6 @@
       },
       "title": "Abilities",
       "type": "array"
-    },
-    "stats": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/StatsDnD"
-        },
-        {
-          "$ref": "#/$defs/StatsCthulhu"
-        },
-        {
-          "$ref": "#/$defs/StatsFate"
-        },
-        {
-          "$ref": "#/$defs/StatsSagas"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Stats"
     },
     "spells": {
       "items": {
