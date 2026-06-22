@@ -2,19 +2,20 @@
 
 Multi-system RPG character modeling with **Pydantic v2**.
 
-Two files coexist intentionally:
+Three files with progressive scope:
 
-| File | Approach |
+| File | Role |
 | --- | --- |
 | `main.py` | System-specific model only (`specific_values` discriminated union) |
-| `main1.py` | Generic model + optional system-specific block |
+| `main1.py` | Generic model + optional system-specific block, named characters |
+| `main2.py` | Same architecture, generates **generic character templates** per system |
 
-## Architecture (`main1.py`)
+## Architecture (`main1.py` / `main2.py`)
 
 `Character` holds two complementary layers:
 
 - **Generic layer** — system-agnostic lists usable across all RPGs
-- **System-specific layer** (`specific_values`) — optional block for systems whose structure doesn't fit the generic model
+- **System-specific layer** (`specific_values`) — optional block for data that can't be expressed as `name + int value`
 
 ```text
 Character
@@ -33,7 +34,7 @@ Character
 | Model | Enum | Values |
 | --- | --- | --- |
 | `Attribute` | — | any numeric stat (STR, DEX, HP …) |
-| `Skill` | `SkillCategory` | Base / New / Specialization |
+| `Skill` | `SkillCategory` | Base / New / Generic / Specialization |
 | `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage |
 | `Spell` | `SpellCategory` | Base / New |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable |
@@ -44,18 +45,27 @@ Used only for data that cannot be expressed as `name + int value`:
 
 | System | Model | Specific fields |
 | --- | --- | --- |
-| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `movement`, `languages` |
-| Call of Cthulhu | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
+| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages`, `reflex_save`, `fortitude_save`, `will_save` |
+| Call of Cthulhu 6 | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
 | FATE | `SpecificValuesFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
 | SagaS | `SpecificValuesSagas` | system marker (to be completed) |
 
-FATE is the primary use case for `specific_values`: Aspects are narrative strings (`list[str]`), incompatible with `Attribute(name, value: int)`.
+## Generic templates (`main2.py`)
+
+`main2.py` generates ready-to-use JSON blueprints with default values and the full official skill list for each system:
+
+| Export | System | Skills |
+| --- | --- | --- |
+| `generic_dnd5e.json` | D&D 5e | 18 base skills |
+| `generic_cthulhu6.json` | Call of Cthulhu 6 | ~55 skills (base + generic) |
+| `generic_sagas.json` | SagaS | ~90 skills across all categories |
 
 ## Adding a new system
 
 1. Create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]`
 2. Add it to the union in `Character.specific_values`
 3. Put numeric data in the generic `attributes` / `skills` lists
+4. Optionally add a generic template instance in `main2.py`
 
 ## Type annotations
 
@@ -79,14 +89,7 @@ uv sync
 ## Usage
 
 ```bash
-python main.py    # system-specific model
-python main1.py   # generic model
+python main.py     # system-specific model, named characters
+python main1.py    # generic model, named characters
+python main2.py    # generic model, system templates → JSON exports
 ```
-
-Both output:
-
-1. Generated JSON for each sample character (Thorin D&D, Eleanor Cthulhu)
-2. Full JSON Schema
-3. Exports `thorin.json`, `eleanor.json`, `schema_character.json`
-4. Round-trip validation demo (`model_dump_json` → `model_validate_json`)
-5. Intentional validation error demo (missing required fields)
