@@ -1,0 +1,364 @@
+{
+  "specific_values": {
+    "system": "cthulhu6"
+  },
+  "name": "Generic Cthulhu 6 Character",
+  "description": "to be specified",
+  "occupation": "to be specified",
+  "background": "to be specified",
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 10
+    },
+    {
+      "name": "Constitution",
+      "value": 10
+    },
+    {
+      "name": "Size",
+      "value": 10
+    },
+    {
+      "name": "Dexterity",
+      "value": 10
+    },
+    {
+      "name": "Appearance",
+      "value": 10
+    },
+    {
+      "name": "Intelligence",
+      "value": 10
+    },
+    {
+      "name": "Power",
+      "value": 10
+    },
+    {
+      "name": "Education",
+      "value": 10
+    },
+    {
+      "name": "Sanity",
+      "value": 10
+    },
+    {
+      "name": "Hit Points",
+      "value": 10
+    },
+    {
+      "name": "Magic Points",
+      "value": 10
+    },
+    {
+      "name": "Move",
+      "value": 10
+    }
+  ],
+  "skills": [
+    {
+      "name": "Accounting",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Anthropology",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Archaeology",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Art",
+      "category": "Generic",
+      "value": 5
+    },
+    {
+      "name": "Astronomy",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Bargain",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "Biology",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Chemistry",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Climb",
+      "category": "Base",
+      "value": 40
+    },
+    {
+      "name": "Computer Use",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Conceal",
+      "category": "Base",
+      "value": 15
+    },
+    {
+      "name": "Craft",
+      "category": "Generic",
+      "value": 5
+    },
+    {
+      "name": "Credit Rating",
+      "category": "Base",
+      "value": 15
+    },
+    {
+      "name": "Cthulhu Mythos",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Disguise",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Dodge",
+      "category": "Base",
+      "value": 20
+    },
+    {
+      "name": "Drive Auto",
+      "category": "Base",
+      "value": 20
+    },
+    {
+      "name": "Electr. Repair",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Electronics",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Fast Talk",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "First Aid",
+      "category": "Base",
+      "value": 30
+    },
+    {
+      "name": "Geology",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Hide",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "History",
+      "category": "Base",
+      "value": 20
+    },
+    {
+      "name": "Jump",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Law",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "Library Use",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Listen",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Locksmith",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Martial Arts",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Mech. Repair",
+      "category": "Base",
+      "value": 20
+    },
+    {
+      "name": "Medicine",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "Natural History",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Navigate",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Occult",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "Opr. Hvy. Mch.",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Other Languages",
+      "category": "Generic",
+      "value": 1
+    },
+    {
+      "name": "Own Language",
+      "category": "Base",
+      "value": 50
+    },
+    {
+      "name": "Persuade",
+      "category": "Base",
+      "value": 15
+    },
+    {
+      "name": "Pharmacy",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Photography",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Physics",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Pilot",
+      "category": "Generic",
+      "value": 1
+    },
+    {
+      "name": "Psychoanalysis",
+      "category": "Base",
+      "value": 1
+    },
+    {
+      "name": "Psychology",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "Ride",
+      "category": "Base",
+      "value": 5
+    },
+    {
+      "name": "Sneak",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Spot Hidden",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Swim",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Throw",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Track",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Handgun",
+      "category": "Base",
+      "value": 20
+    },
+    {
+      "name": "Machine Gun",
+      "category": "Base",
+      "value": 15
+    },
+    {
+      "name": "Rifle",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Shotgun",
+      "category": "Base",
+      "value": 30
+    },
+    {
+      "name": "SMG",
+      "category": "Base",
+      "value": 15
+    },
+    {
+      "name": "Fist",
+      "category": "Base",
+      "value": 50
+    },
+    {
+      "name": "Grapple",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Head",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Kick",
+      "category": "Base",
+      "value": 25
+    }
+  ],
+  "abilities": [],
+  "spells": [],
+  "equipment": []
+}

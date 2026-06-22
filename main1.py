@@ -32,6 +32,7 @@ class SpecificValuesDnD(BaseModel):
     alignment: str
     size: str | None = None
     movement: dict[str, int] = Field(default_factory=dict)
+    languages: list[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -142,6 +143,7 @@ thorin = Character(
         alignment="Lawful Good",
         size="Medium",
         movement={"walk": 25},
+        languages=["Common", "Dwarvish"],
     ),
     attributes=[
         Attribute(name="Strength", value=16),

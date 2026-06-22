@@ -138,6 +138,7 @@
       "enum": [
         "Base",
         "New",
+        "Generic",
         "Specialization"
       ],
       "title": "SkillCategory",
@@ -146,7 +147,7 @@
     "SpecificValuesCthulhu": {
       "properties": {
         "system": {
-          "const": "cthulhu",
+          "const": "cthulhu6",
           "title": "System",
           "type": "string"
         }
@@ -192,12 +193,31 @@
           "default": null,
           "title": "Size"
         },
-        "movement": {
+        "speed": {
           "additionalProperties": {
             "type": "integer"
           },
-          "title": "Movement",
+          "title": "Speed",
           "type": "object"
+        },
+        "languages": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Languages",
+          "type": "array"
+        },
+        "reflex_save": {
+          "title": "Reflex Save",
+          "type": "integer"
+        },
+        "fortitude_save": {
+          "title": "Fortitude Save",
+          "type": "integer"
+        },
+        "will_save": {
+          "title": "Will Save",
+          "type": "integer"
         }
       },
       "required": [
@@ -205,7 +225,10 @@
         "character_class",
         "race",
         "level",
-        "alignment"
+        "alignment",
+        "reflex_save",
+        "fortitude_save",
+        "will_save"
       ],
       "title": "SpecificValuesDnD",
       "type": "object"

@@ -1,0 +1,158 @@
+{
+  "specific_values": {
+    "system": "dnd5e",
+    "character_class": "to be specified",
+    "race": "to be specified",
+    "level": 1,
+    "alignment": "to be specified",
+    "size": "Medium",
+    "speed": {
+      "walk": 25
+    },
+    "languages": [
+      "Common"
+    ],
+    "reflex_save": 10,
+    "fortitude_save": 10,
+    "will_save": 10
+  },
+  "name": "Generic D&D 5e Character",
+  "description": "A generic adventurer in the world of Dungeons & Dragons 5th Edition",
+  "occupation": "",
+  "background": "background not specified",
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 10
+    },
+    {
+      "name": "Dexterity",
+      "value": 10
+    },
+    {
+      "name": "Constitution",
+      "value": 10
+    },
+    {
+      "name": "Intelligence",
+      "value": 10
+    },
+    {
+      "name": "Wisdom",
+      "value": 10
+    },
+    {
+      "name": "Charisma",
+      "value": 10
+    },
+    {
+      "name": "Armor Class",
+      "value": 10
+    },
+    {
+      "name": "Hit Points",
+      "value": 10
+    }
+  ],
+  "skills": [
+    {
+      "name": "Acrobatics",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Animal Handling",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Arcana",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Athletics",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Deception",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "History",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Insight",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Intimidation",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Investigation",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Medicine",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Nature",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Perception",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Performance",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Persuasion",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Religion",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Sleight of Hand",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Stealth",
+      "category": "Base",
+      "value": 10
+    },
+    {
+      "name": "Survival",
+      "category": "Base",
+      "value": 10
+    }
+  ],
+  "abilities": [
+    {
+      "name": "to be specified",
+      "category": "Feat",
+      "value": 1
+    }
+  ],
+  "spells": [],
+  "equipment": []
+}

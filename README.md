@@ -6,7 +6,7 @@ Two files coexist intentionally:
 
 | File | Approach |
 | --- | --- |
-| `main.py` | System-specific model only (`stats` discriminated union) |
+| `main.py` | System-specific model only (`specific_values` discriminated union) |
 | `main1.py` | Generic model + optional system-specific block |
 
 ## Architecture (`main1.py`)
@@ -14,17 +14,18 @@ Two files coexist intentionally:
 `Character` holds two complementary layers:
 
 - **Generic layer** — system-agnostic lists usable across all RPGs
-- **System-specific layer** (`stats`) — optional block for systems whose structure doesn't fit the generic model
+- **System-specific layer** (`specific_values`) — optional block for systems whose structure doesn't fit the generic model
 
 ```text
 Character
 ├── name, description, occupation, background
-├── attributes:  list[Attribute]          (name + int value)
-├── skills:      list[Skill]              (name + SkillCategory + int value)
-├── abilities:   list[Ability]            (name + AbilityCategory + int value)
-├── spells:      list[Spell]              (name + SpellCategory)
-├── equipment:   list[EquipmentItem]      (name + ItemCategory + quantity …)
-└── stats:       StatsDnD | StatsCthulhu | None   ← optional, system-specific
+├── attributes:       list[Attribute]       (name + int value)
+├── skills:           list[Skill]           (name + SkillCategory + int value)
+├── abilities:        list[Ability]         (name + AbilityCategory + int value)
+├── spells:           list[Spell]           (name + SpellCategory)
+├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
+└── specific_values:  SpecificValuesDnD | SpecificValuesCthulhu
+                    | SpecificValuesFate | SpecificValuesSagas | None
 ```
 
 ## Generic layer — utility models
@@ -37,24 +38,24 @@ Character
 | `Spell` | `SpellCategory` | Base / New |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable |
 
-## System-specific layer — `stats` models
+## System-specific layer — `specific_values` models
 
-`stats` is used only for data that cannot be expressed as `name + int value`:
+Used only for data that cannot be expressed as `name + int value`:
 
-| System | Model | Champs système-spécifiques |
+| System | Model | Specific fields |
 | --- | --- | --- |
-| D&D 5e | `StatsDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `movement` |
-| Call of Cthulhu | `StatsCthulhu` | marqueur système uniquement (données dans la couche générique) |
-| FATE | `StatsFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
-| SagaS | `StatsSagas` | marqueur système (à compléter) |
+| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `movement`, `languages` |
+| Call of Cthulhu | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
+| FATE | `SpecificValuesFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
+| SagaS | `SpecificValuesSagas` | system marker (to be completed) |
 
-FATE illustre le cas d'usage principal de `stats` : les Aspects sont des phrases narratives (`list[str]`), incompatibles avec `Attribute(name, value: int)`.
+FATE is the primary use case for `specific_values`: Aspects are narrative strings (`list[str]`), incompatible with `Attribute(name, value: int)`.
 
-## Ajouter un nouveau système
+## Adding a new system
 
-1. Créer le modèle `StatsXxx(BaseModel)` avec `system: Literal["xxx"]`
-2. L'ajouter à l'union dans `Character.stats`
-3. Instancier les données communes dans la couche générique (`attributes`, `skills`…)
+1. Create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]`
+2. Add it to the union in `Character.specific_values`
+3. Put numeric data in the generic `attributes` / `skills` lists
 
 ## Type annotations
 
@@ -62,7 +63,7 @@ Python 3.10+ native syntax — no `List`, `Dict`, `Optional`, or `Union` from `t
 
 ```python
 size: str | None = None
-stats: StatsDnD | StatsCthulhu | None = None
+specific_values: SpecificValuesDnD | SpecificValuesCthulhu | None = None
 skills: list[Skill]
 ```
 
