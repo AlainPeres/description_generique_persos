@@ -56,7 +56,17 @@
       "value": 1
     }
   ],
-  "stats": null,
+  "stats": {
+    "system": "dnd5e",
+    "character_class": "Fighter",
+    "race": "Dwarf",
+    "level": 3,
+    "alignment": "Lawful Good",
+    "size": "Medium",
+    "movement": {
+      "walk": 25
+    }
+  },
   "spells": [],
   "equipment": []
 }

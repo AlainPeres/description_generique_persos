@@ -63,7 +63,9 @@
     }
   ],
   "abilities": [],
-  "stats": null,
+  "stats": {
+    "system": "cthulhu"
+  },
   "spells": [],
   "equipment": []
 }

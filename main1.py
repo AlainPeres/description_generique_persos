@@ -41,6 +41,22 @@ class StatsCthulhu(BaseModel):
     system: Literal["cthulhu"]
 
 # ---------------------------------------------------------------------------
+# System-specific block: Fate
+# ---------------------------------------------------------------------------
+class StatsFate(BaseModel):
+    system: Literal["fate"]
+    Concept:str
+    Aspects: list[str] = Field(default_factory=list)
+    Stunts: list[str] = Field(default_factory=list)
+    Extras: list[str] = Field(default_factory=list)
+    FatePoints: int
+
+# ---------------------------------------------------------------------------
+# System-specific block: Fate
+# ---------------------------------------------------------------------------
+class StatsSagas(BaseModel):
+    system: Literal["SagaS"]  
+# ---------------------------------------------------------------------------
 #Utility Classes: common to large number of systems
 # ---------------------------------------------------------------------------
 
@@ -118,6 +134,15 @@ thorin = Character(
     name="Thorin Ironforge",
     description="Muscular dwarf with a long beard and a hammer",
     background="Dwarf blacksmith exiled from his mountain",
+    stats=StatsDnD(
+        system="dnd5e",
+        character_class="Fighter",
+        race="Dwarf",
+        level=3,
+        alignment="Lawful Good",
+        size="Medium",
+        movement={"walk": 25},
+    ),
     attributes=[
         Attribute(name="Strength", value=16),
         Attribute(name="Dexterity", value=12),
@@ -142,6 +167,7 @@ eleanor = Character(
     description="50 years old, blond hair, green eyes",
     background="Librarian in Arkham",
     occupation="Librarian",
+    stats=StatsCthulhu(system="cthulhu"),
     attributes=[
         Attribute(name="Strength", value=10),
         Attribute(name="Dexterity", value=12),
