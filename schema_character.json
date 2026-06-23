@@ -236,7 +236,7 @@
     "SpecificValuesFate": {
       "properties": {
         "system": {
-          "const": "fate",
+          "const": "Fate",
           "title": "System",
           "type": "string"
         },

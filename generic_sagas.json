@@ -1,0 +1,632 @@
+{
+  "specific_values": {
+    "system": "SagaS"
+  },
+  "name": "Generic SagaS Character",
+  "description": "to be specified",
+  "occupation": "to be specified",
+  "background": "to be specified",
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 5
+    },
+    {
+      "name": "Agility",
+      "value": 5
+    },
+    {
+      "name": "Endurance",
+      "value": 5
+    },
+    {
+      "name": "Dexterity",
+      "value": 5
+    },
+    {
+      "name": "Wit",
+      "value": 5
+    },
+    {
+      "name": "Will",
+      "value": 5
+    },
+    {
+      "name": "Presence",
+      "value": 5
+    },
+    {
+      "name": "Instinct",
+      "value": 5
+    },
+    {
+      "name": "Initiative",
+      "value": 5
+    },
+    {
+      "name": "Close Combat",
+      "value": 5
+    },
+    {
+      "name": "Ranged Combat",
+      "value": 5
+    },
+    {
+      "name": "Speed",
+      "value": 8
+    },
+    {
+      "name": "PhyHP",
+      "value": 30
+    },
+    {
+      "name": "MenHP",
+      "value": 30
+    },
+    {
+      "name": "PhyThreshold",
+      "value": 10
+    },
+    {
+      "name": "MenThreshold",
+      "value": 10
+    },
+    {
+      "name": "Protection",
+      "value": 0
+    },
+    {
+      "name": "MaxImpactBonus",
+      "value": 10
+    },
+    {
+      "name": "ReflexDodge",
+      "value": 4
+    }
+  ],
+  "skills": [
+    {
+      "name": "Arm Wrestling",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Weight Lifting",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Weight Throwing",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Climb",
+      "category": "Generic",
+      "value": 10
+    },
+    {
+      "name": "Acrobatics",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Stealth",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Dodge",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Dance",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Lockpicking",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Sleight of Hand",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Driving Car",
+      "category": "Generic",
+      "value": -5
+    },
+    {
+      "name": "Motorcycle Driving",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Airplane Piloting",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Helicopter Piloting",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Driving Aquatic Machine",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Driving Heavy Vehicle",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Pilot Spacecraft",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Battle Armor",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Games of Accuracy",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Physical Resistance",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "General Culture",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Native Language",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Investigation",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Computer Science",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Security Systems",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Explosives",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Electricity",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Electronics",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Mechanical",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Physics",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Chemistry",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Astronomy",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Zoology",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Botanical",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Biology",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Geology",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Archaeology",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "History",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Paleontology",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Law",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Medicine",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Psychiatry",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Occultism",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Handcrafts",
+      "category": "Generic",
+      "value": -10
+    },
+    {
+      "name": "Other Knowledges",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Foreign Languages",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Other Sciences",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Other Techniques",
+      "category": "Generic",
+      "value": -10
+    },
+    {
+      "name": "Mind Games",
+      "category": "Generic",
+      "value": -5
+    },
+    {
+      "name": "Mental Resistance",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Persuasion",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Intimidation",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Interrogation",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Command",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Disguise",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Bluff",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Charm",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Eloquence",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Perception",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Psychology",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Pedagogy",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "First Aid",
+      "category": "Generic",
+      "value": -10
+    },
+    {
+      "name": "Animal Handling",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Tracking",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Survival",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Horse Riding",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Painting",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Music",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Writing",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Sculpture",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Dramatic Art",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Other Arts",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Brawling",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Axe/Mace",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Dagger",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Sword",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "2-Handed Sword",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Axe/Mace with 2 hands",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Flail",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Spear",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Hast Weapon",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Shield",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Cavalry Spear",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Close Combat with 2 weapons",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Draw Weapon on Contact",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Martial Arts",
+      "category": "Generic",
+      "value": -15
+    },
+    {
+      "name": "Bow",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Crossbow",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Dagger",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Axe",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Sling",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Throw",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Javelin",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Gun",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Automatic Weapon",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Draw Weapon",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Combat with 2 ranged Weapons",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Heavy Weapons",
+      "category": "Generic",
+      "value": -10
+    },
+    {
+      "name": "Run",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Jump",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Swimming",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Skiing",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Tennis",
+      "category": "Base",
+      "value": -15
+    },
+    {
+      "name": "Hang-Glider",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Sail",
+      "category": "Base",
+      "value": -10
+    },
+    {
+      "name": "Skydiving",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Diving",
+      "category": "Base",
+      "value": -5
+    },
+    {
+      "name": "Other Sports",
+      "category": "Generic",
+      "value": 0
+    }
+  ],
+  "abilities": [],
+  "spells": [],
+  "equipment": []
+}

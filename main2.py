@@ -159,10 +159,7 @@ generic_dnd5e = Character(
         alignment="to be specified",
         size="Medium",
         speed={"walk": 25},
-        languages=["Common"],
-        reflex_save=10,
-        fortitude_save=10,
-        will_save=10,       
+        languages=["Common"],        
     ),
     attributes=[
         Attribute(name="Strength", value=10),
@@ -290,7 +287,7 @@ generic_sagas = Character(
     description="to be specified",
     background="to be specified",
     occupation="to be specified",
-    specific_values=SpecificValuesCthulhu(system="SagaS"),
+    specific_values=SpecificValuesSagas(system="SagaS"),
     attributes=[
         Attribute(name="Strength", value=5),        
         Attribute(name="Agility", value=5),
