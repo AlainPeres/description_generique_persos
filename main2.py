@@ -126,7 +126,8 @@ class SpellCategory(str, Enum):
    
 class Spell(BaseModel):
     name: str
-    category: SpellCategory  
+    category: SpellCategory
+    description: str = ""  
     
     
 # ---------------------------------------------------------------------------
