@@ -60,16 +60,6 @@ class SpecificValuesFate(BaseModel):
 # ---------------------------------------------------------------------------
 class SpecificValuesSagas(BaseModel):
     system: Literal["SagaS"]  
-# ---------------------------------------------------------------------------
-# System-specific block: Fate
-# ---------------------------------------------------------------------------
-class SpecificValuesFate(BaseModel):
-    system: Literal["Fate"]
-    Concept:str
-    Aspects: list[str] = Field(default_factory=list)
-    Stunts: list[str] = Field(default_factory=list)
-    Extras: list[str] = Field(default_factory=list)
-    FatePoints: int
 
 
 # ---------------------------------------------------------------------------
@@ -160,7 +150,10 @@ generic_dnd5e = Character(
         alignment="to be specified",
         size="Medium",
         speed={"walk": 25},
-        languages=["Common"],        
+        languages=["Common"],
+        reflex_save=0,
+        fortitude_save=0,
+        will_save=0,
     ),
     attributes=[
         Attribute(name="Strength", value=10),

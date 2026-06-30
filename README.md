@@ -73,7 +73,7 @@ Python 3.10+ native syntax — no `List`, `Dict`, `Optional`, or `Union` from `t
 
 ```python
 size: str | None = None
-specific_values: SpecificValuesDnD | SpecificValuesCthulhu | None = None
+specific_values: SpecificValuesDnD | SpecificValuesCthulhu | SpecificValuesFate | SpecificValuesSagas | None = None
 skills: list[Skill]
 ```
 
