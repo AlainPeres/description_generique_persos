@@ -236,7 +236,7 @@
     "SpecificValuesFate": {
       "properties": {
         "system": {
-          "const": "Fate",
+          "const": "fate",
           "title": "System",
           "type": "string"
         },
@@ -300,6 +300,11 @@
         },
         "category": {
           "$ref": "#/$defs/SpellCategory"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
         }
       },
       "required": [

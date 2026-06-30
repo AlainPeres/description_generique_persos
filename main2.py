@@ -465,6 +465,7 @@ if __name__ == "__main__":
     system = reloaded.specific_values.system if reloaded.specific_values else "no system"
     print(f"Reloaded character: {reloaded.name} ({system})")
 
+    '''
     print_separator("VALIDATION: error on inconsistent data")
     try:
         Character(
@@ -474,3 +475,4 @@ if __name__ == "__main__":
         )
     except Exception as e:
         print(f"Error detected as expected:\n{e}")
+    '''

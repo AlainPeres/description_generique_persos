@@ -59,6 +59,7 @@ Used only for data that cannot be expressed as `name + int value`:
 | `generic_dnd5e.json` | D&D 5e | 18 base skills |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | ~55 skills (base + generic) |
 | `generic_sagas.json` | SagaS | ~90 skills across all categories |
+| `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system
 
