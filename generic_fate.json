@@ -1,0 +1,171 @@
+{
+  "specific_values": {
+    "system": "fate",
+    "HighConcept": "to be specified",
+    "Trouble": "to be specified",
+    "Aspects": [
+      "to be specified"
+    ],
+    "Stunts": [
+      "to be specified"
+    ],
+    "Extras": [
+      "to be specified"
+    ],
+    "FatePoints": 0,
+    "Refresh": 2,
+    "PhysicalStress": {
+      "Box 1": [
+        "OK",
+        0
+      ],
+      "Box 2": [
+        "OK",
+        0
+      ],
+      "Box 3": [
+        "NOK",
+        0
+      ],
+      "Box 4": [
+        "NOK",
+        0
+      ]
+    },
+    "MentalStress": {
+      "Box 1": [
+        "OK",
+        0
+      ],
+      "Box 2": [
+        "OK",
+        0
+      ],
+      "Box 3": [
+        "NOK",
+        0
+      ],
+      "Box 4": [
+        "NOK",
+        0
+      ]
+    },
+    "Consequences": {
+      "Mild": [
+        "OK",
+        0
+      ],
+      "Moderate": [
+        "OK",
+        0
+      ],
+      "Severe": [
+        "OK",
+        0
+      ],
+      "Mild Physical": [
+        "NOK",
+        0
+      ],
+      "Mild Mental": [
+        "NOK",
+        0
+      ]
+    }
+  },
+  "name": "Generic Fate Character",
+  "description": "A generic adventurer in the world of Fate Core",
+  "occupation": "",
+  "background": "background not specified",
+  "attributes": [],
+  "skills": [
+    {
+      "name": "Athletics",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Burglary",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Contacts",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Crafts",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Deceive",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Drive",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Empathy",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Fight",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Investigate",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Lore",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Notice",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Physique",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Provoke",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Rapport",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Shoot",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Stealth",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Will",
+      "category": "Base",
+      "value": 10
+    }
+  ],
+  "abilities": [],
+  "spells": [],
+  "equipment": []
+}

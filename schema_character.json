@@ -264,21 +264,51 @@
         },
         "PhysicalStress": {
           "additionalProperties": {
-            "type": "integer"
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "type": "array"
           },
           "title": "Physicalstress",
           "type": "object"
         },
         "MentalStress": {
           "additionalProperties": {
-            "type": "integer"
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "type": "array"
           },
           "title": "Mentalstress",
           "type": "object"
         },
         "Consequences": {
           "additionalProperties": {
-            "type": "integer"
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "type": "array"
           },
           "title": "Consequences",
           "type": "object"

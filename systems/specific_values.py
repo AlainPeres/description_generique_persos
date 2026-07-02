@@ -49,9 +49,9 @@ class SpecificValuesFate(BaseModel):
     Extras: list[str] = Field(default_factory=list)
     FatePoints: int
     Refresh: int
-    PhysicalStress:dict[str, int] = Field(default_factory=dict) 
-    MentalStress: dict[str, int] = Field(default_factory=dict) 
-    Consequences: dict[str, int] = Field(default_factory=dict) 
+    PhysicalStress:dict[str,tuple[str, int]] = Field(default_factory=dict) 
+    MentalStress: dict[str, tuple[str, int]] = Field(default_factory=dict) 
+    Consequences: dict[str, tuple[str, int]] = Field(default_factory=dict) 
 
 # ---------------------------------------------------------------------------
 # System-specific block: SagaS

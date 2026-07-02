@@ -1,0 +1,43 @@
+from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
+from systems.specific_values import SpecificValuesFate
+
+generic_fate = Character(
+    name="Generic Fate Character",
+    description="A generic adventurer in the world of Fate Core",
+    background="background not specified",
+    specific_values=SpecificValuesFate(
+        system="fate",
+        HighConcept="to be specified",
+        Trouble="to be specified",
+        Aspects=["to be specified"],
+        Stunts=["to be specified"],
+        Extras=["to be specified"],
+        FatePoints=0,
+        Refresh=2, 
+        PhysicalStress={"Box 1": ("OK",0), "Box 2": ("OK",0), "Box 3": ("NOK",0),
+                         "Box 4": ("NOK",0)},
+        MentalStress={"Box 1": ("OK",0), "Box 2": ("OK",0), "Box 3": ("NOK",0),
+                       "Box 4": ("NOK",0)},
+        Consequences={"Mild": ("OK",0) , "Moderate": ("OK",0), "Severe": ("OK",0),
+                      "Mild Physical":("NOK",0), "Mild Mental":("NOK",0)},         
+    ),    
+    skills=[
+        Skill(name="Athletics", category=SkillCategory.BASE, value=0),
+        Skill(name="Burglary", category=SkillCategory.BASE, value=0),
+        Skill(name="Contacts", category=SkillCategory.BASE, value=0),
+        Skill(name="Crafts", category=SkillCategory.GENERIC, value=0),
+        Skill(name="Deceive", category=SkillCategory.BASE, value=0),
+        Skill(name="Drive", category=SkillCategory.GENERIC, value=0),
+        Skill(name="Empathy", category=SkillCategory.BASE, value=0),
+        Skill(name="Fight", category=SkillCategory.BASE, value=0),
+        Skill(name="Investigate", category=SkillCategory.BASE, value=0),
+        Skill(name="Lore", category=SkillCategory.GENERIC, value=0),
+        Skill(name="Notice", category=SkillCategory.BASE, value=0),
+        Skill(name="Physique", category=SkillCategory.BASE, value=0),
+        Skill(name="Provoke", category=SkillCategory.BASE, value=0),
+        Skill(name="Rapport", category=SkillCategory.BASE, value=0),
+        Skill(name="Shoot",   category=SkillCategory.BASE, value=0),
+        Skill(name="Stealth", category=SkillCategory.BASE, value=0),
+        Skill(name="Will", category=SkillCategory.BASE, value=10),       
+    ],   
+)
