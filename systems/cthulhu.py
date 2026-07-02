@@ -1,4 +1,5 @@
-from models import Character, Attribute, Skill, SkillCategory, SpecificValuesCthulhu
+from models import Character, Attribute, Skill, SkillCategory
+from systems.specific_values import SpecificValuesCthulhu
 
 generic_cthulhu6 = Character(
     name="Generic Cthulhu 6 Character",

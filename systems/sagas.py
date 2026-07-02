@@ -1,4 +1,5 @@
-from models import Character, Attribute, Skill, SkillCategory, SpecificValuesSagas
+from models import Character, Attribute, Skill, SkillCategory
+from systems.specific_values import SpecificValuesSagas
 
 generic_sagas = Character(
     name="Generic SagaS Character",

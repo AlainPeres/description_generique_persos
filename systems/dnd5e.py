@@ -1,4 +1,5 @@
-from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory, SpecificValuesDnD
+from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
+from systems.specific_values import SpecificValuesDnD
 
 generic_dnd5e = Character(
     name="Generic D&D 5e Character",

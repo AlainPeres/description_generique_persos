@@ -327,16 +327,29 @@
     "specific_values": {
       "anyOf": [
         {
-          "$ref": "#/$defs/SpecificValuesDnD"
-        },
-        {
-          "$ref": "#/$defs/SpecificValuesCthulhu"
-        },
-        {
-          "$ref": "#/$defs/SpecificValuesFate"
-        },
-        {
-          "$ref": "#/$defs/SpecificValuesSagas"
+          "discriminator": {
+            "mapping": {
+              "SagaS": "#/$defs/SpecificValuesSagas",
+              "cthulhu6": "#/$defs/SpecificValuesCthulhu",
+              "dnd5e": "#/$defs/SpecificValuesDnD",
+              "fate": "#/$defs/SpecificValuesFate"
+            },
+            "propertyName": "system"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SpecificValuesDnD"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesCthulhu"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesFate"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesSagas"
+            }
+          ]
         },
         {
           "type": "null"

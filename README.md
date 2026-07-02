@@ -14,20 +14,23 @@ Three entry-point files with progressive scope:
 system's character data lives in its own module under `systems/`:
 
 ```text
-models.py            Character, Attribute, Skill, Ability, Spell, EquipmentItem,
-                      SpecificValuesDnD / Cthulhu / Fate / SagaS
+models.py                     Character, Attribute, Skill, Ability, Spell, EquipmentItem
+                               builds the specific_values Union from ALL_SPECIFIC_VALUES
 systems/
-├── dnd5e.py          generic_dnd5e
-├── cthulhu.py        generic_cthulhu6
-└── sagas.py          generic_sagas
-main.py               imports the generic_* instances, exports JSON, validates round-trip
+├── specific_values.py        SpecificValuesDnD / Cthulhu / Fate / SagaS + ALL_SPECIFIC_VALUES
+├── dnd5e.py                  generic_dnd5e
+├── cthulhu.py                generic_cthulhu6
+└── sagas.py                  generic_sagas
+main.py                       imports the generic_* instances, exports JSON, validates round-trip
 ```
 
-The `SpecificValuesX` classes stay in `models.py` rather than in `systems/`,
-since `Character.specific_values` needs to see all of them to build its
-union type — putting them in `systems/` would create a circular import
-(`systems/*.py` already imports `Character` from `models.py`). Only the bulky
-per-system attribute/skill data is split out.
+The `SpecificValuesX` classes live in `systems/specific_values.py`, not in
+`models.py` — that module only depends on pydantic, never on `Character`, so
+`models.py` can import `ALL_SPECIFIC_VALUES` from it without creating a
+circular import (`systems/<game>.py` modules still import `Character` from
+`models.py` to build their generic character templates). `models.py` builds
+`Character.specific_values`'s type as a discriminated `Union` from that list
+at import time, so adding a new system never requires editing `models.py`.
 
 ## Architecture (`main1.py` / `main.py`)
 
@@ -44,8 +47,7 @@ Character
 ├── abilities:        list[Ability]         (name + AbilityCategory + int value)
 ├── spells:           list[Spell]           (name + SpellCategory)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
-└── specific_values:  SpecificValuesDnD | SpecificValuesCthulhu
-                    | SpecificValuesFate | SpecificValuesSagas | None
+└── specific_values:  Union[*ALL_SPECIFIC_VALUES] | None   (discriminated on `system`)
 ```
 
 ## Generic layer — utility models
@@ -82,18 +84,24 @@ Used only for data that cannot be expressed as `name + int value`:
 
 ## Adding a new system
 
-1. Create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]` in `models.py`
-2. Add it to the union in `Character.specific_values`
-3. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
-4. Import the new `generic_xxx` instance in `main.py`
+1. In `systems/specific_values.py`, create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]` and append it to `ALL_SPECIFIC_VALUES`
+2. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
+3. Import the new `generic_xxx` instance in `main.py`
+
+`models.py` never needs to change — the `specific_values` union is derived
+from `ALL_SPECIFIC_VALUES` automatically, which is what keeps this scalable
+to dozens of systems.
 
 ## Type annotations
 
-Python 3.10+ native syntax — no `List`, `Dict`, `Optional`, or `Union` from `typing`:
+Python 3.10+ native syntax — no `List`, `Dict`, or `Optional` from `typing`.
+The one exception is `specific_values`, which is a discriminated union built
+dynamically from `ALL_SPECIFIC_VALUES` (needs `typing.Union`, not the `|`
+operator, since the member types aren't known statically):
 
 ```python
 size: str | None = None
-specific_values: SpecificValuesDnD | SpecificValuesCthulhu | SpecificValuesFate | SpecificValuesSagas | None = None
+SpecificValues = Annotated[Union[tuple(ALL_SPECIFIC_VALUES)], Field(discriminator="system")]
 skills: list[Skill]
 ```
 

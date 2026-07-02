@@ -15,48 +15,18 @@ Only the schema lives here. Per-system character data lives in systems/.
 
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import Literal, Any
+from typing import Any, Annotated, Union
 
+from systems.specific_values import ALL_SPECIFIC_VALUES
 
-# ---------------------------------------------------------------------------
-# System-specific block: Dungeons & Dragons 5e
-# ---------------------------------------------------------------------------
-class SpecificValuesDnD(BaseModel):
-    system: Literal["dnd5e"]
-    character_class: str
-    race: str
-    level: int
-    alignment: str
-    size: str | None = None
-    speed: dict[str, int] = Field(default_factory=dict)
-    languages: list[str] = Field(default_factory=list)
-    reflex_save: int
-    fortitude_save: int
-    will_save: int
-
-
-# ---------------------------------------------------------------------------
-# System-specific block: Call of Cthulhu
-# ---------------------------------------------------------------------------
-class SpecificValuesCthulhu(BaseModel):
-    system: Literal["cthulhu6"]
-
-# ---------------------------------------------------------------------------
-# System-specific block: Fate
-# ---------------------------------------------------------------------------
-class SpecificValuesFate(BaseModel):
-    system: Literal["fate"]
-    Concept:str
-    Aspects: list[str] = Field(default_factory=list)
-    Stunts: list[str] = Field(default_factory=list)
-    Extras: list[str] = Field(default_factory=list)
-    FatePoints: int
-
-# ---------------------------------------------------------------------------
-# System-specific block: SagaS
-# ---------------------------------------------------------------------------
-class SpecificValuesSagas(BaseModel):
-    system: Literal["SagaS"]
+# Union of every registered system-specific block, built from the list in
+# systems/specific_values.py instead of enumerated here, so that adding a
+# new system never requires touching this file. `discriminator="system"`
+# lets Pydantic pick the right subtype directly from the `system` field
+# instead of trying each member in turn.
+SpecificValues = Annotated[
+    Union[tuple(ALL_SPECIFIC_VALUES)], Field(discriminator="system")
+]
 
 
 # ---------------------------------------------------------------------------
@@ -121,7 +91,7 @@ class Spell(BaseModel):
 # Common base
 # ---------------------------------------------------------------------------
 class Character(BaseModel):
-    specific_values: SpecificValuesDnD | SpecificValuesCthulhu | SpecificValuesFate | SpecificValuesSagas | None = None
+    specific_values: SpecificValues | None = None
     name: str = ""
     description: str = ""
     occupation: str = ""
