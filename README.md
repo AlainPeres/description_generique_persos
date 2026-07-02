@@ -2,15 +2,34 @@
 
 Multi-system RPG character modeling with **Pydantic v2**.
 
-Three files with progressive scope:
+Three entry-point files with progressive scope:
 
 | File | Role |
 | --- | --- |
-| `main.py` | System-specific model only (`specific_values` discriminated union) |
+| `main0.py` | System-specific model only (`specific_values` discriminated union) |
 | `main1.py` | Generic model + optional system-specific block, named characters |
-| `main2.py` | Same architecture, generates **generic character templates** per system |
+| `main.py` | Same architecture, generates **generic character templates** per system |
 
-## Architecture (`main1.py` / `main2.py`)
+`main.py` is a thin orchestrator: the schema lives in `models.py`, and each
+system's character data lives in its own module under `systems/`:
+
+```text
+models.py            Character, Attribute, Skill, Ability, Spell, EquipmentItem,
+                      SpecificValuesDnD / Cthulhu / Fate / SagaS
+systems/
+├── dnd5e.py          generic_dnd5e
+├── cthulhu.py        generic_cthulhu6
+└── sagas.py          generic_sagas
+main.py               imports the generic_* instances, exports JSON, validates round-trip
+```
+
+The `SpecificValuesX` classes stay in `models.py` rather than in `systems/`,
+since `Character.specific_values` needs to see all of them to build its
+union type — putting them in `systems/` would create a circular import
+(`systems/*.py` already imports `Character` from `models.py`). Only the bulky
+per-system attribute/skill data is split out.
+
+## Architecture (`main1.py` / `main.py`)
 
 `Character` holds two complementary layers:
 
@@ -50,9 +69,9 @@ Used only for data that cannot be expressed as `name + int value`:
 | FATE | `SpecificValuesFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
 | SagaS | `SpecificValuesSagas` | system marker (to be completed) |
 
-## Generic templates (`main2.py`)
+## Generic templates (`main.py`)
 
-`main2.py` generates ready-to-use JSON blueprints with default values and the full official skill list for each system:
+`main.py` generates ready-to-use JSON blueprints with default values and the full official skill list for each system:
 
 | Export | System | Skills |
 | --- | --- | --- |
@@ -63,10 +82,10 @@ Used only for data that cannot be expressed as `name + int value`:
 
 ## Adding a new system
 
-1. Create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]`
+1. Create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]` in `models.py`
 2. Add it to the union in `Character.specific_values`
-3. Put numeric data in the generic `attributes` / `skills` lists
-4. Optionally add a generic template instance in `main2.py`
+3. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
+4. Import the new `generic_xxx` instance in `main.py`
 
 ## Type annotations
 
@@ -90,7 +109,7 @@ uv sync
 ## Usage
 
 ```bash
-python main.py     # system-specific model, named characters
+python main0.py    # system-specific model, named characters
 python main1.py    # generic model, named characters
-python main2.py    # generic model, system templates → JSON exports
+python main.py     # generic model, system templates → JSON exports
 ```
