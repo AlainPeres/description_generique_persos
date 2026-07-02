@@ -14,9 +14,6 @@ generic_dnd5e = Character(
         size="Medium",
         speed={"walk": 25},
         languages=["Common"],
-        reflex_save=0,
-        fortitude_save=0,
-        will_save=0,
     ),
     attributes=[
         Attribute(name="Strength", value=10),

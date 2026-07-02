@@ -206,18 +206,6 @@
           },
           "title": "Languages",
           "type": "array"
-        },
-        "reflex_save": {
-          "title": "Reflex Save",
-          "type": "integer"
-        },
-        "fortitude_save": {
-          "title": "Fortitude Save",
-          "type": "integer"
-        },
-        "will_save": {
-          "title": "Will Save",
-          "type": "integer"
         }
       },
       "required": [
@@ -225,10 +213,7 @@
         "character_class",
         "race",
         "level",
-        "alignment",
-        "reflex_save",
-        "fortitude_save",
-        "will_save"
+        "alignment"
       ],
       "title": "SpecificValuesDnD",
       "type": "object"
@@ -240,8 +225,12 @@
           "title": "System",
           "type": "string"
         },
-        "Concept": {
-          "title": "Concept",
+        "HighConcept": {
+          "title": "Highconcept",
+          "type": "string"
+        },
+        "Trouble": {
+          "title": "Trouble",
           "type": "string"
         },
         "Aspects": {
@@ -268,12 +257,39 @@
         "FatePoints": {
           "title": "Fatepoints",
           "type": "integer"
+        },
+        "Refresh": {
+          "title": "Refresh",
+          "type": "integer"
+        },
+        "PhysicalStress": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Physicalstress",
+          "type": "object"
+        },
+        "MentalStress": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Mentalstress",
+          "type": "object"
+        },
+        "Consequences": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Consequences",
+          "type": "object"
         }
       },
       "required": [
         "system",
-        "Concept",
-        "FatePoints"
+        "HighConcept",
+        "Trouble",
+        "FatePoints",
+        "Refresh"
       ],
       "title": "SpecificValuesFate",
       "type": "object"

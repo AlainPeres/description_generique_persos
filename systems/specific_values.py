@@ -28,9 +28,6 @@ class SpecificValuesDnD(BaseModel):
     size: str | None = None
     speed: dict[str, int] = Field(default_factory=dict)
     languages: list[str] = Field(default_factory=list)
-    reflex_save: int
-    fortitude_save: int
-    will_save: int
 
 
 # ---------------------------------------------------------------------------
@@ -45,12 +42,16 @@ class SpecificValuesCthulhu(BaseModel):
 # ---------------------------------------------------------------------------
 class SpecificValuesFate(BaseModel):
     system: Literal["fate"]
-    Concept: str
+    HighConcept: str
+    Trouble: str
     Aspects: list[str] = Field(default_factory=list)
     Stunts: list[str] = Field(default_factory=list)
     Extras: list[str] = Field(default_factory=list)
     FatePoints: int
-
+    Refresh: int
+    PhysicalStress:dict[str, int] = Field(default_factory=dict) 
+    MentalStress: dict[str, int] = Field(default_factory=dict) 
+    Consequences: dict[str, int] = Field(default_factory=dict) 
 
 # ---------------------------------------------------------------------------
 # System-specific block: SagaS

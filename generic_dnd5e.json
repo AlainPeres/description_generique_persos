@@ -11,10 +11,7 @@
     },
     "languages": [
       "Common"
-    ],
-    "reflex_save": 0,
-    "fortitude_save": 0,
-    "will_save": 0
+    ]
   },
   "name": "Generic D&D 5e Character",
   "description": "A generic adventurer in the world of Dungeons & Dragons 5th Edition",

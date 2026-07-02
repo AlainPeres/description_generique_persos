@@ -66,7 +66,7 @@ Used only for data that cannot be expressed as `name + int value`:
 
 | System | Model | Specific fields |
 | --- | --- | --- |
-| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages`, `reflex_save`, `fortitude_save`, `will_save` |
+| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
 | FATE | `SpecificValuesFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
 | SagaS | `SpecificValuesSagas` | system marker (to be completed) |
