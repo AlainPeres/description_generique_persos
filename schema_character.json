@@ -12,6 +12,15 @@
         "value": {
           "title": "Value",
           "type": "integer"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/SkillCategory",
+          "default": "Base"
         }
       },
       "required": [
@@ -29,7 +38,8 @@
         "Class Ability",
         "Power",
         "Advantage",
-        "Disadvantage"
+        "Disadvantage",
+        "Spell"
       ],
       "title": "AbilityCategory",
       "type": "string"
@@ -337,36 +347,6 @@
       ],
       "title": "SpecificValuesSagas",
       "type": "object"
-    },
-    "Spell": {
-      "properties": {
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "category": {
-          "$ref": "#/$defs/SpellCategory"
-        },
-        "description": {
-          "default": "",
-          "title": "Description",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "category"
-      ],
-      "title": "Spell",
-      "type": "object"
-    },
-    "SpellCategory": {
-      "enum": [
-        "Base",
-        "New"
-      ],
-      "title": "SpellCategory",
-      "type": "string"
     }
   },
   "properties": {
@@ -443,13 +423,6 @@
         "$ref": "#/$defs/Ability"
       },
       "title": "Abilities",
-      "type": "array"
-    },
-    "spells": {
-      "items": {
-        "$ref": "#/$defs/Spell"
-      },
-      "title": "Spells",
       "type": "array"
     },
     "equipment": {

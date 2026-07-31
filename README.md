@@ -2,25 +2,18 @@
 
 Multi-system RPG character modeling with **Pydantic v2**.
 
-Three entry-point files with progressive scope:
-
-| File | Role |
-| --- | --- |
-| `main0.py` | System-specific model only (`specific_values` discriminated union) |
-| `main1.py` | Generic model + optional system-specific block, named characters |
-| `main.py` | Same architecture, generates **generic character templates** per system |
-
 `main.py` is a thin orchestrator: the schema lives in `models.py`, and each
 system's character data lives in its own module under `systems/`:
 
 ```text
-models.py                     Character, Attribute, Skill, Ability, Spell, EquipmentItem
+models.py                     Character, Attribute, Skill, Ability, EquipmentItem
                                builds the specific_values Union from ALL_SPECIFIC_VALUES
 systems/
 ├── specific_values.py        SpecificValuesDnD / Cthulhu / Fate / SagaS + ALL_SPECIFIC_VALUES
 ├── dnd5e.py                  generic_dnd5e
 ├── cthulhu.py                generic_cthulhu6
-└── sagas.py                  generic_sagas
+├── sagas.py                  generic_sagas
+└── fate.py                   generic_fate
 main.py                       imports the generic_* instances, exports JSON, validates round-trip
 ```
 
@@ -32,7 +25,7 @@ circular import (`systems/<game>.py` modules still import `Character` from
 `Character.specific_values`'s type as a discriminated `Union` from that list
 at import time, so adding a new system never requires editing `models.py`.
 
-## Architecture (`main1.py` / `main.py`)
+## Architecture
 
 `Character` holds two complementary layers:
 
@@ -44,8 +37,7 @@ Character
 ├── name, description, occupation, background
 ├── attributes:       list[Attribute]       (name + int value)
 ├── skills:           list[Skill]           (name + SkillCategory + int value)
-├── abilities:        list[Ability]         (name + AbilityCategory + int value)
-├── spells:           list[Spell]           (name + SpellCategory)
+├── abilities:        list[Ability]         (name + AbilityCategory + int value; spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
 └── specific_values:  Union[*ALL_SPECIFIC_VALUES] | None   (discriminated on `system`)
 ```
@@ -56,8 +48,7 @@ Character
 | --- | --- | --- |
 | `Attribute` | — | any numeric stat (STR, DEX, HP …) |
 | `Skill` | `SkillCategory` | Base / New / Generic / Specialization |
-| `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage |
-| `Spell` | `SpellCategory` | Base / New |
+| `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage / Spell |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable |
 
 ## System-specific layer — `specific_values` models
@@ -68,7 +59,7 @@ Used only for data that cannot be expressed as `name + int value`:
 | --- | --- | --- |
 | D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
-| FATE | `SpecificValuesFate` | `Concept`, `Aspects`, `Stunts`, `Extras`, `FatePoints` |
+| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Stunts`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress`, `MentalStress`, `Consequences` |
 | SagaS | `SpecificValuesSagas` | system marker (to be completed) |
 
 ## Generic templates (`main.py`)
@@ -80,6 +71,7 @@ Used only for data that cannot be expressed as `name + int value`:
 | `generic_dnd5e.json` | D&D 5e | 18 base skills |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | ~55 skills (base + generic) |
 | `generic_sagas.json` | SagaS | ~90 skills across all categories |
+| `generic_fate.json` | FATE | 17 base skills |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system
@@ -117,7 +109,5 @@ uv sync
 ## Usage
 
 ```bash
-python main0.py    # system-specific model, named characters
-python main1.py    # generic model, named characters
 python main.py     # generic model, system templates → JSON exports
 ```

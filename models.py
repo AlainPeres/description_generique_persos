@@ -3,8 +3,9 @@ RPG character schema (multi-system) with Pydantic.
 
 Architecture:
 - A common base (Character) with two complementary layers:
-  1. Generic layer: attributes, skills, abilities, spells, equipment
-     (system-agnostic, usable across all RPGs)
+  1. Generic layer: attributes, skills, abilities, equipment
+     (system-agnostic, usable across all RPGs; spells are an Ability with
+     category=SPELL)
   2. Optional system-specific block (specific_values: SpecificValuesDnD | SpecificValuesCthulhu | ...)
      for systems whose structure cannot be expressed as name+value pairs
      (e.g. FATE Aspects, Stunts, Extras)
@@ -49,6 +50,12 @@ class EquipmentItem(BaseModel):
     description: str = ""
     properties: dict[str, Any] = Field(default_factory=dict)
 
+class SkillCategory(str, Enum):
+    BASE = "Base"
+    NEW = "New"
+    GENERIC = "Generic"
+    SPECIALIZATION = "Specialization"
+
 class AbilityCategory(str, Enum):
     FEAT = "Feat"
     ORIGIN_ABILITY = "Origin Ability"
@@ -56,17 +63,14 @@ class AbilityCategory(str, Enum):
     POWER = "Power"
     ADVANTAGE = "Advantage"
     DISADVANTAGE = "Disadvantage"
+    SPELL = "Spell"
 
 class Ability(BaseModel):
     name: str
     category: AbilityCategory
     value: int
-
-class SkillCategory(str, Enum):
-    BASE = "Base"
-    NEW = "New"
-    GENERIC = "Generic"
-    SPECIALIZATION = "Specialization"
+    description: str = ""
+    origin: SkillCategory = SkillCategory.BASE
 
 class Skill(BaseModel):
     name: str
@@ -76,15 +80,6 @@ class Skill(BaseModel):
 class Attribute(BaseModel):
     name: str
     value: int
-
-class SpellCategory(str, Enum):
-    BASE = "Base"
-    NEW = "New"
-
-class Spell(BaseModel):
-    name: str
-    category: SpellCategory
-    description: str = ""
 
 
 # ---------------------------------------------------------------------------
@@ -99,5 +94,4 @@ class Character(BaseModel):
     attributes: list[Attribute] = Field(default_factory=list)
     skills: list[Skill] = Field(default_factory=list)
     abilities: list[Ability] = Field(default_factory=list)
-    spells: list[Spell] = Field(default_factory=list)
     equipment: list[EquipmentItem] = Field(default_factory=list)
