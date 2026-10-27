@@ -1,0 +1,13 @@
+{
+  "specific_values": {
+    "system": "norules",
+    "tags": [
+      "to be specified"
+    ]
+  },
+  "name": "Generic no rules character",
+  "description": "A generic character in a no rules system",
+  "occupation": "",
+  "background": "background not specified",
+  "equipment": []
+}

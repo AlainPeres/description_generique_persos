@@ -17,6 +17,7 @@ from systems.dnd5e import generic_dnd5e
 from systems.cthulhu import generic_cthulhu6
 from systems.sagas import generic_sagas
 from systems.fate import generic_fate
+from systems.norules import generic_norules
 
 
 # ---------------------------------------------------------------------------
@@ -40,10 +41,14 @@ if __name__ == "__main__":
     export_json("generic_cthulhu6.json", generic_cthulhu6.model_dump_json(indent=2))
     export_json("generic_sagas.json", generic_sagas.model_dump_json(indent=2))
     export_json("generic_fate.json", generic_fate.model_dump_json(indent=2))    
+    export_json("generic_norules.json",
+        generic_norules.model_dump_json(indent=2,
+            exclude={"attributes","skills","abilities"}))    
     export_json("schema_character.json", json.dumps(Character.model_json_schema(), indent=2, ensure_ascii=False))
 
     print_separator("VALIDATION: reload from raw JSON")
-    raw = generic_dnd5e.model_dump_json()
+    raw = generic_norules.model_dump_json(indent=2,
+            exclude={"attributes","skills","abilities"})
     reloaded = Character.model_validate_json(raw)
     system = reloaded.specific_values.system if reloaded.specific_values else "no system"
     print(f"Reloaded character: {reloaded.name} ({system})")

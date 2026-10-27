@@ -334,6 +334,27 @@
       "title": "SpecificValuesFate",
       "type": "object"
     },
+    "SpecificValuesNoRules": {
+      "properties": {
+        "system": {
+          "const": "norules",
+          "title": "System",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system"
+      ],
+      "title": "SpecificValuesNoRules",
+      "type": "object"
+    },
     "SpecificValuesSagas": {
       "properties": {
         "system": {
@@ -358,7 +379,8 @@
               "SagaS": "#/$defs/SpecificValuesSagas",
               "cthulhu6": "#/$defs/SpecificValuesCthulhu",
               "dnd5e": "#/$defs/SpecificValuesDnD",
-              "fate": "#/$defs/SpecificValuesFate"
+              "fate": "#/$defs/SpecificValuesFate",
+              "norules": "#/$defs/SpecificValuesNoRules"
             },
             "propertyName": "system"
           },
@@ -374,6 +396,9 @@
             },
             {
               "$ref": "#/$defs/SpecificValuesSagas"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesNoRules"
             }
           ]
         },

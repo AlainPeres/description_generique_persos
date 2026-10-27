@@ -9,7 +9,8 @@ system's character data lives in its own module under `systems/`:
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem
                                builds the specific_values Union from ALL_SPECIFIC_VALUES
 systems/
-├── specific_values.py        SpecificValuesDnD / Cthulhu / Fate / SagaS + ALL_SPECIFIC_VALUES
+├── specific_values.py        SpecificValuesNoRules / DnD / Cthulhu / Fate / SagaS + ALL_SPECIFIC_VALUES
+├── norules.py                generic_norules
 ├── dnd5e.py                  generic_dnd5e
 ├── cthulhu.py                generic_cthulhu6
 ├── sagas.py                  generic_sagas
@@ -72,6 +73,7 @@ Used only for data that cannot be expressed as `name + int value`:
 
 | System | Model | Specific fields |
 | --- | --- | --- |
+| No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
 | D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Stunts`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress`, `MentalStress`, `Consequences` |
@@ -85,6 +87,7 @@ ready-to-use JSON blueprints:
 
 | Export | System | Content |
 | --- | --- | --- |
+| `generic_norules.json` | No rules | narrative fields + `tags` only; `attributes`, `skills` and `abilities` are left out of the export |
 | `generic_dnd5e.json` | D&D 5e | 18 base skills + 1 example feat |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic) |
 | `generic_sagas.json` | SagaS | 108 skills (92 base + 16 generic) |
@@ -100,6 +103,12 @@ ready-to-use JSON blueprints:
 `models.py` never needs to change — the `specific_values` union is derived
 from `ALL_SPECIFIC_VALUES` automatically, which is what keeps this scalable
 to dozens of systems.
+
+Every `Character` field has a default (`""`, `None` or an empty list), so a
+system only fills what it uses. To keep unused fields out of its JSON, pass
+`exclude={...}` to `model_dump_json` in `main.py` (as `norules` does) or use
+`exclude_defaults=True` to drop every field still at its default. Excluded
+fields come back as their defaults when the JSON is reloaded.
 
 ## Type annotations
 
@@ -127,5 +136,5 @@ uv sync
 
 ```bash
 python main.py     # exports every generic_*.json + schema_character.json,
-                   # then checks a JSON → Character round-trip
+                   # then checks a JSON → Character round-trip (generic_norules)
 ```

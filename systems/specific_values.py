@@ -15,6 +15,13 @@ it to ALL_SPECIFIC_VALUES.
 from pydantic import BaseModel, Field
 from typing import Literal
 
+# ---------------------------------------------------------------------------
+# System-specific block: No Rules
+# ---------------------------------------------------------------------------
+class SpecificValuesNoRules(BaseModel):
+    system: Literal["norules"]   
+    tags: list[str] = Field(default_factory=list)
+
 
 # ---------------------------------------------------------------------------
 # System-specific block: Dungeons & Dragons 5e
@@ -69,4 +76,5 @@ ALL_SPECIFIC_VALUES: list[type[BaseModel]] = [
     SpecificValuesCthulhu,
     SpecificValuesFate,
     SpecificValuesSagas,
+    SpecificValuesNoRules,
 ]
