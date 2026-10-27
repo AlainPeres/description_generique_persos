@@ -1,4 +1,4 @@
-# RPG Character Generator
+# RPG Character Model
 
 Multi-system RPG character modeling with **Pydantic v2**.
 
@@ -37,7 +37,8 @@ Character
 ├── name, description, occupation, background
 ├── attributes:       list[Attribute]       (name + int value)
 ├── skills:           list[Skill]           (name + SkillCategory + int value)
-├── abilities:        list[Ability]         (name + AbilityCategory + int value; spells are category=Spell)
+├── abilities:        list[Ability]         (name + AbilityCategory + int value + description + origin;
+│                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
 └── specific_values:  Union[*ALL_SPECIFIC_VALUES] | None   (discriminated on `system`)
 ```
@@ -51,6 +52,20 @@ Character
 | `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage / Spell |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable |
 
+Two orthogonal axes:
+
+- `SkillCategory` says **where** an entry comes from: `Base` = part of the
+  system's official list, `New` = custom entry added by the player
+  (`Generic` / `Specialization` cover open-ended skills such as *Art (…)* or
+  *Pilot (…)*).
+- `AbilityCategory` says **what kind** of ability it is (Feat, Power,
+  Spell …).
+
+That is why `Ability` carries both: `category: AbilityCategory` for its type
+and `origin: SkillCategory` (default `Base`) for its provenance. Spells are no
+longer a separate model — a spell is an `Ability` with `category=Spell`, its
+effect going in `description`.
+
 ## System-specific layer — `specific_values` models
 
 Used only for data that cannot be expressed as `name + int value`:
@@ -62,23 +77,25 @@ Used only for data that cannot be expressed as `name + int value`:
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Stunts`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress`, `MentalStress`, `Consequences` |
 | SagaS | `SpecificValuesSagas` | system marker (to be completed) |
 
-## Generic templates (`main.py`)
+## Generic templates
 
-`main.py` generates ready-to-use JSON blueprints with default values and the full official skill list for each system:
+Each `systems/<game>.py` module defines a `generic_<game>` `Character` with
+default values and the full official skill list; `main.py` exports them as
+ready-to-use JSON blueprints:
 
-| Export | System | Skills |
+| Export | System | Content |
 | --- | --- | --- |
-| `generic_dnd5e.json` | D&D 5e | 18 base skills |
-| `generic_cthulhu6.json` | Call of Cthulhu 6 | ~55 skills (base + generic) |
-| `generic_sagas.json` | SagaS | ~90 skills across all categories |
-| `generic_fate.json` | FATE | 17 base skills |
+| `generic_dnd5e.json` | D&D 5e | 18 base skills + 1 example feat |
+| `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic) |
+| `generic_sagas.json` | SagaS | 108 skills (92 base + 16 generic) |
+| `generic_fate.json` | FATE | 17 skills (14 base + 3 generic) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system
 
 1. In `systems/specific_values.py`, create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]` and append it to `ALL_SPECIFIC_VALUES`
 2. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
-3. Import the new `generic_xxx` instance in `main.py`
+3. Import the new `generic_xxx` instance in `main.py` and add an `export_json(...)` call for it
 
 `models.py` never needs to change — the `specific_values` union is derived
 from `ALL_SPECIFIC_VALUES` automatically, which is what keeps this scalable
@@ -109,5 +126,6 @@ uv sync
 ## Usage
 
 ```bash
-python main.py     # generic model, system templates → JSON exports
+python main.py     # exports every generic_*.json + schema_character.json,
+                   # then checks a JSON → Character round-trip
 ```

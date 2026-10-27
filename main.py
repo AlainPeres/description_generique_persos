@@ -1,7 +1,7 @@
 """
-RPG character generation (multi-system) with Pydantic.
+RPG character model (multi-system) with Pydantic.
 
-Same architecture as main1.py, but generates generic character templates
+Generates generic character templates
 per system instead of named characters. Models live in models.py, and
 per-system character data lives in systems/.
 """
