@@ -2,6 +2,18 @@
 
 Multi-system RPG character modeling with **Pydantic v2**.
 
+## Goals
+
+- Describe **an RPG character** for many systems (D&D 5e, Call of Cthulhu,
+  Fate, SagaS, no rules…) with **a single Python model** (`Character`), then
+  export it to JSON and read it back.
+- Make **adding a new system** simple.
+- Produce a JSON Schema to check that **a character JSON matches the model**.
+- **Note:** this is a character *description* tool, not a character
+  *creation* tool.
+
+## Layout
+
 `main.py` is a thin orchestrator: the schema lives in `models.py`, and each
 system's character data lives in its own module under `systems/`:
 

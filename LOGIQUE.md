@@ -2,9 +2,15 @@
 
 ## Le but
 
-Décrire **n'importe quel personnage de jeu de rôle**, quel que soit le système
-(D&D 5e, L'Appel de Cthulhu, Fate, SagaS, sans règles…), avec **un seul modèle
-Python** (`Character`, Pydantic v2), puis l'exporter et le relire en JSON.
+- Décrire **un personnage de jeu de rôle**, pour un grand nombre de systèmes
+  (D&D 5e, L'Appel de Cthulhu, Fate, SagaS, sans règles…), avec **un seul modèle
+  Python** (`Character`, Pydantic v2), puis l'exporter et le relire en JSON.
+
+- Rendre plus simple **l'introduction d'un nouveau système**.
+
+- Produire un schéma JSON permettant de vérifier qu'un **JSON de personnage est conforme au modèle**.
+
+- **Attention :** ce n'est pas un outil de création de personnage, mais un outil de description.
 
 ## L'idée centrale : deux couches
 
@@ -13,13 +19,13 @@ Un personnage se décompose en deux parties.
 1. **Une couche générique**, commune à tous les systèmes. Presque tout ce
    qu'on trouve sur une fiche se ramène à des listes de « nom + valeur » :
 
-   | Champ | Contenu |
-   | --- | --- |
-   | `name`, `description`, `age`, `occupation`, `background`, `additional_information` | texte libre |
-   | `attributes` | caractéristiques chiffrées (FOR, DEX, PV…) |
-   | `skills` | compétences, avec une catégorie |
-   | `abilities` | dons, pouvoirs, avantages, sorts… |
-   | `equipment` | objets, armes, armures, consommables |
+   | Champ                                                                              | Contenu                                    |
+   | ---------------------------------------------------------------------------------- | ------------------------------------------ |
+   | `name`, `description`, `age`, `occupation`, `background`, `additional_information` | texte libre                                |
+   | `attributes`                                                                       | caractéristiques chiffrées (FOR, DEX, PV…) |
+   | `skills`                                                                           | compétences, avec une catégorie            |
+   | `abilities`                                                                        | dons, pouvoirs, avantages, sorts…          |
+   | `equipment`                                                                        | objets, armes, armures, consommables       |
 
 2. **Une couche spécifique** (`specific_values`), facultative. Elle contient ce
    qui ne rentre pas dans « nom + valeur » : la classe et la race en D&D, les
@@ -31,6 +37,8 @@ possible.
 
 Exception : les compteurs de progression ou de gestion (niveau et XP en D&D,
 points de création non utilisés en SagaS) vont dans la couche spécifique.
+Les points de création SagaS ne contredisent pas le but de description : ce
+sont des points mis de côté pour plus tard, donc un état du personnage.
 Ce ne sont pas des caractéristiques utilisées pour les jets, et le bloc
 spécifique permet de les valider (par exemple `ge=0`).
 

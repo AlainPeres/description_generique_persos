@@ -83,7 +83,7 @@ class SpecificValuesFate(StrictModel):
 # ---------------------------------------------------------------------------
 class SpecificValuesSagas(StrictModel):
     system: Literal["sagas"]
-    unspent_creation_points: int = Field(default=0, ge=0)
+    unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
 
 
 # ---------------------------------------------------------------------------
