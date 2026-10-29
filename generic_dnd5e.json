@@ -7,7 +7,7 @@
     "alignment": "to be specified",
     "size": "Medium",
     "speed": {
-      "walk": 25
+      "walk": 30
     },
     "languages": [
       "Common"
@@ -50,105 +50,109 @@
     {
       "name": "Hit Points",
       "value": 10
+    },
+    {
+      "name": "Proficiency Bonus",
+      "value": 2
     }
   ],
   "skills": [
     {
       "name": "Acrobatics",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Animal Handling",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Arcana",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Athletics",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Deception",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "History",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Insight",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Intimidation",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Investigation",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Medicine",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Nature",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Perception",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Performance",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Persuasion",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Religion",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Sleight of Hand",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Stealth",
       "category": "Base",
-      "value": 10
+      "value": 0
     },
     {
       "name": "Survival",
       "category": "Base",
-      "value": 10
+      "value": 0
     }
   ],
   "abilities": [
     {
       "name": "to be specified",
       "category": "Feat",
-      "value": 1,
+      "value": null,
       "description": "",
       "origin": "Base"
     }

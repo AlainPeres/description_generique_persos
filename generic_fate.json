@@ -6,71 +6,73 @@
     "Aspects": [
       "to be specified"
     ],
-    "Stunts": [
-      "to be specified"
-    ],
     "Extras": [
       "to be specified"
     ],
     "FatePoints": 0,
     "Refresh": 2,
     "PhysicalStress": {
-      "Box 1": [
-        "OK",
-        0
-      ],
-      "Box 2": [
-        "OK",
-        0
-      ],
-      "Box 3": [
-        "NOK",
-        0
-      ],
-      "Box 4": [
-        "NOK",
-        0
-      ]
+      "Box 1": {
+        "available": true,
+        "checked": false
+      },
+      "Box 2": {
+        "available": true,
+        "checked": false
+      },
+      "Box 3": {
+        "available": false,
+        "checked": false
+      },
+      "Box 4": {
+        "available": false,
+        "checked": false
+      }
     },
     "MentalStress": {
-      "Box 1": [
-        "OK",
-        0
-      ],
-      "Box 2": [
-        "OK",
-        0
-      ],
-      "Box 3": [
-        "NOK",
-        0
-      ],
-      "Box 4": [
-        "NOK",
-        0
-      ]
+      "Box 1": {
+        "available": true,
+        "checked": false
+      },
+      "Box 2": {
+        "available": true,
+        "checked": false
+      },
+      "Box 3": {
+        "available": false,
+        "checked": false
+      },
+      "Box 4": {
+        "available": false,
+        "checked": false
+      }
     },
     "Consequences": {
-      "Mild": [
-        "OK",
-        0
-      ],
-      "Moderate": [
-        "OK",
-        0
-      ],
-      "Severe": [
-        "OK",
-        0
-      ],
-      "Mild Physical": [
-        "NOK",
-        0
-      ],
-      "Mild Mental": [
-        "NOK",
-        0
-      ]
+      "Mild": {
+        "available": true,
+        "value": 2,
+        "text": ""
+      },
+      "Moderate": {
+        "available": true,
+        "value": 4,
+        "text": ""
+      },
+      "Severe": {
+        "available": true,
+        "value": 6,
+        "text": ""
+      },
+      "Mild Physical": {
+        "available": false,
+        "value": 2,
+        "text": ""
+      },
+      "Mild Mental": {
+        "available": false,
+        "value": 2,
+        "text": ""
+      }
     }
   },
   "name": "Generic Fate Core Character",
@@ -97,7 +99,7 @@
     },
     {
       "name": "Crafts",
-      "category": "Generic",
+      "category": "Base",
       "value": 0
     },
     {
@@ -107,7 +109,7 @@
     },
     {
       "name": "Drive",
-      "category": "Generic",
+      "category": "Base",
       "value": 0
     },
     {
@@ -127,7 +129,7 @@
     },
     {
       "name": "Lore",
-      "category": "Generic",
+      "category": "Base",
       "value": 0
     },
     {
@@ -151,6 +153,11 @@
       "value": 0
     },
     {
+      "name": "Resources",
+      "category": "Base",
+      "value": 0
+    },
+    {
       "name": "Shoot",
       "category": "Base",
       "value": 0
@@ -163,9 +170,17 @@
     {
       "name": "Will",
       "category": "Base",
-      "value": 10
+      "value": 0
     }
   ],
-  "abilities": [],
+  "abilities": [
+    {
+      "name": "to be specified",
+      "category": "Feat",
+      "value": null,
+      "description": "Stunt",
+      "origin": "Base"
+    }
+  ],
   "equipment": []
 }

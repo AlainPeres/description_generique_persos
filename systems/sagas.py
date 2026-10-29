@@ -7,7 +7,7 @@ generic_sagas = Character(
     background="to be specified",
     occupation="to be specified",
     additional_information="to be specified",   
-    specific_values=SpecificValuesSagas(system="SagaS"),
+    specific_values=SpecificValuesSagas(system="sagas"),
     attributes=[
         Attribute(name="Strength", value=5),
         Attribute(name="Agility", value=5),
@@ -130,8 +130,8 @@ generic_sagas = Character(
 
         Skill(name="Bow", category=SkillCategory.BASE, value=-5),
         Skill(name="Crossbow", category=SkillCategory.BASE, value=0),
-        Skill(name="Dagger", category=SkillCategory.BASE, value=-5),
-        Skill(name="Axe", category=SkillCategory.BASE, value=-5),
+        Skill(name="Throwing Dagger", category=SkillCategory.BASE, value=-5),
+        Skill(name="Throwing Axe", category=SkillCategory.BASE, value=-5),
         Skill(name="Sling", category=SkillCategory.BASE, value=-5),
         Skill(name="Throw", category=SkillCategory.BASE, value=0),
         Skill(name="Javelin", category=SkillCategory.BASE, value=0),

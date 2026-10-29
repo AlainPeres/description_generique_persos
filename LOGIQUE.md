@@ -50,16 +50,20 @@ Chaque bloc spécifique a un champ `system` à valeur fixe
 discriminée** : en lisant un JSON, Pydantic regarde `system` et choisit
 directement la bonne classe.
 
-Cette union n'est pas écrite à la main. `models.py` la construit à partir de
-la liste `ALL_SPECIFIC_VALUES` de `systems/specific_values.py`. Ajouter un
-système ne demande donc **jamais** de modifier `models.py`.
+Cette union, `SpecificValues`, est écrite en clair à la fin de
+`systems/specific_values.py`, à côté des classes qu'elle liste, et
+`models.py` se contente de l'importer. Ajouter un système ne demande donc
+**jamais** de modifier `models.py`. L'écrire en clair permet aussi à
+l'éditeur (Pylance, mypy) de connaître chaque classe et de compléter leurs
+champs.
 
 ## Organisation des fichiers
 
 ```text
+strict_model.py           StrictModel, la classe de base commune
 models.py                 le schéma : Character et ses sous-modèles
 systems/
-├── specific_values.py    les blocs SpecificValuesX + la liste ALL_SPECIFIC_VALUES
+├── specific_values.py    les blocs SpecificValuesX + l'union SpecificValues
 └── <jeu>.py              un personnage générique par système (generic_<jeu>)
 main.py                   exporte les JSON et vérifie la relecture
 ```
@@ -67,12 +71,20 @@ main.py                   exporte les JSON et vérifie la relecture
 Les dépendances vont dans un seul sens, ce qui évite les imports circulaires :
 
 ```text
-specific_values.py  ──►  models.py  ──►  systems/<jeu>.py  ──►  main.py
-(pydantic seul)          (Character)     (generic_<jeu>)        (export)
+strict_model.py  ──►  specific_values.py  ──►  models.py  ──►  systems/<jeu>.py  ──►  main.py
+(pydantic seul)       (blocs spécifiques)       (Character)     (generic_<jeu>)        (export)
 ```
 
-`specific_values.py` ne dépend que de Pydantic. C'est pour ça que les blocs
-spécifiques y sont, et pas dans `models.py` ni dans chaque `<jeu>.py`.
+`specific_values.py` ne dépend que de Pydantic et de `strict_model.py`,
+jamais de `Character`. C'est pour ça que les blocs spécifiques y sont, et pas
+dans `models.py` ni dans chaque `<jeu>.py`.
+
+## Champs inconnus refusés
+
+Tous les modèles héritent de `StrictModel`, qui fixe `extra="forbid"`. Un
+champ que le modèle ne connaît pas (faute de frappe, champ supprimé comme
+l'ancien `Stunts` de Fate) provoque une erreur de validation au lieu d'être
+ignoré sans prévenir.
 
 ## Ce que produit `python main.py`
 
@@ -83,8 +95,8 @@ spécifiques y sont, et pas dans `models.py` ni dans chaque `<jeu>.py`.
    forme d'une fiche valide pour des outils extérieurs à Python (éditeur,
    autre langage, formulaire, LLM). Il ne contient ni le sens des champs ni
    les listes de compétences.
-3. **Une vérification** : un personnage est exporté puis relu avec
-   `Character.model_validate_json`.
+3. **Une vérification** : chaque modèle exporté est relu avec
+   `Character.model_validate_json` et comparé à l'original.
 
 ## Champs facultatifs et exclusion à l'export
 
@@ -94,7 +106,7 @@ tout le reste.
 
 Pour qu'un champ inutile n'apparaisse pas dans le JSON exporté :
 
-- `exclude={"attributes", "skills"}` retire les champs nommés (c'est ce que
+- `exclude={"attributes", "skills", "abilities"}` retire les champs nommés (c'est ce que
   fait `norules`) ;
 - `exclude_defaults=True` retire tout champ resté à sa valeur par défaut.
 
@@ -102,8 +114,8 @@ Un champ exclu reprend sa valeur par défaut quand on relit le JSON.
 
 ## Ajouter un système
 
-1. Dans `systems/specific_values.py`, créer `SpecificValuesXxx` avec
-   `system: Literal["xxx"]`, puis l'ajouter à `ALL_SPECIFIC_VALUES`.
+1. Dans `systems/specific_values.py`, créer `SpecificValuesXxx(StrictModel)` avec
+   `system: Literal["xxx"]`, puis l'ajouter à l'union `SpecificValues`.
 2. Créer `systems/xxx.py` avec un `generic_xxx = Character(...)`, en mettant
    le maximum de données dans les listes génériques.
-3. Dans `main.py`, importer `generic_xxx` et ajouter son `export_json(...)`.
+3. Dans `main.py`, importer `generic_xxx` et l'ajouter à la liste `EXPORTS`.

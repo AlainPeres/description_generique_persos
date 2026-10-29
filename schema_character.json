@@ -1,6 +1,7 @@
 {
   "$defs": {
     "Ability": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -10,8 +11,16 @@
           "$ref": "#/$defs/AbilityCategory"
         },
         "value": {
-          "title": "Value",
-          "type": "integer"
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
         },
         "description": {
           "default": "",
@@ -25,8 +34,7 @@
       },
       "required": [
         "name",
-        "category",
-        "value"
+        "category"
       ],
       "title": "Ability",
       "type": "object"
@@ -45,6 +53,7 @@
       "type": "string"
     },
     "Attribute": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -62,7 +71,32 @@
       "title": "Attribute",
       "type": "object"
     },
+    "Consequence": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "default": true,
+          "title": "Available",
+          "type": "boolean"
+        },
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Consequence",
+      "type": "object"
+    },
     "EquipmentItem": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -123,6 +157,7 @@
       "type": "string"
     },
     "Skill": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -155,6 +190,7 @@
       "type": "string"
     },
     "SpecificValuesCthulhu": {
+      "additionalProperties": false,
       "properties": {
         "system": {
           "const": "cthulhu6",
@@ -169,6 +205,7 @@
       "type": "object"
     },
     "SpecificValuesDnD": {
+      "additionalProperties": false,
       "properties": {
         "system": {
           "const": "dnd5e",
@@ -229,6 +266,7 @@
       "type": "object"
     },
     "SpecificValuesFate": {
+      "additionalProperties": false,
       "properties": {
         "system": {
           "const": "fate",
@@ -247,14 +285,8 @@
           "items": {
             "type": "string"
           },
+          "maxItems": 3,
           "title": "Aspects",
-          "type": "array"
-        },
-        "Stunts": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Stunts",
           "type": "array"
         },
         "Extras": {
@@ -274,52 +306,25 @@
         },
         "PhysicalStress": {
           "additionalProperties": {
-            "maxItems": 2,
-            "minItems": 2,
-            "prefixItems": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "type": "array"
+            "$ref": "#/$defs/StressBox"
           },
+          "maxProperties": 4,
           "title": "Physicalstress",
           "type": "object"
         },
         "MentalStress": {
           "additionalProperties": {
-            "maxItems": 2,
-            "minItems": 2,
-            "prefixItems": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "type": "array"
+            "$ref": "#/$defs/StressBox"
           },
+          "maxProperties": 4,
           "title": "Mentalstress",
           "type": "object"
         },
         "Consequences": {
           "additionalProperties": {
-            "maxItems": 2,
-            "minItems": 2,
-            "prefixItems": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "type": "array"
+            "$ref": "#/$defs/Consequence"
           },
+          "maxProperties": 5,
           "title": "Consequences",
           "type": "object"
         }
@@ -335,6 +340,7 @@
       "type": "object"
     },
     "SpecificValuesNoRules": {
+      "additionalProperties": false,
       "properties": {
         "system": {
           "const": "norules",
@@ -356,9 +362,10 @@
       "type": "object"
     },
     "SpecificValuesSagas": {
+      "additionalProperties": false,
       "properties": {
         "system": {
-          "const": "SagaS",
+          "const": "sagas",
           "title": "System",
           "type": "string"
         }
@@ -368,19 +375,37 @@
       ],
       "title": "SpecificValuesSagas",
       "type": "object"
+    },
+    "StressBox": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "default": true,
+          "title": "Available",
+          "type": "boolean"
+        },
+        "checked": {
+          "default": false,
+          "title": "Checked",
+          "type": "boolean"
+        }
+      },
+      "title": "StressBox",
+      "type": "object"
     }
   },
+  "additionalProperties": false,
   "properties": {
     "specific_values": {
       "anyOf": [
         {
           "discriminator": {
             "mapping": {
-              "SagaS": "#/$defs/SpecificValuesSagas",
               "cthulhu6": "#/$defs/SpecificValuesCthulhu",
               "dnd5e": "#/$defs/SpecificValuesDnD",
               "fate": "#/$defs/SpecificValuesFate",
-              "norules": "#/$defs/SpecificValuesNoRules"
+              "norules": "#/$defs/SpecificValuesNoRules",
+              "sagas": "#/$defs/SpecificValuesSagas"
             },
             "propertyName": "system"
           },

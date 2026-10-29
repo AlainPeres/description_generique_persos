@@ -6,10 +6,11 @@ Multi-system RPG character modeling with **Pydantic v2**.
 system's character data lives in its own module under `systems/`:
 
 ```text
+strict_model.py               StrictModel: common base class, rejects unknown fields
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem
-                               builds the specific_values Union from ALL_SPECIFIC_VALUES
+                               imports the SpecificValues union
 systems/
-├── specific_values.py        SpecificValuesNoRules / DnD / Cthulhu / Fate / SagaS + ALL_SPECIFIC_VALUES
+├── specific_values.py        SpecificValuesNoRules / DnD / Cthulhu / Fate / SagaS + SpecificValues union
 ├── norules.py                generic_norules
 ├── dnd5e.py                  generic_dnd5e
 ├── cthulhu.py                generic_cthulhu6
@@ -19,12 +20,18 @@ main.py                       imports the generic_* instances, exports JSON, val
 ```
 
 The `SpecificValuesX` classes live in `systems/specific_values.py`, not in
-`models.py` — that module only depends on pydantic, never on `Character`, so
-`models.py` can import `ALL_SPECIFIC_VALUES` from it without creating a
-circular import (`systems/<game>.py` modules still import `Character` from
-`models.py` to build their generic character templates). `models.py` builds
-`Character.specific_values`'s type as a discriminated `Union` from that list
-at import time, so adding a new system never requires editing `models.py`.
+`models.py` — that module only depends on pydantic and `strict_model.py`,
+never on `Character`, so
+`models.py` can import the `SpecificValues` discriminated union from it
+without creating a circular import (`systems/<game>.py` modules still import
+`Character` from `models.py` to build their generic character templates).
+The union is written out next to the classes it lists, so adding a new
+system never requires editing `models.py`.
+
+Every model inherits from `StrictModel` (`extra="forbid"`): a JSON field that
+the model does not know, such as a typo or an obsolete field, raises a
+validation error instead of being silently dropped. The JSON Schema marks
+each object with `"additionalProperties": false` accordingly.
 
 ## Architecture
 
@@ -38,10 +45,10 @@ Character
 ├── name, description, occupation, background, additional_information   (free text)
 ├── attributes:       list[Attribute]       (name + int value)
 ├── skills:           list[Skill]           (name + SkillCategory + int value)
-├── abilities:        list[Ability]         (name + AbilityCategory + int value + description + origin;
+├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
-└── specific_values:  Union[*ALL_SPECIFIC_VALUES] | None   (discriminated on `system`)
+└── specific_values:  SpecificValues | None   (discriminated union on `system`)
 ```
 
 ## Generic layer — utility models
@@ -76,7 +83,7 @@ Used only for data that cannot be expressed as `name + int value`:
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
 | D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
-| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Stunts`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress`, `MentalStress`, `Consequences` |
+| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text) |
 | SagaS | `SpecificValuesSagas` | system marker (to be completed) |
 
 ## Generic templates
@@ -91,18 +98,17 @@ ready-to-use JSON blueprints:
 | `generic_dnd5e.json` | D&D 5e | 18 base skills + 1 example feat |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic) |
 | `generic_sagas.json` | SagaS | 108 skills (92 base + 16 generic) |
-| `generic_fate.json` | FATE | 17 skills (14 base + 3 generic) |
+| `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system
 
-1. In `systems/specific_values.py`, create `SpecificValuesXxx(BaseModel)` with `system: Literal["xxx"]` and append it to `ALL_SPECIFIC_VALUES`
+1. In `systems/specific_values.py`, create `SpecificValuesXxx(StrictModel)` with `system: Literal["xxx"]` and add it to the `SpecificValues` union at the bottom of that file
 2. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
-3. Import the new `generic_xxx` instance in `main.py` and add an `export_json(...)` call for it
+3. Import the new `generic_xxx` instance in `main.py` and add it to the `EXPORTS` list
 
-`models.py` never needs to change — the `specific_values` union is derived
-from `ALL_SPECIFIC_VALUES` automatically, which is what keeps this scalable
-to dozens of systems.
+`models.py` never needs to change — it imports the `SpecificValues` union
+as is, which is what keeps this scalable to dozens of systems.
 
 Every `Character` field has a default (`""`, `None` or an empty list), so a
 system only fills what it uses. To keep unused fields out of its JSON, pass
@@ -112,14 +118,17 @@ fields come back as their defaults when the JSON is reloaded.
 
 ## Type annotations
 
-Python 3.10+ native syntax — no `List`, `Dict`, or `Optional` from `typing`.
-The one exception is `specific_values`, which is a discriminated union built
-dynamically from `ALL_SPECIFIC_VALUES` (needs `typing.Union`, not the `|`
-operator, since the member types aren't known statically):
+Python 3.10+ native syntax — no `List`, `Dict`, `Optional` or `Union` from
+`typing`. The `SpecificValues` union is written out explicitly with `|`, so
+type checkers (Pylance, mypy) know every member and can autocomplete
+system-specific fields:
 
 ```python
 size: str | None = None
-SpecificValues = Annotated[Union[tuple(ALL_SPECIFIC_VALUES)], Field(discriminator="system")]
+SpecificValues = Annotated[
+    SpecificValuesDnD | SpecificValuesCthulhu | ...,
+    Field(discriminator="system"),
+]
 skills: list[Skill]
 ```
 
@@ -136,5 +145,5 @@ uv sync
 
 ```bash
 python main.py     # exports every generic_*.json + schema_character.json,
-                   # then checks a JSON → Character round-trip (generic_norules)
+                   # then checks a JSON → Character round-trip for every template
 ```

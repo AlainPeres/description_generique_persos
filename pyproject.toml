@@ -1,10 +1,9 @@
 [project]
 name = "description-generique-persos"
 version = "0.1.0"
-description = "Add your description here"
+description = "Multi-system RPG character model with Pydantic v2, exported as JSON"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "pydantic>=2.13.4",
-    "typing>=3.10.0.0",
 ]

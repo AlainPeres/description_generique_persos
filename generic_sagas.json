@@ -1,6 +1,6 @@
 {
   "specific_values": {
-    "system": "SagaS"
+    "system": "sagas"
   },
   "name": "Generic SagaS Character",
   "description": "to be specified",
@@ -527,12 +527,12 @@
       "value": 0
     },
     {
-      "name": "Dagger",
+      "name": "Throwing Dagger",
       "category": "Base",
       "value": -5
     },
     {
-      "name": "Axe",
+      "name": "Throwing Axe",
       "category": "Base",
       "value": -5
     },

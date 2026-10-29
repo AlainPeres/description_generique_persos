@@ -30,25 +30,33 @@ def print_separator(title: str) -> None:
 
 
 def export_json(path: str, content: str) -> None:
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(content)
     print(f"  -> exported: {path}")
 
 
+# Each generic template with its export path and the fields left out of its JSON
+EXPORTS: list[tuple[str, Character, set[str]]] = [
+    ("generic_dnd5e.json", generic_dnd5e, set()),
+    ("generic_cthulhu6.json", generic_cthulhu6, set()),
+    ("generic_sagas.json", generic_sagas, set()),
+    ("generic_fate.json", generic_fate, set()),
+    ("generic_norules.json", generic_norules, {"attributes", "skills", "abilities"}),
+]
+
+
 if __name__ == "__main__":
     print_separator("JSON FILE EXPORT")
-    export_json("generic_dnd5e.json", generic_dnd5e.model_dump_json(indent=2))
-    export_json("generic_cthulhu6.json", generic_cthulhu6.model_dump_json(indent=2))
-    export_json("generic_sagas.json", generic_sagas.model_dump_json(indent=2))
-    export_json("generic_fate.json", generic_fate.model_dump_json(indent=2))    
-    export_json("generic_norules.json",
-        generic_norules.model_dump_json(indent=2,
-            exclude={"attributes","skills","abilities"}))    
+    raws: list[tuple[Character, str]] = []
+    for path, character, exclude in EXPORTS:
+        raw = character.model_dump_json(indent=2, exclude=exclude)
+        export_json(path, raw)
+        raws.append((character, raw))
     export_json("schema_character.json", json.dumps(Character.model_json_schema(), indent=2, ensure_ascii=False))
 
     print_separator("VALIDATION: reload from raw JSON")
-    raw = generic_norules.model_dump_json(indent=2,
-            exclude={"attributes","skills","abilities"})
-    reloaded = Character.model_validate_json(raw)
-    system = reloaded.specific_values.system if reloaded.specific_values else "no system"
-    print(f"Reloaded character: {reloaded.name} ({system})")
+    for character, raw in raws:
+        reloaded = Character.model_validate_json(raw)
+        system = reloaded.specific_values.system if reloaded.specific_values else "no system"
+        status = "OK" if reloaded == character else "MISMATCH"
+        print(f"  [{status}] {reloaded.name} ({system})")
