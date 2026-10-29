@@ -15,7 +15,7 @@ Un personnage se décompose en deux parties.
 
    | Champ | Contenu |
    | --- | --- |
-   | `name`, `description`, `occupation`, `background`, `additional_information` | texte libre |
+   | `name`, `description`, `age`, `occupation`, `background`, `additional_information` | texte libre |
    | `attributes` | caractéristiques chiffrées (FOR, DEX, PV…) |
    | `skills` | compétences, avec une catégorie |
    | `abilities` | dons, pouvoirs, avantages, sorts… |
@@ -29,11 +29,30 @@ Règle de répartition : **si une donnée peut s'écrire « nom + valeur », ell
 dans la couche générique**. La couche spécifique reste aussi petite que
 possible.
 
+Exception : les compteurs de progression ou de gestion (niveau et XP en D&D,
+points de création non utilisés en SagaS) vont dans la couche spécifique.
+Ce ne sont pas des caractéristiques utilisées pour les jets, et le bloc
+spécifique permet de les valider (par exemple `ge=0`).
+
+Les valeurs qui se calculent directement à partir d'autres valeurs ne sont
+pas stockées : Idée, Chance et Connaissance en Cthulhu (INT×5, POU×5,
+ÉDU×5), bonus aux dégâts, maximums de SAN, PV et PM, bonus de maîtrise en
+D&D… Les stocker créerait un risque d'incohérence quand la valeur source
+change. Les valeurs *actuelles* (SAN, PV et PM restants) ne se calculent pas
+et, elles, sont stockées.
+
+Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
+portées par la compétence elle-même : `Skill.checked`. `None` veut dire que
+le système n'a pas de coches (le champ n'apparaît alors pas dans le JSON),
+`False`/`True` qu'elle est décochée ou cochée.
+
 ## Les catégories : deux axes indépendants
 
 - `SkillCategory` dit **d'où vient** une entrée :
   - `Base` : elle fait partie de la liste officielle du système ;
-  - `New` : le joueur l'a ajoutée ;
+  - `New` : le joueur l'a ajoutée. C'est le cas des armes de contact en
+    Cthulhu : elles ne figurent pas dans le modèle de fiche, chaque joueur
+    ajoute celles qu'il utilise ;
   - `Generic` et `Specialization` : compétences ouvertes, comme *Art (…)* ou
     *Pilotage (…)*.
 - `AbilityCategory` dit **de quel type** est une capacité : Feat, Power,

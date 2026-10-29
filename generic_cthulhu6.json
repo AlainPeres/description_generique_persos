@@ -1,9 +1,11 @@
 {
   "specific_values": {
-    "system": "cthulhu6"
+    "system": "cthulhu6",
+    "mental_disorders": []
   },
   "name": "Generic Cthulhu 6 Character",
   "description": "to be specified",
+  "age": "to be specified",
   "occupation": "to be specified",
   "background": "to be specified",
   "additional_information": "to be specified",
@@ -54,74 +56,87 @@
     },
     {
       "name": "Move",
-      "value": 10
+      "value": 8
     }
   ],
   "skills": [
     {
       "name": "Accounting",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Anthropology",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Archaeology",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Art",
       "category": "Generic",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Astronomy",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Bargain",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Biology",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Chemistry",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Climb",
       "category": "Base",
-      "value": 40
+      "value": 40,
+      "checked": false
     },
     {
       "name": "Computer Use",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Conceal",
       "category": "Base",
-      "value": 15
+      "value": 15,
+      "checked": false
     },
     {
       "name": "Craft",
       "category": "Generic",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Credit Rating",
       "category": "Base",
-      "value": 15
+      "value": 15,
+      "checked": false
     },
     {
       "name": "Cthulhu Mythos",
@@ -131,232 +146,278 @@
     {
       "name": "Disguise",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Dodge",
       "category": "Base",
-      "value": 20
+      "value": 20,
+      "checked": false
     },
     {
       "name": "Drive Auto",
       "category": "Base",
-      "value": 20
+      "value": 20,
+      "checked": false
     },
     {
       "name": "Electr. Repair",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Electronics",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Fast Talk",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "First Aid",
       "category": "Base",
-      "value": 30
+      "value": 30,
+      "checked": false
     },
     {
       "name": "Geology",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Hide",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "History",
       "category": "Base",
-      "value": 20
+      "value": 20,
+      "checked": false
     },
     {
       "name": "Jump",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Law",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Library Use",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Listen",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Locksmith",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Martial Arts",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Mech. Repair",
       "category": "Base",
-      "value": 20
+      "value": 20,
+      "checked": false
     },
     {
       "name": "Medicine",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Natural History",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Navigate",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Occult",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Opr. Hvy. Mch.",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Other Languages",
       "category": "Generic",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Own Language",
       "category": "Base",
-      "value": 50
+      "value": 50,
+      "checked": false
     },
     {
       "name": "Persuade",
       "category": "Base",
-      "value": 15
+      "value": 15,
+      "checked": false
     },
     {
       "name": "Pharmacy",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Photography",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Physics",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Pilot",
       "category": "Generic",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Psychoanalysis",
       "category": "Base",
-      "value": 1
+      "value": 1,
+      "checked": false
     },
     {
       "name": "Psychology",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Ride",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "checked": false
     },
     {
       "name": "Sneak",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Spot Hidden",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Swim",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Throw",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Track",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Handgun",
       "category": "Base",
-      "value": 20
+      "value": 20,
+      "checked": false
     },
     {
       "name": "Machine Gun",
       "category": "Base",
-      "value": 15
+      "value": 15,
+      "checked": false
     },
     {
       "name": "Rifle",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Shotgun",
       "category": "Base",
-      "value": 30
+      "value": 30,
+      "checked": false
     },
     {
       "name": "SMG",
       "category": "Base",
-      "value": 15
+      "value": 15,
+      "checked": false
     },
     {
       "name": "Fist",
       "category": "Base",
-      "value": 50
+      "value": 50,
+      "checked": false
     },
     {
       "name": "Grapple",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     },
     {
       "name": "Head",
       "category": "Base",
-      "value": 10
+      "value": 10,
+      "checked": false
     },
     {
       "name": "Kick",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "checked": false
     }
   ],
   "abilities": [],

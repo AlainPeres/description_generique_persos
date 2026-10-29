@@ -71,6 +71,8 @@ class Skill(StrictModel):
     name: str
     category: SkillCategory
     value: int
+    # None = the system has no skill checks; False/True = unchecked/checked
+    checked: bool | None = Field(default=None, exclude_if=lambda v: v is None)
 
 class Attribute(StrictModel):
     name: str
@@ -84,6 +86,7 @@ class Character(StrictModel):
     specific_values: SpecificValues | None = None
     name: str = ""
     description: str = ""
+    age: str = ""
     occupation: str = ""
     background: str = ""
     additional_information: str=""

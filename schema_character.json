@@ -156,6 +156,40 @@
       "title": "ItemCategory",
       "type": "string"
     },
+    "MentalDisorder": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "duration": {
+          "enum": [
+            "temporary",
+            "indefinite",
+            "permanent"
+          ],
+          "title": "Duration",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "cured": {
+          "default": false,
+          "title": "Cured",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "duration"
+      ],
+      "title": "MentalDisorder",
+      "type": "object"
+    },
     "Skill": {
       "additionalProperties": false,
       "properties": {
@@ -169,6 +203,18 @@
         "value": {
           "title": "Value",
           "type": "integer"
+        },
+        "checked": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checked"
         }
       },
       "required": [
@@ -196,6 +242,13 @@
           "const": "cthulhu6",
           "title": "System",
           "type": "string"
+        },
+        "mental_disorders": {
+          "items": {
+            "$ref": "#/$defs/MentalDisorder"
+          },
+          "title": "Mental Disorders",
+          "type": "array"
         }
       },
       "required": [
@@ -222,6 +275,12 @@
         },
         "level": {
           "title": "Level",
+          "type": "integer"
+        },
+        "experience_points": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Experience Points",
           "type": "integer"
         },
         "alignment": {
@@ -368,6 +427,12 @@
           "const": "sagas",
           "title": "System",
           "type": "string"
+        },
+        "unspent_creation_points": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Unspent Creation Points",
+          "type": "integer"
         }
       },
       "required": [
@@ -442,6 +507,11 @@
     "description": {
       "default": "",
       "title": "Description",
+      "type": "string"
+    },
+    "age": {
+      "default": "",
+      "title": "Age",
       "type": "string"
     },
     "occupation": {

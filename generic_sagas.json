@@ -1,9 +1,11 @@
 {
   "specific_values": {
-    "system": "sagas"
+    "system": "sagas",
+    "unspent_creation_points": 0
   },
   "name": "Generic SagaS Character",
   "description": "to be specified",
+  "age": "to be specified",
   "occupation": "to be specified",
   "background": "to be specified",
   "additional_information": "to be specified",

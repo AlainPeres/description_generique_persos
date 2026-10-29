@@ -4,6 +4,7 @@ from systems.specific_values import SpecificValuesDnD
 generic_dnd5e = Character(
     name="Generic D&D 5e Character",
     description="to be specified",
+    age="to be specified",
     background="to be specified",
     additional_information="to be specified",
     specific_values=SpecificValuesDnD(
@@ -26,7 +27,6 @@ generic_dnd5e = Character(
 
         Attribute(name="Armor Class", value=10),
         Attribute(name="Hit Points", value=10),
-        Attribute(name="Proficiency Bonus", value=2),
     ],
     skills=[
         Skill(name="Acrobatics", category=SkillCategory.BASE, value=0),

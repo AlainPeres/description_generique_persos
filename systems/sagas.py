@@ -4,6 +4,7 @@ from systems.specific_values import SpecificValuesSagas
 generic_sagas = Character(
     name="Generic SagaS Character",
     description="to be specified",
+    age="to be specified",
     background="to be specified",
     occupation="to be specified",
     additional_information="to be specified",   

@@ -4,6 +4,7 @@ from systems.specific_values import SpecificValuesFate, StressBox, Consequence
 generic_fate = Character(
     name="Generic Fate Core Character",
     description="to be specified",
+    age="to be specified",
     background="to be specified",
     additional_information="to be specified",
     specific_values=SpecificValuesFate(

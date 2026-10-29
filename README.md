@@ -42,9 +42,10 @@ each object with `"additionalProperties": false` accordingly.
 
 ```text
 Character
-├── name, description, occupation, background, additional_information   (free text)
+├── name, description, age, occupation, background, additional_information   (free text)
 ├── attributes:       list[Attribute]       (name + int value)
-├── skills:           list[Skill]           (name + SkillCategory + int value)
+├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked;
+│                                            checked is omitted from JSON when None)
 ├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
@@ -81,10 +82,10 @@ Used only for data that cannot be expressed as `name + int value`:
 | System | Model | Specific fields |
 | --- | --- | --- |
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
-| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `alignment`, `size`, `speed`, `languages` |
-| Call of Cthulhu 6 | `SpecificValuesCthulhu` | system marker only (data lives in generic layer) |
+| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `experience_points`, `alignment`, `size`, `speed`, `languages` |
+| Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text) |
-| SagaS | `SpecificValuesSagas` | system marker (to be completed) |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` |
 
 ## Generic templates
 
@@ -96,7 +97,7 @@ ready-to-use JSON blueprints:
 | --- | --- | --- |
 | `generic_norules.json` | No rules | narrative fields + `tags` only; `attributes`, `skills` and `abilities` are left out of the export |
 | `generic_dnd5e.json` | D&D 5e | 18 base skills + 1 example feat |
-| `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic) |
+| `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic); melee weapon skills are left out, players add them as `New` |
 | `generic_sagas.json` | SagaS | 108 skills (92 base + 16 generic) |
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |

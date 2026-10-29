@@ -33,6 +33,7 @@ class SpecificValuesDnD(StrictModel):
     character_class: str
     race: str
     level: int
+    experience_points: int = Field(default=0, ge=0)
     alignment: str
     size: str | None = None
     speed: dict[str, int] = Field(default_factory=dict)
@@ -42,8 +43,15 @@ class SpecificValuesDnD(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Call of Cthulhu
 # ---------------------------------------------------------------------------
+class MentalDisorder(StrictModel):
+    name: str                 # e.g. "Claustrophobia"
+    duration: Literal["temporary", "indefinite", "permanent"]
+    description: str = ""     # circumstances, effects
+    cured: bool = False
+
 class SpecificValuesCthulhu(StrictModel):
     system: Literal["cthulhu6"]
+    mental_disorders: list[MentalDisorder] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -75,6 +83,7 @@ class SpecificValuesFate(StrictModel):
 # ---------------------------------------------------------------------------
 class SpecificValuesSagas(StrictModel):
     system: Literal["sagas"]
+    unspent_creation_points: int = Field(default=0, ge=0)
 
 
 # ---------------------------------------------------------------------------

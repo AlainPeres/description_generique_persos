@@ -4,6 +4,7 @@
     "character_class": "to be specified",
     "race": "to be specified",
     "level": 1,
+    "experience_points": 0,
     "alignment": "to be specified",
     "size": "Medium",
     "speed": {
@@ -15,6 +16,7 @@
   },
   "name": "Generic D&D 5e Character",
   "description": "to be specified",
+  "age": "to be specified",
   "occupation": "",
   "background": "to be specified",
   "additional_information": "to be specified",
@@ -50,10 +52,6 @@
     {
       "name": "Hit Points",
       "value": 10
-    },
-    {
-      "name": "Proficiency Bonus",
-      "value": 2
     }
   ],
   "skills": [
