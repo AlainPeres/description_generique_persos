@@ -73,10 +73,11 @@
       ]
     }
   },
-  "name": "Generic Fate Character",
-  "description": "A generic adventurer in the world of Fate Core",
+  "name": "Generic Fate Core Character",
+  "description": "to be specified",
   "occupation": "",
-  "background": "background not specified",
+  "background": "to be specified",
+  "additional_information": "to be specified",
   "attributes": [],
   "skills": [
     {

@@ -2,9 +2,10 @@ from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityC
 from systems.specific_values import SpecificValuesFate
 
 generic_fate = Character(
-    name="Generic Fate Character",
-    description="A generic adventurer in the world of Fate Core",
-    background="background not specified",
+    name="Generic Fate Core Character",
+    description="to be specified",
+    background="to be specified",
+    additional_information="to be specified",
     specific_values=SpecificValuesFate(
         system="fate",
         HighConcept="to be specified",

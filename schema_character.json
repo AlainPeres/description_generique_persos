@@ -429,6 +429,11 @@
       "title": "Background",
       "type": "string"
     },
+    "additional_information": {
+      "default": "",
+      "title": "Additional Information",
+      "type": "string"
+    },
     "attributes": {
       "items": {
         "$ref": "#/$defs/Attribute"

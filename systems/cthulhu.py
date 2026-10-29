@@ -6,6 +6,7 @@ generic_cthulhu6 = Character(
     description="to be specified",
     background="to be specified",
     occupation="to be specified",
+    additional_information="to be specified",
     specific_values=SpecificValuesCthulhu(system="cthulhu6"),
     attributes=[
         Attribute(name="Strength", value=10),

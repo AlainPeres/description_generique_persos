@@ -9,5 +9,6 @@
   "description": "A generic character in a no rules system",
   "occupation": "",
   "background": "background not specified",
+  "additional_information": "to be specified",
   "equipment": []
 }

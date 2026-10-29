@@ -91,6 +91,7 @@ class Character(BaseModel):
     description: str = ""
     occupation: str = ""
     background: str = ""
+    additional_information: str=""
     attributes: list[Attribute] = Field(default_factory=list)
     skills: list[Skill] = Field(default_factory=list)
     abilities: list[Ability] = Field(default_factory=list)

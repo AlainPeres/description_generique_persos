@@ -35,7 +35,7 @@ at import time, so adding a new system never requires editing `models.py`.
 
 ```text
 Character
-├── name, description, occupation, background
+├── name, description, occupation, background, additional_information   (free text)
 ├── attributes:       list[Attribute]       (name + int value)
 ├── skills:           list[Skill]           (name + SkillCategory + int value)
 ├── abilities:        list[Ability]         (name + AbilityCategory + int value + description + origin;

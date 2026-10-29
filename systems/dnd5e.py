@@ -3,8 +3,9 @@ from systems.specific_values import SpecificValuesDnD
 
 generic_dnd5e = Character(
     name="Generic D&D 5e Character",
-    description="A generic adventurer in the world of Dungeons & Dragons 5th Edition",
-    background="background not specified",
+    description="to be specified",
+    background="to be specified",
+    additional_information="to be specified",
     specific_values=SpecificValuesDnD(
         system="dnd5e",
         character_class="to be specified",
@@ -47,6 +48,7 @@ generic_dnd5e = Character(
         Skill(name="Survival", category=SkillCategory.BASE, value=10),
     ],
     abilities=[
-        Ability(name="to be specified", category=AbilityCategory.FEAT, value=1),
+        Ability(name="to be specified", category=AbilityCategory.FEAT,
+                 value=1),
     ],
 )

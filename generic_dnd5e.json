@@ -14,9 +14,10 @@
     ]
   },
   "name": "Generic D&D 5e Character",
-  "description": "A generic adventurer in the world of Dungeons & Dragons 5th Edition",
+  "description": "to be specified",
   "occupation": "",
-  "background": "background not specified",
+  "background": "to be specified",
+  "additional_information": "to be specified",
   "attributes": [
     {
       "name": "Strength",
