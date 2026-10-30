@@ -1,5 +1,5 @@
 from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
-from systems.specific_values import SpecificValuesDnD
+from systems.specific_values import SpecificValuesDnD, DnDClass
 
 generic_dnd5e = Character(
     name="Generic D&D 5e Character",
@@ -9,9 +9,8 @@ generic_dnd5e = Character(
     additional_information="to be specified",
     specific_values=SpecificValuesDnD(
         system="dnd5e",
-        character_class="to be specified",
+        classes=[DnDClass(name="to be specified", level=1)],
         race="to be specified",
-        level=1,
         alignment="to be specified",
         size="Medium",
         speed={"walk": 30},
@@ -26,7 +25,8 @@ generic_dnd5e = Character(
         Attribute(name="Charisma", value=10),
 
         Attribute(name="Armor Class", value=10),
-        Attribute(name="Hit Points", value=10),
+        Attribute(name="Maximum Hit Points", value=10),
+        Attribute(name="Current Hit Points", value=10),
     ],
     skills=[
         Skill(name="Acrobatics", category=SkillCategory.BASE, value=0),

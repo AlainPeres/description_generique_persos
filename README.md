@@ -94,10 +94,10 @@ Used only for data that cannot be expressed as `name + int value`:
 | System | Model | Specific fields |
 | --- | --- | --- |
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
-| D&D 5e | `SpecificValuesDnD` | `character_class`, `race`, `level`, `experience_points`, `alignment`, `size`, `speed`, `languages` |
+| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `size`, `speed`, `languages` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text) |
-| SagaS | `SpecificValuesSagas` | `unspent_creation_points` |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text) |
 
 ## Generic templates
 

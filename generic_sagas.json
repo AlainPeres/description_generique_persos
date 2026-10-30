@@ -1,7 +1,9 @@
 {
   "specific_values": {
     "system": "sagas",
-    "unspent_creation_points": 0
+    "unspent_creation_points": 0,
+    "serious_physical_injuries": [],
+    "serious_psychical_injuries": []
   },
   "name": "Generic SagaS Character",
   "description": "to be specified",
@@ -59,20 +61,20 @@
       "value": 8
     },
     {
-      "name": "PhyHP",
-      "value": 30
+      "name": "Physical Wounds",
+      "value": 0
     },
     {
-      "name": "MenHP",
-      "value": 30
+      "name": "Psychical Wounds",
+      "value": 0
     },
     {
-      "name": "PhyThreshold",
-      "value": 10
+      "name": "Physical Stun",
+      "value": 0
     },
     {
-      "name": "MenThreshold",
-      "value": 10
+      "name": "Psychical Stun",
+      "value": 0
     },
     {
       "name": "Protection",
@@ -81,10 +83,6 @@
     {
       "name": "MaxImpactBonus",
       "value": 10
-    },
-    {
-      "name": "ReflexDodge",
-      "value": 4
     }
   ],
   "skills": [

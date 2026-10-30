@@ -18,10 +18,9 @@ generic_cthulhu6 = Character(
         Attribute(name="Intelligence", value=10),
         Attribute(name="Power", value=10),
         Attribute(name="Education", value=10),
-
-        Attribute(name="Sanity", value=10),
-        Attribute(name="Hit Points", value=10),
-        Attribute(name="Magic Points", value=10),
+        Attribute(name="Current Sanity", value=10),
+        Attribute(name="Current Hit Points", value=10),
+        Attribute(name="Current Magic Points", value=10),
         Attribute(name="Move", value=8),
     ],
     skills=[

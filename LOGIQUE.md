@@ -28,26 +28,42 @@ Un personnage se décompose en deux parties.
    | `equipment`                                                                        | objets, armes, armures, consommables       |
 
 2. **Une couche spécifique** (`specific_values`), facultative. Elle contient ce
-   qui ne rentre pas dans « nom + valeur » : la classe et la race en D&D, les
-   aspects et le stress en Fate, des tags libres en sans règles…
+   qui ne rentre pas dans « nom + valeur » : les classes (multiclasse,
+   sous-classes) et la race en D&D, les troubles mentaux en Cthulhu, les
+   aspects et le stress en Fate, les blessures graves en SagaS, des tags
+   libres en sans règles…
 
 Règle de répartition : **si une donnée peut s'écrire « nom + valeur », elle va
 dans la couche générique**. La couche spécifique reste aussi petite que
 possible.
 
-Exception : les compteurs de progression ou de gestion (niveau et XP en D&D,
-points de création non utilisés en SagaS) vont dans la couche spécifique.
-Les points de création SagaS ne contredisent pas le but de description : ce
-sont des points mis de côté pour plus tard, donc un état du personnage.
-Ce ne sont pas des caractéristiques utilisées pour les jets, et le bloc
-spécifique permet de les valider (par exemple `ge=0`).
+Exception : les compteurs de progression ou de gestion (niveaux de classe et
+XP en D&D, points de création non utilisés en SagaS) vont dans la couche
+spécifique. Ce ne sont pas des caractéristiques utilisées pour les jets, et
+le bloc spécifique permet de les valider (par exemple `ge=0`). Les points de
+création SagaS ne contredisent pas le but de description : ce sont des points
+mis de côté pour plus tard, donc un état du personnage.
 
-Les valeurs qui se calculent directement à partir d'autres valeurs ne sont
-pas stockées : Idée, Chance et Connaissance en Cthulhu (INT×5, POU×5,
-ÉDU×5), bonus aux dégâts, maximums de SAN, PV et PM, bonus de maîtrise en
-D&D… Les stocker créerait un risque d'incohérence quand la valeur source
-change. Les valeurs *actuelles* (SAN, PV et PM restants) ne se calculent pas
-et, elles, sont stockées.
+Quand un élément regroupe plusieurs informations, il devient un petit modèle
+plutôt qu'un tuple ou des listes parallèles : `DnDClass` (nom, sous-classe,
+niveau), `MentalDisorder` (nom, durée, description, guéri), `StressBox` et
+`Consequence` en Fate. Chaque information est nommée, validée, et ne peut pas
+se désynchroniser des autres.
+
+**Seul est stocké ce qui ne peut pas être calculé à partir des autres
+valeurs** : Idée, Chance et Connaissance en Cthulhu (INT×5, POU×5, ÉDU×5),
+bonus aux dégâts, maximums de SAN, PV et PM en Cthulhu, bonus de maîtrise et
+niveau total en D&D (somme des niveaux de classe)… ne figurent pas sur la
+fiche. Les stocker créerait un risque d'incohérence quand la valeur source
+change. En revanche, sont stockés :
+
+- les valeurs *actuelles* (`Current Sanity`, `Current Hit Points`…), qui
+  évoluent en jeu ;
+- les maximums qui ne se calculent pas, comme les PV maximum en D&D, tirés
+  aux dés à chaque niveau (`Maximum Hit Points`) ;
+- la classe d'armure en D&D (`Armor Class`) : en théorie dérivée, elle dépend
+  de trop de sources (armure, bouclier, défense sans armure, objets
+  magiques, sorts) pour être recalculée sans moteur de règles.
 
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que

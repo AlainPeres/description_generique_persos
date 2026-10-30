@@ -95,6 +95,32 @@
       "title": "Consequence",
       "type": "object"
     },
+    "DnDClass": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "subclass": {
+          "default": "",
+          "title": "Subclass",
+          "type": "string"
+        },
+        "level": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "level"
+      ],
+      "title": "DnDClass",
+      "type": "object"
+    },
     "EquipmentItem": {
       "additionalProperties": false,
       "properties": {
@@ -265,17 +291,17 @@
           "title": "System",
           "type": "string"
         },
-        "character_class": {
-          "title": "Character Class",
-          "type": "string"
+        "classes": {
+          "items": {
+            "$ref": "#/$defs/DnDClass"
+          },
+          "minItems": 1,
+          "title": "Classes",
+          "type": "array"
         },
         "race": {
           "title": "Race",
           "type": "string"
-        },
-        "level": {
-          "title": "Level",
-          "type": "integer"
         },
         "experience_points": {
           "default": 0,
@@ -316,9 +342,8 @@
       },
       "required": [
         "system",
-        "character_class",
+        "classes",
         "race",
-        "level",
         "alignment"
       ],
       "title": "SpecificValuesDnD",
@@ -433,6 +458,20 @@
           "minimum": 0,
           "title": "Unspent Creation Points",
           "type": "integer"
+        },
+        "serious_physical_injuries": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Serious Physical Injuries",
+          "type": "array"
+        },
+        "serious_psychical_injuries": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Serious Psychical Injuries",
+          "type": "array"
         }
       },
       "required": [

@@ -1,9 +1,14 @@
 {
   "specific_values": {
     "system": "dnd5e",
-    "character_class": "to be specified",
+    "classes": [
+      {
+        "name": "to be specified",
+        "subclass": "",
+        "level": 1
+      }
+    ],
     "race": "to be specified",
-    "level": 1,
     "experience_points": 0,
     "alignment": "to be specified",
     "size": "Medium",
@@ -50,7 +55,11 @@
       "value": 10
     },
     {
-      "name": "Hit Points",
+      "name": "Maximum Hit Points",
+      "value": 10
+    },
+    {
+      "name": "Current Hit Points",
       "value": 10
     }
   ],

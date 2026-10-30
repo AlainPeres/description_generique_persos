@@ -24,14 +24,13 @@ generic_sagas = Character(
         Attribute(name="Ranged Combat", value=5),
         Attribute(name="Speed", value=8),
 
-        Attribute(name="PhyHP", value=30),
-        Attribute(name="MenHP", value=30),
-        Attribute(name="PhyThreshold", value=10),
-        Attribute(name="MenThreshold", value=10),
-
+        Attribute(name="Physical Wounds", value=0),
+        Attribute(name="Psychical Wounds", value=0),
+        Attribute(name="Physical Stun", value=0),
+        Attribute(name="Psychical Stun", value=0),
+             
         Attribute(name="Protection", value=0),
-        Attribute(name="MaxImpactBonus", value=10),
-        Attribute(name="ReflexDodge", value=4),
+        Attribute(name="MaxImpactBonus", value=10),       
     ],
     skills=[
         Skill(name="Arm Wrestling", category=SkillCategory.BASE, value=0),
