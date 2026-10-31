@@ -28,6 +28,8 @@ generic_dnd5e = Character(
         Attribute(name="Maximum Hit Points", value=10),
         Attribute(name="Current Hit Points", value=10),
     ],
+    # Skill value = proficiency level: 0 none, 1 proficient, 2 expertise;
+    # the total bonus is derived from it, the ability modifier and the level
     skills=[
         Skill(name="Acrobatics", category=SkillCategory.BASE, value=0),
         Skill(name="Animal Handling", category=SkillCategory.BASE, value=0),

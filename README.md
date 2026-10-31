@@ -22,9 +22,10 @@ strict_model.py               StrictModel: common base class, rejects unknown fi
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem
                                imports the SpecificValues union
 systems/
-├── specific_values.py        SpecificValuesNoRules / DnD / Cthulhu / Fate / SagaS + SpecificValues union
+├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS + SpecificValues union
 ├── norules.py                generic_norules
 ├── dnd5e.py                  generic_dnd5e
+├── pathfinder1.py            generic_pf1
 ├── cthulhu.py                generic_cthulhu6
 ├── sagas.py                  generic_sagas
 └── fate.py                   generic_fate
@@ -61,6 +62,7 @@ Character
 ├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
+├── conditions:       list[str]             (lasting effects: curse, disease, long-duration spell …)
 └── specific_values:  SpecificValues | None   (discriminated union on `system`)
 ```
 
@@ -94,7 +96,8 @@ Used only for data that cannot be expressed as `name + int value`:
 | System | Model | Specific fields |
 | --- | --- | --- |
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
-| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `size`, `speed`, `languages` |
+| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `size`, `speed`, `languages`, `saving_throw_proficiencies`; state between rests: `exhaustion` (0–6), `inspiration`, `hit_dice_remaining`, `spell_slots_remaining` (shared by all classes, level 1–9), `pact_slots_remaining`, `prepared_spells`, `resources_remaining` |
+| Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text) |
 | SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text) |
@@ -108,7 +111,8 @@ ready-to-use JSON blueprints:
 | Export | System | Content |
 | --- | --- | --- |
 | `generic_norules.json` | No rules | narrative fields + `tags` only; `attributes`, `skills` and `abilities` are left out of the export |
-| `generic_dnd5e.json` | D&D 5e | 18 base skills + 1 example feat |
+| `generic_dnd5e.json` | D&D 5e | 18 base skills (value = proficiency level: 0 none, 1 proficient, 2 expertise; the total bonus is derived) + 1 example feat |
+| `generic_pf1.json` | Pathfinder 1 | 35 skills (32 base + 3 generic; value = ranks, the total bonus is derived) + 1 example feat |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic); melee weapon skills are left out, players add them as `New` |
 | `generic_sagas.json` | SagaS | 108 skills (92 base + 16 generic) |
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |

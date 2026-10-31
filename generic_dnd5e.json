@@ -17,7 +17,15 @@
     },
     "languages": [
       "Common"
-    ]
+    ],
+    "saving_throw_proficiencies": [],
+    "exhaustion": 0,
+    "inspiration": false,
+    "hit_dice_remaining": null,
+    "spell_slots_remaining": {},
+    "pact_slots_remaining": null,
+    "prepared_spells": [],
+    "resources_remaining": {}
   },
   "name": "Generic D&D 5e Character",
   "description": "to be specified",
@@ -164,5 +172,6 @@
       "origin": "Base"
     }
   ],
-  "equipment": []
+  "equipment": [],
+  "conditions": []
 }

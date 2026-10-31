@@ -216,6 +216,75 @@
       "title": "MentalDisorder",
       "type": "object"
     },
+    "PF1Class": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "archetypes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Archetypes",
+          "type": "array"
+        },
+        "level": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "spells_remaining": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Spells Remaining",
+          "type": "object"
+        },
+        "prepared_spells": {
+          "items": {
+            "$ref": "#/$defs/PreparedSpell"
+          },
+          "title": "Prepared Spells",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "level"
+      ],
+      "title": "PF1Class",
+      "type": "object"
+    },
+    "PreparedSpell": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "level": {
+          "maximum": 9,
+          "minimum": 0,
+          "title": "Level",
+          "type": "integer"
+        },
+        "cast": {
+          "default": false,
+          "title": "Cast",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "level"
+      ],
+      "title": "PreparedSpell",
+      "type": "object"
+    },
     "Skill": {
       "additionalProperties": false,
       "properties": {
@@ -338,6 +407,74 @@
           },
           "title": "Languages",
           "type": "array"
+        },
+        "saving_throw_proficiencies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Saving Throw Proficiencies",
+          "type": "array"
+        },
+        "exhaustion": {
+          "default": 0,
+          "maximum": 6,
+          "minimum": 0,
+          "title": "Exhaustion",
+          "type": "integer"
+        },
+        "inspiration": {
+          "default": false,
+          "title": "Inspiration",
+          "type": "boolean"
+        },
+        "hit_dice_remaining": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hit Dice Remaining"
+        },
+        "spell_slots_remaining": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Spell Slots Remaining",
+          "type": "object"
+        },
+        "pact_slots_remaining": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pact Slots Remaining"
+        },
+        "prepared_spells": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Prepared Spells",
+          "type": "array"
+        },
+        "resources_remaining": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Resources Remaining",
+          "type": "object"
         }
       },
       "required": [
@@ -445,6 +582,130 @@
       "title": "SpecificValuesNoRules",
       "type": "object"
     },
+    "SpecificValuesPF1": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "pf1",
+          "title": "System",
+          "type": "string"
+        },
+        "classes": {
+          "items": {
+            "$ref": "#/$defs/PF1Class"
+          },
+          "minItems": 1,
+          "title": "Classes",
+          "type": "array"
+        },
+        "favored_class": {
+          "default": "",
+          "title": "Favored Class",
+          "type": "string"
+        },
+        "race": {
+          "title": "Race",
+          "type": "string"
+        },
+        "experience_points": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Experience Points",
+          "type": "integer"
+        },
+        "alignment": {
+          "title": "Alignment",
+          "type": "string"
+        },
+        "deity": {
+          "default": "",
+          "title": "Deity",
+          "type": "string"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "speed": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Speed",
+          "type": "object"
+        },
+        "languages": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Languages",
+          "type": "array"
+        },
+        "additional_class_skills": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Additional Class Skills",
+          "type": "array"
+        },
+        "ability_damage": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Ability Damage",
+          "type": "object"
+        },
+        "ability_drain": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Ability Drain",
+          "type": "object"
+        },
+        "negative_levels": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Negative Levels",
+          "type": "integer"
+        },
+        "hero_points": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hero Points"
+        },
+        "resources_remaining": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Resources Remaining",
+          "type": "object"
+        }
+      },
+      "required": [
+        "system",
+        "classes",
+        "race",
+        "alignment"
+      ],
+      "title": "SpecificValuesPF1",
+      "type": "object"
+    },
     "SpecificValuesSagas": {
       "additionalProperties": false,
       "properties": {
@@ -509,6 +770,7 @@
               "dnd5e": "#/$defs/SpecificValuesDnD",
               "fate": "#/$defs/SpecificValuesFate",
               "norules": "#/$defs/SpecificValuesNoRules",
+              "pf1": "#/$defs/SpecificValuesPF1",
               "sagas": "#/$defs/SpecificValuesSagas"
             },
             "propertyName": "system"
@@ -516,6 +778,9 @@
           "oneOf": [
             {
               "$ref": "#/$defs/SpecificValuesDnD"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesPF1"
             },
             {
               "$ref": "#/$defs/SpecificValuesCthulhu"
@@ -594,6 +859,13 @@
         "$ref": "#/$defs/EquipmentItem"
       },
       "title": "Equipment",
+      "type": "array"
+    },
+    "conditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Conditions",
       "type": "array"
     }
   },

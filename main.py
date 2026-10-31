@@ -14,6 +14,7 @@ import json
 
 from models import Character
 from systems.dnd5e import generic_dnd5e
+from systems.pathfinder1 import generic_pf1
 from systems.cthulhu import generic_cthulhu6
 from systems.sagas import generic_sagas
 from systems.fate import generic_fate
@@ -38,6 +39,7 @@ def export_json(path: str, content: str) -> None:
 # Each generic template with its export path and the fields left out of its JSON
 EXPORTS: list[tuple[str, Character, set[str]]] = [
     ("generic_dnd5e.json", generic_dnd5e, set()),
+    ("generic_pf1.json", generic_pf1, set()),
     ("generic_cthulhu6.json", generic_cthulhu6, set()),
     ("generic_sagas.json", generic_sagas, set()),
     ("generic_fate.json", generic_fate, set()),

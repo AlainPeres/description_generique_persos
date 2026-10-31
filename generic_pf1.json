@@ -1,0 +1,268 @@
+{
+  "specific_values": {
+    "system": "pf1",
+    "classes": [
+      {
+        "name": "to be specified",
+        "archetypes": [],
+        "level": 1,
+        "spells_remaining": {},
+        "prepared_spells": []
+      }
+    ],
+    "favored_class": "",
+    "race": "to be specified",
+    "experience_points": 0,
+    "alignment": "to be specified",
+    "deity": "",
+    "size": "Medium",
+    "speed": {
+      "land": 30
+    },
+    "languages": [
+      "Common"
+    ],
+    "additional_class_skills": [],
+    "ability_damage": {},
+    "ability_drain": {},
+    "negative_levels": 0,
+    "hero_points": null,
+    "resources_remaining": {}
+  },
+  "name": "Generic Pathfinder 1 Character",
+  "description": "to be specified",
+  "age": "to be specified",
+  "occupation": "",
+  "background": "to be specified",
+  "additional_information": "to be specified",
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 10
+    },
+    {
+      "name": "Dexterity",
+      "value": 10
+    },
+    {
+      "name": "Constitution",
+      "value": 10
+    },
+    {
+      "name": "Intelligence",
+      "value": 10
+    },
+    {
+      "name": "Wisdom",
+      "value": 10
+    },
+    {
+      "name": "Charisma",
+      "value": 10
+    },
+    {
+      "name": "Armor Class",
+      "value": 10
+    },
+    {
+      "name": "Maximum Hit Points",
+      "value": 10
+    },
+    {
+      "name": "Current Hit Points",
+      "value": 10
+    },
+    {
+      "name": "Nonlethal Damage",
+      "value": 0
+    }
+  ],
+  "skills": [
+    {
+      "name": "Acrobatics",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Appraise",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Bluff",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Climb",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Craft",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Diplomacy",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Disable Device",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Disguise",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Escape Artist",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Fly",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Handle Animal",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Heal",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Intimidate",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Arcana)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Dungeoneering)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Engineering)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Geography)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (History)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Local)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Nature)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Nobility)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Planes)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knowledge (Religion)",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Linguistics",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Perception",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Perform",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Profession",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Ride",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Sense Motive",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Sleight of Hand",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Spellcraft",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Stealth",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Survival",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Swim",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Use Magic Device",
+      "category": "Base",
+      "value": 0
+    }
+  ],
+  "abilities": [
+    {
+      "name": "to be specified",
+      "category": "Feat",
+      "value": null,
+      "description": "",
+      "origin": "Base"
+    }
+  ],
+  "equipment": [],
+  "conditions": []
+}

@@ -26,10 +26,11 @@ Un personnage se décompose en deux parties.
    | `skills`                                                                           | compétences, avec une catégorie            |
    | `abilities`                                                                        | dons, pouvoirs, avantages, sorts…          |
    | `equipment`                                                                        | objets, armes, armures, consommables       |
+   | `conditions`                                                                       | effets durables, en texte libre            |
 
 2. **Une couche spécifique** (`specific_values`), facultative. Elle contient ce
    qui ne rentre pas dans « nom + valeur » : les classes (multiclasse,
-   sous-classes) et la race en D&D, les troubles mentaux en Cthulhu, les
+   sous-classes ou archétypes) et la race en D&D et Pathfinder, les troubles mentaux en Cthulhu, les
    aspects et le stress en Fate, les blessures graves en SagaS, des tags
    libres en sans règles…
 
@@ -46,7 +47,7 @@ mis de côté pour plus tard, donc un état du personnage.
 
 Quand un élément regroupe plusieurs informations, il devient un petit modèle
 plutôt qu'un tuple ou des listes parallèles : `DnDClass` (nom, sous-classe,
-niveau), `MentalDisorder` (nom, durée, description, guéri), `StressBox` et
+niveau), `PF1Class` (nom, archétypes, niveau), `MentalDisorder` (nom, durée, description, guéri), `StressBox` et
 `Consequence` en Fate. Chaque information est nommée, validée, et ne peut pas
 se désynchroniser des autres.
 
@@ -65,10 +66,49 @@ change. En revanche, sont stockés :
   de trop de sources (armure, bouclier, défense sans armure, objets
   magiques, sorts) pour être recalculée sans moteur de règles.
 
+En D&D 5e, la `value` d'une compétence est donc son **niveau de maîtrise**
+(0 = aucune, 1 = maîtrise, 2 = expertise), et non son bonus total : celui-ci
+se calcule à partir du modificateur de caractéristique et du bonus de
+maîtrise, qui dépend du niveau total. Une montée de niveau ne demande ainsi
+aucune correction des compétences.
+
+En Pathfinder 1, la `value` d'une compétence est son **nombre de rangs** :
+ce sont des choix du joueur, impossibles à recalculer. Le total (modificateur
+de caractéristique, +3 de compétence de classe, dons, objets, malus
+d'armure…) se calcule, et le stocker seul ferait perdre les rangs, donc par
+exemple la possibilité d'utiliser une compétence réservée aux personnages
+formés. De même, BBA, jets de sauvegarde, BMO et DMD ne sont pas stockés.
+
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que
 le système n'a pas de coches (le champ n'apparaît alors pas dans le JSON),
 `False`/`True` qu'elle est décochée ou cochée.
+
+## Décrire le personnage entre deux scènes
+
+Le modèle décrit l'état du personnage **entre deux scènes**, pas en plein
+combat : jets contre la mort, concentration, conditions d'un tour et PV
+temporaires ne sont pas stockés. L'ordre d'initiative, la position ou les
+actions du tour appartiennent à la scène, pas au personnage.
+
+Ce qui dure jusqu'au prochain repos est stocké, toujours sous forme de
+**valeurs restantes** (les maximums se calculent) :
+
+- emplacements de sort restants : communs à toutes les classes en D&D
+  (`spell_slots_remaining`, plus `pact_slots_remaining` pour l'occultiste),
+  propres à chaque classe en PF1 (`PF1Class.spells_remaining` pour les
+  lanceurs spontanés, `PF1Class.prepared_spells` pour les lanceurs qui
+  préparent un sort précis dans chaque emplacement) ;
+- ressources de classe : `resources_remaining`, un dictionnaire aux noms
+  libres (`{"Ki": 3}`) plutôt qu'un champ par ressource ;
+- compteurs propres au système : épuisement, inspiration et dés de vie en
+  D&D ; affaiblissement, diminution, niveaux négatifs et points d'héroïsme
+  en PF1.
+
+Les effets durables (malédiction, maladie, sort de longue durée) vont dans
+`Character.conditions`, une liste de textes libres commune à tous les
+systèmes. Les troubles mentaux de Cthulhu et les blessures graves de SagaS
+restent à part : ce sont des séquelles, avec leurs propres informations.
 
 ## Les catégories : deux axes indépendants
 

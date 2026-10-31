@@ -94,3 +94,5 @@ class Character(StrictModel):
     skills: list[Skill] = Field(default_factory=list)
     abilities: list[Ability] = Field(default_factory=list)
     equipment: list[EquipmentItem] = Field(default_factory=list)
+    # Lasting effects (curse, disease, long-duration spell...), free text
+    conditions: list[str] = Field(default_factory=list)
