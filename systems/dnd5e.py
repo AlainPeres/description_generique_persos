@@ -1,3 +1,10 @@
+"""
+Generic D&D 5th edition character template.
+
+Default values ("to be specified", ability scores of 10) are meant to be
+replaced when describing an actual character.
+"""
+
 from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
 from systems.specific_values import SpecificValuesDnD, DnDClass
 
@@ -24,6 +31,10 @@ generic_dnd5e = Character(
         Attribute(name="Wisdom", value=10),
         Attribute(name="Charisma", value=10),
 
+        # Stored although derivable in theory: AC depends on too many sources
+        # (armor, shield, unarmored defense, magic items, spells), and maximum
+        # HP is rolled at each level. Modifiers, proficiency bonus, initiative
+        # and passive Perception are derived, so they are not stored.
         Attribute(name="Armor Class", value=10),
         Attribute(name="Maximum Hit Points", value=10),
         Attribute(name="Current Hit Points", value=10),

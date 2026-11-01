@@ -177,7 +177,8 @@
         "weapon",
         "armor",
         "item",
-        "consumable"
+        "consumable",
+        "money"
       ],
       "title": "ItemCategory",
       "type": "string"
@@ -338,6 +339,12 @@
           "title": "System",
           "type": "string"
         },
+        "skill_value_meaning": {
+          "const": "percentage",
+          "default": "percentage",
+          "title": "Skill Value Meaning",
+          "type": "string"
+        },
         "mental_disorders": {
           "items": {
             "$ref": "#/$defs/MentalDisorder"
@@ -358,6 +365,12 @@
         "system": {
           "const": "dnd5e",
           "title": "System",
+          "type": "string"
+        },
+        "skill_value_meaning": {
+          "const": "proficiency level: 0 none, 1 proficient, 2 expertise",
+          "default": "proficiency level: 0 none, 1 proficient, 2 expertise",
+          "title": "Skill Value Meaning",
           "type": "string"
         },
         "classes": {
@@ -494,6 +507,12 @@
           "title": "System",
           "type": "string"
         },
+        "skill_value_meaning": {
+          "const": "rating on the Fate ladder",
+          "default": "rating on the Fate ladder",
+          "title": "Skill Value Meaning",
+          "type": "string"
+        },
         "HighConcept": {
           "title": "Highconcept",
           "type": "string"
@@ -588,6 +607,12 @@
         "system": {
           "const": "pf1",
           "title": "System",
+          "type": "string"
+        },
+        "skill_value_meaning": {
+          "const": "ranks",
+          "default": "ranks",
+          "title": "Skill Value Meaning",
           "type": "string"
         },
         "classes": {
@@ -712,6 +737,12 @@
         "system": {
           "const": "sagas",
           "title": "System",
+          "type": "string"
+        },
+        "skill_value_meaning": {
+          "const": "skill score",
+          "default": "skill score",
+          "title": "Skill Value Meaning",
           "type": "string"
         },
         "unspent_creation_points": {
@@ -859,6 +890,13 @@
         "$ref": "#/$defs/EquipmentItem"
       },
       "title": "Equipment",
+      "type": "array"
+    },
+    "possessions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Possessions",
       "type": "array"
     },
     "conditions": {

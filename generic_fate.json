@@ -1,6 +1,7 @@
 {
   "specific_values": {
     "system": "fate",
+    "skill_value_meaning": "rating on the Fate ladder",
     "HighConcept": "to be specified",
     "Trouble": "to be specified",
     "Aspects": [
@@ -184,5 +185,6 @@
     }
   ],
   "equipment": [],
+  "possessions": [],
   "conditions": []
 }

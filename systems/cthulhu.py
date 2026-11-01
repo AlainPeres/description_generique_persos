@@ -1,3 +1,10 @@
+"""
+Generic Call of Cthulhu 6th edition character template.
+
+Default values ("to be specified", base skill percentages) are meant to be
+replaced when describing an actual investigator.
+"""
+
 from models import Character, Attribute, Skill, SkillCategory
 from systems.specific_values import SpecificValuesCthulhu
 
@@ -18,11 +25,17 @@ generic_cthulhu6 = Character(
         Attribute(name="Intelligence", value=10),
         Attribute(name="Power", value=10),
         Attribute(name="Education", value=10),
+        # Only current values: the maximums are derived (Sanity 99 - Cthulhu
+        # Mythos, Hit Points (CON+SIZ)/2, Magic Points POW), as are Idea,
+        # Luck, Know (INT, POW, EDU x5) and the damage bonus
         Attribute(name="Current Sanity", value=10),
         Attribute(name="Current Hit Points", value=10),
         Attribute(name="Current Magic Points", value=10),
         Attribute(name="Move", value=8),
     ],
+    # Value = percentage. checked=False: improvement check not ticked yet.
+    # Melee weapon skills are deliberately left out: players add the ones
+    # they use as SkillCategory.NEW.
     skills=[
         Skill(name="Accounting", category=SkillCategory.BASE, value=10, checked=False),
         Skill(name="Anthropology", category=SkillCategory.BASE, value=1, checked=False),
@@ -37,6 +50,7 @@ generic_cthulhu6 = Character(
         Skill(name="Conceal", category=SkillCategory.BASE, value=15, checked=False),
         Skill(name="Craft", category=SkillCategory.GENERIC, value=5, checked=False),
         Skill(name="Credit Rating", category=SkillCategory.BASE, value=15, checked=False),
+        # No check: Cthulhu Mythos never improves through experience
         Skill(name="Cthulhu Mythos", category=SkillCategory.BASE, value=0),
         Skill(name="Disguise", category=SkillCategory.BASE, value=1, checked=False),
         Skill(name="Dodge", category=SkillCategory.BASE, value=20, checked=False),
@@ -75,11 +89,13 @@ generic_cthulhu6 = Character(
         Skill(name="Swim", category=SkillCategory.BASE, value=25, checked=False),
         Skill(name="Throw", category=SkillCategory.BASE, value=25, checked=False),
         Skill(name="Track", category=SkillCategory.BASE, value=10, checked=False),
+        # Firearms
         Skill(name="Handgun", category=SkillCategory.BASE, value=20, checked=False),
         Skill(name="Machine Gun", category=SkillCategory.BASE, value=15, checked=False),
         Skill(name="Rifle", category=SkillCategory.BASE, value=25, checked=False),
         Skill(name="Shotgun", category=SkillCategory.BASE, value=30, checked=False),
         Skill(name="SMG", category=SkillCategory.BASE, value=15, checked=False),
+        # Unarmed attacks
         Skill(name="Fist", category=SkillCategory.BASE, value=50, checked=False),
         Skill(name="Grapple", category=SkillCategory.BASE, value=25, checked=False),
         Skill(name="Head", category=SkillCategory.BASE, value=10, checked=False),

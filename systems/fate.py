@@ -1,3 +1,11 @@
+"""
+Generic Fate Core character template.
+
+Default values ("to be specified", skills at +0) are meant to be replaced
+when describing an actual character. Fate has no numeric attributes: the
+character is described by aspects, skills, stunts, stress and consequences.
+"""
+
 from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
 from systems.specific_values import SpecificValuesFate, StressBox, Consequence
 
@@ -14,13 +22,20 @@ generic_fate = Character(
         Aspects=["to be specified"],
         Extras=["to be specified"],
         FatePoints=0,
-        Refresh=2, 
+        Refresh=2,
+        # Every character has 2 boxes per track; boxes 3 and 4 are unlocked
+        # by Physique (physical) or Will (mental), hence available=False here.
+        # Exception to the no-derived-values rule, like AC in D&D and PF1:
+        # `available` is stored because extras, stunts and house rules often
+        # change it.
         PhysicalStress={"Box 1": StressBox(), "Box 2": StressBox(),
                         "Box 3": StressBox(available=False),
                         "Box 4": StressBox(available=False)},
         MentalStress={"Box 1": StressBox(), "Box 2": StressBox(),
                       "Box 3": StressBox(available=False),
                       "Box 4": StressBox(available=False)},
+        # Mild, Moderate and Severe absorb 2, 4 and 6 stress. The extra mild
+        # slots are unlocked by a Superb (+5) Physique or Will.
         Consequences={"Mild": Consequence(value=2),
                       "Moderate": Consequence(value=4),
                       "Severe": Consequence(value=6),
@@ -47,6 +62,7 @@ generic_fate = Character(
         Skill(name="Stealth", category=SkillCategory.BASE, value=0),
         Skill(name="Will", category=SkillCategory.BASE, value=0),       
     ],
+    # Stunts are Feat abilities, flagged as such in their description
     abilities=[
         Ability(name="to be specified", category=AbilityCategory.FEAT,
                 description="Stunt"),

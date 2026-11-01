@@ -4,8 +4,8 @@ Multi-system RPG character modeling with **Pydantic v2**.
 
 ## Goals
 
-- Describe **an RPG character** for many systems (D&D 5e, Call of Cthulhu,
-  Fate, SagaS, no rules…) with **a single Python model** (`Character`), then
+- Describe **an RPG character** for many systems (D&D 5e, Pathfinder 1,
+  Call of Cthulhu, Fate, SagaS, no rules…) with **a single Python model** (`Character`), then
   export it to JSON and read it back.
 - Make **adding a new system** simple.
 - Produce a JSON Schema to check that **a character JSON matches the model**.
@@ -61,10 +61,36 @@ Character
 │                                            checked is omitted from JSON when None)
 ├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
-├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …)
+├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …; money is an item
+│                                            whose quantity is the amount)
+├── possessions:      list[str]             (what is not carried equipment: house, land, shares …)
 ├── conditions:       list[str]             (lasting effects: curse, disease, long-duration spell …)
 └── specific_values:  SpecificValues | None   (discriminated union on `system`)
 ```
+
+## What is stored
+
+**Only what cannot be computed from other values is stored.** Modifiers,
+proficiency bonus, BAB, saves, Idea / Luck / Know, damage bonus, total
+level, Sanity / HP / MP maximums in Cthulhu… are left out: storing them
+would risk inconsistencies when the source value changes. Stored instead:
+
+- *current* values (`Current Sanity`, `Current Hit Points`…), which change
+  during play;
+- maximums that cannot be computed, such as `Maximum Hit Points` in D&D and
+  PF1, rolled at each level;
+- two **exceptions**, derivable in theory but depending on too many sources
+  to be recomputed without a rules engine:
+  - `Armor Class` in D&D and PF1 (armor, shield, unarmored defense, magic
+    items, spells…);
+  - `StressBox.available` / `Consequence.available` in Fate: in Fate Core
+    they follow from Physique or Will, but extras, stunts and house rules
+    often change them.
+
+The model describes a character **between two scenes**, not in mid-combat:
+death saves, concentration, one-round conditions and temporary HP are not
+stored. What lasts until the next rest is stored as *remaining* values
+(spell slots, class resources, hit dice…), the maximums being derived.
 
 ## Generic layer — utility models
 
@@ -73,7 +99,7 @@ Character
 | `Attribute` | — | any numeric stat (STR, DEX, HP …) |
 | `Skill` | `SkillCategory` | Base / New / Generic / Specialization |
 | `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage / Spell |
-| `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable |
+| `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable / money |
 
 Two orthogonal axes:
 
@@ -91,7 +117,15 @@ effect going in `description`.
 
 ## System-specific layer — `specific_values` models
 
-Used only for data that cannot be expressed as `name + int value`:
+Used only for data that cannot be expressed as `name + int value`.
+
+Every block whose system has skills also declares `skill_value_meaning`, a
+single-value `Literal` with a default (like `system`): the meaning of
+`Skill.value` is a fixed convention per system (`proficiency level: 0 none,
+1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
+Cthulhu, `rating on the Fate ladder` for Fate, `skill score` for SagaS). It
+is written in each JSON so the file explains itself, and any other value is
+rejected.
 
 | System | Model | Specific fields |
 | --- | --- | --- |
@@ -120,7 +154,7 @@ ready-to-use JSON blueprints:
 
 ## Adding a new system
 
-1. In `systems/specific_values.py`, create `SpecificValuesXxx(StrictModel)` with `system: Literal["xxx"]` and add it to the `SpecificValues` union at the bottom of that file
+1. In `systems/specific_values.py`, create `SpecificValuesXxx(StrictModel)` with `system: Literal["xxx"]` (plus `skill_value_meaning` if the system has skills) and add it to the `SpecificValues` union at the bottom of that file
 2. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
 3. Import the new `generic_xxx` instance in `main.py` and add it to the `EXPORTS` list
 

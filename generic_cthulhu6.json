@@ -1,6 +1,7 @@
 {
   "specific_values": {
     "system": "cthulhu6",
+    "skill_value_meaning": "percentage",
     "mental_disorders": []
   },
   "name": "Generic Cthulhu 6 Character",
@@ -422,5 +423,6 @@
   ],
   "abilities": [],
   "equipment": [],
+  "possessions": [],
   "conditions": []
 }

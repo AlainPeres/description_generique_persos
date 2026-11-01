@@ -17,7 +17,14 @@ from typing import Annotated, Literal
 
 from strict_model import StrictModel
 
-# Only what remains is stored: maximums (slots per level, uses per day) are derived
+# Conventions shared by every block:
+# - `system` is a single-value Literal: it tells Pydantic which block to use
+#   (see the SpecificValues union at the bottom of this file);
+# - every block whose system has skills declares `skill_value_meaning`: the
+#   meaning of Skill.value is a fixed convention per system, written in each
+#   JSON so the file explains itself; any other value is rejected;
+# - only what remains is stored: maximums (slots per level, uses per day)
+#   are derived. These two types carry the matching bounds.
 SpellLevel = Annotated[int, Field(ge=1, le=9)]
 Remaining = Annotated[int, Field(ge=0)]
 
@@ -25,8 +32,8 @@ Remaining = Annotated[int, Field(ge=0)]
 # System-specific block: No Rules
 # ---------------------------------------------------------------------------
 class SpecificValuesNoRules(StrictModel):
-    system: Literal["norules"]   
-    tags: list[str] = Field(default_factory=list)
+    system: Literal["norules"]
+    tags: list[str] = Field(default_factory=list)   # free descriptors: "brave", "noble"...
 
 
 # ---------------------------------------------------------------------------
@@ -39,15 +46,19 @@ class DnDClass(StrictModel):
 
 class SpecificValuesDnD(StrictModel):
     system: Literal["dnd5e"]
+    skill_value_meaning: Literal["proficiency level: 0 none, 1 proficient, 2 expertise"] = (
+        "proficiency level: 0 none, 1 proficient, 2 expertise"
+    )
     # One entry per class (several when multiclassing); the total level is
     # the sum of the class levels, so it is not stored
     classes: list[DnDClass] = Field(min_length=1)
-    race: str
+    race: str                 # or species
     experience_points: int = Field(default=0, ge=0)
-    alignment: str
-    size: str | None = None
-    speed: dict[str, int] = Field(default_factory=dict)
+    alignment: str            # e.g. "Lawful Good"
+    size: str | None = None   # e.g. "Medium"
+    speed: dict[str, int] = Field(default_factory=dict)   # in feet, per mode: {"walk": 30, "fly": 60}
     languages: list[str] = Field(default_factory=list)
+    # Saves are stored as proficiencies only; their bonus is derived
     saving_throw_proficiencies: list[str] = Field(default_factory=list)  # e.g. ["Strength", "Constitution"]
     # State between two rests
     exhaustion: int = Field(default=0, ge=0, le=6)
@@ -65,6 +76,8 @@ class SpecificValuesDnD(StrictModel):
         return check_unique_class_names(classes)
 
 
+# Shared by D&D and PF1: a class taken again is a higher level, not a new entry.
+# Names are compared without case or surrounding spaces ("Fighter" = " fighter").
 def check_unique_class_names[C: DnDClass | PF1Class](classes: list[C]) -> list[C]:
     names = [c.name.strip().casefold() for c in classes]
     if len(names) != len(set(names)):
@@ -75,9 +88,10 @@ def check_unique_class_names[C: DnDClass | PF1Class](classes: list[C]) -> list[C
 # ---------------------------------------------------------------------------
 # System-specific block: Pathfinder 1st edition
 # ---------------------------------------------------------------------------
+# One entry per prepared slot: the same spell prepared twice appears twice
 class PreparedSpell(StrictModel):
     name: str
-    level: int = Field(ge=0, le=9)
+    level: int = Field(ge=0, le=9)   # 0 = orison / cantrip
     cast: bool = False        # already used since it was prepared
 
 class PF1Class(StrictModel):
@@ -90,15 +104,16 @@ class PF1Class(StrictModel):
 
 class SpecificValuesPF1(StrictModel):
     system: Literal["pf1"]
+    skill_value_meaning: Literal["ranks"] = "ranks"
     # One entry per class; the total level is their sum, so it is not stored
     classes: list[PF1Class] = Field(min_length=1)
-    favored_class: str = ""
+    favored_class: str = ""   # name of one of the classes
     race: str
     experience_points: int = Field(default=0, ge=0)
-    alignment: str
+    alignment: str            # e.g. "Chaotic Neutral"
     deity: str = ""
-    size: str | None = None
-    speed: dict[str, int] = Field(default_factory=dict)
+    size: str | None = None   # e.g. "Medium"
+    speed: dict[str, int] = Field(default_factory=dict)   # in feet, per mode: {"land": 30, "swim": 15}
     languages: list[str] = Field(default_factory=list)
     # Class skills granted by traits; those from the class lists are derived
     additional_class_skills: list[str] = Field(default_factory=list)
@@ -126,12 +141,17 @@ class MentalDisorder(StrictModel):
 
 class SpecificValuesCthulhu(StrictModel):
     system: Literal["cthulhu6"]
+    skill_value_meaning: Literal["percentage"] = "percentage"
+    # Everything else (characteristics, current Sanity, skills and their
+    # improvement checks) lives in the generic layer
     mental_disorders: list[MentalDisorder] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
 # System-specific block: Fate
 # ---------------------------------------------------------------------------
+# `available` (StressBox and Consequence) follows from Physique / Will in Fate
+# Core, but is stored anyway: extras, stunts and house rules often change it
 class StressBox(StrictModel):
     available: bool = True    # the box exists for this character
     checked: bool = False     # the box is ticked
@@ -143,14 +163,17 @@ class Consequence(StrictModel):
 
 class SpecificValuesFate(StrictModel):
     system: Literal["fate"]
-    HighConcept: str
-    Trouble: str
-    Aspects: list[str] = Field(default_factory=list,max_length=3)
-    Extras: list[str] = Field(default_factory=list)
-    FatePoints: int
-    Refresh: int
+    skill_value_meaning: Literal["rating on the Fate ladder"] = "rating on the Fate ladder"
+    HighConcept: str          # main aspect: who the character is
+    Trouble: str              # aspect that gets the character into trouble
+    Aspects: list[str] = Field(default_factory=list, max_length=3)  # the other aspects
+    Extras: list[str] = Field(default_factory=list)   # gear, allies, powers given as aspects
+    FatePoints: int           # current points
+    Refresh: int              # points restored at the start of a session
+    # Stress tracks, keyed by box name ("Box 1" to "Box 4")
     PhysicalStress: dict[str, StressBox] = Field(default_factory=dict, max_length=4)
     MentalStress: dict[str, StressBox] = Field(default_factory=dict, max_length=4)
+    # Keyed by slot name ("Mild", "Moderate", "Severe", "Mild Physical"...)
     Consequences: dict[str, Consequence] = Field(default_factory=dict, max_length=5)
 
 # ---------------------------------------------------------------------------
@@ -158,7 +181,9 @@ class SpecificValuesFate(StrictModel):
 # ---------------------------------------------------------------------------
 class SpecificValuesSagas(StrictModel):
     system: Literal["sagas"]
+    skill_value_meaning: Literal["skill score"] = "skill score"
     unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
+    # Lasting after-effects, free text; current wounds and stun are attributes
     serious_physical_injuries: list[str] = Field(default_factory=list)
     serious_psychical_injuries: list[str] = Field(default_factory=list)
 

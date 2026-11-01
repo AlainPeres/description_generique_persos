@@ -1,6 +1,7 @@
 {
   "specific_values": {
     "system": "sagas",
+    "skill_value_meaning": "skill score",
     "unspent_creation_points": 0,
     "serious_physical_injuries": [],
     "serious_psychical_injuries": []
@@ -629,5 +630,6 @@
   ],
   "abilities": [],
   "equipment": [],
+  "possessions": [],
   "conditions": []
 }

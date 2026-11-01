@@ -1,6 +1,7 @@
 {
   "specific_values": {
     "system": "dnd5e",
+    "skill_value_meaning": "proficiency level: 0 none, 1 proficient, 2 expertise",
     "classes": [
       {
         "name": "to be specified",
@@ -173,5 +174,6 @@
     }
   ],
   "equipment": [],
+  "possessions": [],
   "conditions": []
 }

@@ -1,3 +1,10 @@
+"""
+Generic Pathfinder 1st edition character template.
+
+Default values ("to be specified", ability scores of 10, no ranks) are meant
+to be replaced when describing an actual character.
+"""
+
 from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
 from systems.specific_values import SpecificValuesPF1, PF1Class
 
@@ -24,6 +31,10 @@ generic_pf1 = Character(
         Attribute(name="Wisdom", value=10),
         Attribute(name="Charisma", value=10),
 
+        # Stored although AC is derivable in theory: it depends on too many
+        # sources (armor, shield, Dexterity, size, natural armor, deflection,
+        # magic items, spells); maximum HP is rolled at each level.
+        # BAB, saves, CMB, CMD and initiative are derived, so they are not stored.
         Attribute(name="Armor Class", value=10),
         Attribute(name="Maximum Hit Points", value=10),
         Attribute(name="Current Hit Points", value=10),
@@ -36,6 +47,7 @@ generic_pf1 = Character(
         Skill(name="Appraise", category=SkillCategory.BASE, value=0),
         Skill(name="Bluff", category=SkillCategory.BASE, value=0),
         Skill(name="Climb", category=SkillCategory.BASE, value=0),
+        # Craft, Perform and Profession are open-ended: "Craft (Weapons)"...
         Skill(name="Craft", category=SkillCategory.GENERIC, value=0),
         Skill(name="Diplomacy", category=SkillCategory.BASE, value=0),
         Skill(name="Disable Device", category=SkillCategory.BASE, value=0),
@@ -45,6 +57,7 @@ generic_pf1 = Character(
         Skill(name="Handle Animal", category=SkillCategory.BASE, value=0),
         Skill(name="Heal", category=SkillCategory.BASE, value=0),
         Skill(name="Intimidate", category=SkillCategory.BASE, value=0),
+        # The ten Knowledge skills form a closed list, hence BASE
         Skill(name="Knowledge (Arcana)", category=SkillCategory.BASE, value=0),
         Skill(name="Knowledge (Dungeoneering)", category=SkillCategory.BASE, value=0),
         Skill(name="Knowledge (Engineering)", category=SkillCategory.BASE, value=0),

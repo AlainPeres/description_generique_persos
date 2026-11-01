@@ -3,7 +3,7 @@
 ## Le but
 
 - Décrire **un personnage de jeu de rôle**, pour un grand nombre de systèmes
-  (D&D 5e, L'Appel de Cthulhu, Fate, SagaS, sans règles…), avec **un seul modèle
+  (D&D 5e, Pathfinder 1, L'Appel de Cthulhu, Fate, SagaS, sans règles…), avec **un seul modèle
   Python** (`Character`, Pydantic v2), puis l'exporter et le relire en JSON.
 
 - Rendre plus simple **l'introduction d'un nouveau système**.
@@ -19,14 +19,15 @@ Un personnage se décompose en deux parties.
 1. **Une couche générique**, commune à tous les systèmes. Presque tout ce
    qu'on trouve sur une fiche se ramène à des listes de « nom + valeur » :
 
-   | Champ                                                                              | Contenu                                    |
-   | ---------------------------------------------------------------------------------- | ------------------------------------------ |
-   | `name`, `description`, `age`, `occupation`, `background`, `additional_information` | texte libre                                |
-   | `attributes`                                                                       | caractéristiques chiffrées (FOR, DEX, PV…) |
-   | `skills`                                                                           | compétences, avec une catégorie            |
-   | `abilities`                                                                        | dons, pouvoirs, avantages, sorts…          |
-   | `equipment`                                                                        | objets, armes, armures, consommables       |
-   | `conditions`                                                                       | effets durables, en texte libre            |
+   | Champ                                                                              | Contenu                                                                            |
+   | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+   | `name`, `description`, `age`, `occupation`, `background`, `additional_information` | texte libre                                                                        |
+   | `attributes`                                                                       | caractéristiques chiffrées (FOR, DEX, PV…)                                         |
+   | `skills`                                                                           | compétences, avec une catégorie                                                    |
+   | `abilities`                                                                        | dons, pouvoirs, avantages, sorts…                                                  |
+   | `equipment`                                                                        | objets, armes, armures, consommables, monnaie (la somme est la quantité)           |
+   | `possessions`                                                                      | biens qui ne sont pas de l'équipement transporté (maison, terres…), en texte libre |
+   | `conditions`                                                                       | effets durables, en texte libre                                                    |
 
 2. **Une couche spécifique** (`specific_values`), facultative. Elle contient ce
    qui ne rentre pas dans « nom + valeur » : les classes (multiclasse,
@@ -60,11 +61,31 @@ change. En revanche, sont stockés :
 
 - les valeurs *actuelles* (`Current Sanity`, `Current Hit Points`…), qui
   évoluent en jeu ;
-- les maximums qui ne se calculent pas, comme les PV maximum en D&D, tirés
-  aux dés à chaque niveau (`Maximum Hit Points`) ;
-- la classe d'armure en D&D (`Armor Class`) : en théorie dérivée, elle dépend
-  de trop de sources (armure, bouclier, défense sans armure, objets
-  magiques, sorts) pour être recalculée sans moteur de règles.
+- les maximums qui ne se calculent pas, comme les PV maximum en D&D et en
+  PF1, tirés aux dés à chaque niveau (`Maximum Hit Points`) ;
+- deux **exceptions**, en théorie dérivées mais stockées parce qu'elles
+  dépendent de trop de sources pour être recalculées sans moteur de règles :
+  - la classe d'armure en D&D et en PF1 (`Armor Class`) : armure, bouclier,
+    défense sans armure, objets magiques, sorts… ;
+  - la disponibilité des cases de stress et des conséquences en Fate
+    (`StressBox.available`, `Consequence.available`) : en Fate Core, elle
+    découle du niveau de Physique ou de Volonté, mais les extras, les
+    prouesses et les règles maison la modifient souvent.
+
+Le sens de `Skill.value` est une **convention fixe par système**, choisie par
+le modèle (ce ne sont pas les règles du jeu qui l'imposent). Chaque bloc
+spécifique d'un système à compétences la déclare dans un champ
+`skill_value_meaning` à valeur unique (`Literal`), comme `system` : il a une
+valeur par défaut, apparaît dans chaque JSON pour que le fichier s'explique
+seul, et toute autre valeur est refusée.
+
+| Système  | `skill_value_meaning`                                   |
+| -------- | ------------------------------------------------------- |
+| D&D 5e   | `proficiency level: 0 none, 1 proficient, 2 expertise`  |
+| PF1      | `ranks`                                                 |
+| Cthulhu  | `percentage`                                            |
+| Fate     | `rating on the Fate ladder`                             |
+| SagaS    | `skill score`                                           |
 
 En D&D 5e, la `value` d'une compétence est donc son **niveau de maîtrise**
 (0 = aucune, 1 = maîtrise, 2 = expertise), et non son bonus total : celui-ci
@@ -198,7 +219,8 @@ Un champ exclu reprend sa valeur par défaut quand on relit le JSON.
 ## Ajouter un système
 
 1. Dans `systems/specific_values.py`, créer `SpecificValuesXxx(StrictModel)` avec
-   `system: Literal["xxx"]`, puis l'ajouter à l'union `SpecificValues`.
+   `system: Literal["xxx"]` (et `skill_value_meaning` si le système a des
+   compétences), puis l'ajouter à l'union `SpecificValues`.
 2. Créer `systems/xxx.py` avec un `generic_xxx = Character(...)`, en mettant
    le maximum de données dans les listes génériques.
 3. Dans `main.py`, importer `generic_xxx` et l'ajouter à la liste `EXPORTS`.

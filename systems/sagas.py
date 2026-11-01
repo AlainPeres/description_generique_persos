@@ -1,3 +1,11 @@
+"""
+Generic SagaS character template.
+
+Default values ("to be specified", characteristics of 5, base skill scores)
+are meant to be replaced when describing an actual character. "Psychical"
+is the system's own term and is kept as is.
+"""
+
 from models import Character, Attribute, Skill, SkillCategory
 from systems.specific_values import SpecificValuesSagas
 
@@ -10,6 +18,7 @@ generic_sagas = Character(
     additional_information="to be specified",   
     specific_values=SpecificValuesSagas(system="sagas"),
     attributes=[
+        # Characteristics
         Attribute(name="Strength", value=5),
         Attribute(name="Agility", value=5),
         Attribute(name="Endurance", value=5),
@@ -19,19 +28,24 @@ generic_sagas = Character(
         Attribute(name="Presence", value=5),
         Attribute(name="Instinct", value=5),
 
+        # Combat values
         Attribute(name="Initiative", value=5),
         Attribute(name="Close Combat", value=5),
         Attribute(name="Ranged Combat", value=5),
         Attribute(name="Speed", value=8),
 
+        # Current wounds and stun; lasting serious injuries are kept apart,
+        # as text, in specific_values
         Attribute(name="Physical Wounds", value=0),
         Attribute(name="Psychical Wounds", value=0),
         Attribute(name="Physical Stun", value=0),
         Attribute(name="Psychical Stun", value=0),
-             
+
+        # Armor and damage
         Attribute(name="Protection", value=0),
         Attribute(name="MaxImpactBonus", value=10),       
     ],
+    # Value = skill score; GENERIC skills are open-ended ("Climb (...)")
     skills=[
         Skill(name="Arm Wrestling", category=SkillCategory.BASE, value=0),
         Skill(name="Weight Lifting", category=SkillCategory.BASE, value=0),
