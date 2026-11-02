@@ -17,14 +17,14 @@ Only the schema lives here. Per-system character data lives in systems/.
 """
 
 from enum import Enum
-from pydantic import Field
-from typing import Any
+from pydantic import Field, model_validator
+from typing import Any, Self
 
 from strict_model import StrictModel
 
 # Union of every system-specific block, defined in systems/specific_values.py
 # so that adding a new system never requires touching this file.
-from systems.specific_values import SpecificValues
+from systems.specific_values import SpecificValues, SpecificValuesDnD
 
 
 # ---------------------------------------------------------------------------
@@ -120,3 +120,17 @@ class Character(StrictModel):
     possessions: list[str] = Field(default_factory=list)
     # Lasting effects (curse, disease, long-duration spell...), free text
     conditions: list[str] = Field(default_factory=list)
+
+    # Cross-layer check: in D&D, prepared_spells (specific layer) names Spell
+    # abilities (generic layer), so a typo would point to no spell. Names are
+    # compared without case or surrounding spaces, as for classes.
+    @model_validator(mode="after")
+    def prepared_spells_are_known(self) -> Self:
+        if isinstance(self.specific_values, SpecificValuesDnD):
+            known = {a.name.strip().casefold() for a in self.abilities
+                     if a.category == AbilityCategory.SPELL}
+            unknown = [s for s in self.specific_values.prepared_spells
+                       if s.strip().casefold() not in known]
+            if unknown:
+                raise ValueError(f"prepared spells without a matching Spell ability: {unknown}")
+        return self

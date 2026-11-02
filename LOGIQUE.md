@@ -120,8 +120,26 @@ Ce qui dure jusqu'au prochain repos est stocké, toujours sous forme de
   propres à chaque classe en PF1 (`PF1Class.spells_remaining` pour les
   lanceurs spontanés, `PF1Class.prepared_spells` pour les lanceurs qui
   préparent un sort précis dans chaque emplacement) ;
+- dans ces dictionnaires d'emplacements, **un niveau absent veut dire que
+  tous ses emplacements sont disponibles** : après un repos long, on a `{}`,
+  et un niveau épuisé s'écrit `0`. Exemple : un magicien 5 qui a lancé deux
+  *Bouclier* et deux *Boule de feu* a `{1: 2, 3: 0}` ;
+- en D&D, lancer un sort préparé consomme **un emplacement, pas le sort** :
+  tous les `prepared_spells` restent disponibles tant qu'il reste un
+  emplacement de niveau suffisant. En PF1 au contraire, chaque exemplaire
+  préparé est consommé (`PreparedSpell.cast`) ;
+- toujours en D&D, les `Ability` de catégorie `Spell` disent quels sorts le
+  personnage **connaît** (avec leur effet), `prepared_spells` lesquels il peut
+  lancer **aujourd'hui**, et `spell_slots_remaining` **combien de fois**.
+  `prepared_spells` vide veut dire que tous les sorts connus sont
+  disponibles : on ne le remplit que pour les classes qui connaissent plus de
+  sorts qu'elles n'en préparent (magicien). `Character` vérifie que chaque
+  nom de `prepared_spells` correspond à une `Ability` de catégorie `Spell`,
+  sans tenir compte de la casse ;
 - ressources de classe : `resources_remaining`, un dictionnaire aux noms
-  libres (`{"Ki": 3}`) plutôt qu'un champ par ressource ;
+  libres (`{"Ki": 3}`) plutôt qu'un champ par ressource. Les sorts lancés
+  une fois par repos sans emplacement (sorts raciaux, de dons, *Mystic
+  Arcanum*…) y figurent aussi, sous le nom du sort ;
 - compteurs propres au système : épuisement, inspiration et dés de vie en
   D&D ; affaiblissement, diminution, niveaux négatifs et points d'héroïsme
   en PF1.

@@ -12,6 +12,7 @@
     "race": "to be specified",
     "experience_points": 0,
     "alignment": "to be specified",
+    "deity": "",
     "size": "Medium",
     "speed": {
       "walk": 30

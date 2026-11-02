@@ -395,6 +395,11 @@
           "title": "Alignment",
           "type": "string"
         },
+        "deity": {
+          "default": "",
+          "title": "Deity",
+          "type": "string"
+        },
         "size": {
           "anyOf": [
             {

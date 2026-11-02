@@ -55,6 +55,7 @@ class SpecificValuesDnD(StrictModel):
     race: str                 # or species
     experience_points: int = Field(default=0, ge=0)
     alignment: str            # e.g. "Lawful Good"
+    deity: str = ""           # empty = none; e.g. "Tyr", "Pelor" (depends on the setting)
     size: str | None = None   # e.g. "Medium"
     speed: dict[str, int] = Field(default_factory=dict)   # in feet, per mode: {"walk": 30, "fly": 60}
     languages: list[str] = Field(default_factory=list)
@@ -64,11 +65,21 @@ class SpecificValuesDnD(StrictModel):
     exhaustion: int = Field(default=0, ge=0, le=6)
     inspiration: bool = False
     hit_dice_remaining: int | None = Field(default=None, ge=0)     # None = all available
-    # Slots are shared by all classes; pact magic (warlock) is separate
+    # Slots are shared by all classes; pact magic (warlock) is separate.
+    # A missing level means all its slots are available, so a character
+    # after a long rest has {}; a spent level is written as 0.
+    # e.g. Wizard 5 after two Shields and two Fireballs: {1: 2, 3: 0}
     spell_slots_remaining: dict[SpellLevel, Remaining] = Field(default_factory=dict)
     pact_slots_remaining: int | None = Field(default=None, ge=0)   # None = no warlock levels
-    prepared_spells: list[str] = Field(default_factory=list)       # names of Spell abilities
-    resources_remaining: dict[str, Remaining] = Field(default_factory=dict)  # e.g. {"Ki": 3}
+    # Names of Spell abilities (checked by Character). Empty = every Spell
+    # ability is available: only fill it for classes that know more spells
+    # than they prepare, such as the wizard. Unlike PF1, casting a prepared
+    # spell spends a slot, not the spell: every prepared spell stays
+    # available while a slot of a high enough level remains.
+    prepared_spells: list[str] = Field(default_factory=list)
+    # Class resources, and spells cast once per rest without a slot (racial,
+    # feat, Mystic Arcanum...), e.g. {"Ki": 3, "Hellish Rebuke (Infernal Legacy)": 1}
+    resources_remaining: dict[str, Remaining] = Field(default_factory=dict)
 
     @field_validator("classes")
     @classmethod
@@ -98,8 +109,9 @@ class PF1Class(StrictModel):
     name: str                                            # e.g. "Fighter"
     archetypes: list[str] = Field(default_factory=list)  # PF1 allows several per class
     level: int = Field(ge=1, le=20)
-    # Each class has its own spells per day
-    spells_remaining: dict[SpellLevel, Remaining] = Field(default_factory=dict)  # spontaneous casters
+    # Each class has its own spells per day. Spontaneous casters: a missing
+    # level means all its spells per day are available, a spent level is 0.
+    spells_remaining: dict[SpellLevel, Remaining] = Field(default_factory=dict)
     prepared_spells: list[PreparedSpell] = Field(default_factory=list)          # prepared casters
 
 class SpecificValuesPF1(StrictModel):
@@ -111,7 +123,7 @@ class SpecificValuesPF1(StrictModel):
     race: str
     experience_points: int = Field(default=0, ge=0)
     alignment: str            # e.g. "Chaotic Neutral"
-    deity: str = ""
+    deity: str = ""           # empty = none; e.g. "Iomedae", "Desna"
     size: str | None = None   # e.g. "Medium"
     speed: dict[str, int] = Field(default_factory=dict)   # in feet, per mode: {"land": 30, "swim": 15}
     languages: list[str] = Field(default_factory=list)
