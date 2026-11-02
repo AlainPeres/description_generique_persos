@@ -20,7 +20,9 @@ system's character data lives in its own module under `systems/`:
 ```text
 strict_model.py               StrictModel: common base class, rejects unknown fields
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem
-                               imports the SpecificValues union
+                               imports the SpecificValues union; Character checks
+                               what spans both layers (D&D prepared spells,
+                               SagaS new-skill attributes)
 systems/
 ├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS + SpecificValues union
 ├── norules.py                generic_norules
@@ -57,8 +59,8 @@ each object with `"additionalProperties": false` accordingly.
 Character
 ├── name, description, age, occupation, background, additional_information   (free text)
 ├── attributes:       list[Attribute]       (name + int value)
-├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked;
-│                                            checked is omitted from JSON when None)
+├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked
+│                                            and attribute; both omitted from JSON when None)
 ├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …; money is an item
@@ -73,19 +75,29 @@ Character
 **Only what cannot be computed from other values is stored.** Modifiers,
 proficiency bonus, BAB, saves, Armor Class in D&D and PF1 (computed from
 class, race, armor, shield, items and active spells), Idea / Luck / Know,
-damage bonus, total level, Sanity / HP / MP maximums in Cthulhu, Protection
-and MaxImpactBonus in SagaS… are left
-out and computed **outside the model**, by the tools that read the character: storing them
-would risk inconsistencies when the source value changes. Stored instead:
+damage bonus, total level, Sanity / HP / MP maximums in Cthulhu, skill
+levels, Protection, MaxImpactBonus, hit points, shock thresholds and Reflex
+Defense in SagaS… are left out: storing them would risk inconsistencies when
+the source value changes. They are computed **outside the model**, by the
+tools that read the character.
 
-- *current* values (`Current Sanity`, `Current Hit Points`…), which change
-  during play;
+Stored instead:
+
+- *current* values (`Current Sanity`, `Current Hit Points`, SagaS wounds and
+  stun…), which change during play;
 - maximums that cannot be computed, such as `Maximum Hit Points` in D&D and
   PF1, rolled at each level;
 - one **exception**, derivable in theory but stored anyway:
   `StressBox.available` / `Consequence.available` in Fate. In Fate Core they
   follow from Physique or Will, but extras, stunts and house rules often
   change them.
+
+Each block lists the derived values of its system in a fixed
+`derived_values` field (list of `DerivedValue`: name, sources or formula),
+so a reader of the JSON knows what exists and the external calculator knows
+what to produce. Like `skill_value_meaning`, it has a default and any other
+value is rejected (through the `fixed(...)` validator, since `Literal`
+cannot hold a list). Fate and no rules have none.
 
 The model describes a character **between two scenes**, not in mid-combat:
 death saves, concentration, one-round conditions and temporary HP are not
@@ -123,10 +135,9 @@ Every block whose system has skills also declares `skill_value_meaning`, a
 single-value `Literal` with a default (like `system`): the meaning of
 `Skill.value` is a fixed convention per system (`proficiency level: 0 none,
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
-Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS, the skill level being associated attribute +
-learning level). It
-is written in each JSON so the file explains itself, and any other value is
-rejected.
+Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS,
+the skill level being associated attribute + learning level). It is written
+in each JSON so the file explains itself, and any other value is rejected.
 
 | System | Model | Specific fields |
 | --- | --- | --- |
@@ -135,7 +146,7 @@ rejected.
 | Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
-| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text) |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text); a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are stored like the main ones (their formula only initializes them); social class goes in `occupation`, species in `description` |
 
 ## Generic templates
 
@@ -149,13 +160,13 @@ ready-to-use JSON blueprints:
 | `generic_dnd5e.json` | D&D 5e | 18 base skills (value = proficiency level: 0 none, 1 proficient, 2 expertise; the total bonus is derived) + 1 example feat |
 | `generic_pf1.json` | Pathfinder 1 | 35 skills (32 base + 3 generic; value = ranks, the total bonus is derived) + 1 example feat |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic); melee weapon skills are left out, players add them as `New` |
-| `generic_sagas.json` | SagaS | 108 skills (92 base + 16 generic) |
+| `generic_sagas.json` | SagaS | 113 skills (100 base + 13 generic) |
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system
 
-1. In `systems/specific_values.py`, create `SpecificValuesXxx(StrictModel)` with `system: Literal["xxx"]` (plus `skill_value_meaning` if the system has skills) and add it to the `SpecificValues` union at the bottom of that file
+1. In `systems/specific_values.py`, create `SpecificValuesXxx(StrictModel)` with `system: Literal["xxx"]` (plus `skill_value_meaning` if the system has skills, `derived_values` if it has derived values) and add it to the `SpecificValues` union at the bottom of that file
 2. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
 3. Import the new `generic_xxx` instance in `main.py` and add it to the `EXPORTS` list
 

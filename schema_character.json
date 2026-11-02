@@ -95,6 +95,25 @@
       "title": "Consequence",
       "type": "object"
     },
+    "DerivedValue": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "computed_from": {
+          "title": "Computed From",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "computed_from"
+      ],
+      "title": "DerivedValue",
+      "type": "object"
+    },
     "DnDClass": {
       "additionalProperties": false,
       "properties": {
@@ -311,6 +330,18 @@
           ],
           "default": null,
           "title": "Checked"
+        },
+        "attribute": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attribute"
         }
       },
       "required": [
@@ -345,6 +376,43 @@
           "title": "Skill Value Meaning",
           "type": "string"
         },
+        "derived_values": {
+          "default": [
+            {
+              "name": "Idea",
+              "computed_from": "Intelligence x 5"
+            },
+            {
+              "name": "Luck",
+              "computed_from": "Power x 5"
+            },
+            {
+              "name": "Know",
+              "computed_from": "Education x 5"
+            },
+            {
+              "name": "Damage Bonus",
+              "computed_from": "Strength + Size, damage bonus table"
+            },
+            {
+              "name": "Maximum Sanity",
+              "computed_from": "99 - Cthulhu Mythos"
+            },
+            {
+              "name": "Maximum Hit Points",
+              "computed_from": "(Constitution + Size) / 2, rounded up"
+            },
+            {
+              "name": "Maximum Magic Points",
+              "computed_from": "Power"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/DerivedValue"
+          },
+          "title": "Derived Values",
+          "type": "array"
+        },
         "mental_disorders": {
           "items": {
             "$ref": "#/$defs/MentalDisorder"
@@ -372,6 +440,63 @@
           "default": "proficiency level: 0 none, 1 proficient, 2 expertise",
           "title": "Skill Value Meaning",
           "type": "string"
+        },
+        "derived_values": {
+          "default": [
+            {
+              "name": "Total Level",
+              "computed_from": "sum of class levels"
+            },
+            {
+              "name": "Ability Modifiers",
+              "computed_from": "(score - 10) // 2"
+            },
+            {
+              "name": "Proficiency Bonus",
+              "computed_from": "2 + (total level - 1) // 4"
+            },
+            {
+              "name": "Skill Bonuses",
+              "computed_from": "ability modifier + proficiency level x proficiency bonus + other bonuses"
+            },
+            {
+              "name": "Saving Throw Bonuses",
+              "computed_from": "ability modifier + proficiency bonus if proficient + other bonuses"
+            },
+            {
+              "name": "Armor Class",
+              "computed_from": "armor, shield, Dexterity, class features, race, items, active spells"
+            },
+            {
+              "name": "Initiative",
+              "computed_from": "Dexterity modifier + other bonuses"
+            },
+            {
+              "name": "Passive Perception",
+              "computed_from": "10 + Perception bonus"
+            },
+            {
+              "name": "Spell Save DC",
+              "computed_from": "8 + proficiency bonus + spellcasting ability modifier"
+            },
+            {
+              "name": "Spell Attack Bonus",
+              "computed_from": "proficiency bonus + spellcasting ability modifier"
+            },
+            {
+              "name": "Spell Slots (maximum)",
+              "computed_from": "class levels, multiclass spellcaster table"
+            },
+            {
+              "name": "Hit Dice (maximum)",
+              "computed_from": "one per class level, die size by class"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/DerivedValue"
+          },
+          "title": "Derived Values",
+          "type": "array"
         },
         "classes": {
           "items": {
@@ -620,6 +745,67 @@
           "title": "Skill Value Meaning",
           "type": "string"
         },
+        "derived_values": {
+          "default": [
+            {
+              "name": "Total Level",
+              "computed_from": "sum of class levels"
+            },
+            {
+              "name": "Ability Modifiers",
+              "computed_from": "(score - drain - 10) // 2, minus 1 per 2 points of ability damage"
+            },
+            {
+              "name": "Base Attack Bonus",
+              "computed_from": "sum of class progressions"
+            },
+            {
+              "name": "Saving Throws",
+              "computed_from": "sum of class base saves + ability modifier + other bonuses - negative levels"
+            },
+            {
+              "name": "Skill Totals",
+              "computed_from": "ranks + ability modifier + 3 if class skill with at least 1 rank + other bonuses - armor check penalty"
+            },
+            {
+              "name": "Armor Class",
+              "computed_from": "10 + armor, shield, Dexterity (capped by armor), size, natural armor, deflection, dodge and other bonuses"
+            },
+            {
+              "name": "Touch Armor Class",
+              "computed_from": "Armor Class without armor, shield and natural armor"
+            },
+            {
+              "name": "Flat-Footed Armor Class",
+              "computed_from": "Armor Class without Dexterity and dodge bonuses"
+            },
+            {
+              "name": "Combat Maneuver Bonus",
+              "computed_from": "BAB + Strength modifier + special size modifier"
+            },
+            {
+              "name": "Combat Maneuver Defense",
+              "computed_from": "10 + BAB + Strength and Dexterity modifiers + special size modifier"
+            },
+            {
+              "name": "Initiative",
+              "computed_from": "Dexterity modifier + other bonuses"
+            },
+            {
+              "name": "Spell Save DC",
+              "computed_from": "10 + spell level + casting ability modifier"
+            },
+            {
+              "name": "Spells per Day (maximum)",
+              "computed_from": "class level table + bonus spells from the casting ability"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/DerivedValue"
+          },
+          "title": "Derived Values",
+          "type": "array"
+        },
         "classes": {
           "items": {
             "$ref": "#/$defs/PF1Class"
@@ -749,6 +935,47 @@
           "default": "learning level",
           "title": "Skill Value Meaning",
           "type": "string"
+        },
+        "derived_values": {
+          "default": [
+            {
+              "name": "Skill Levels",
+              "computed_from": "associated attribute + learning level"
+            },
+            {
+              "name": "Protection",
+              "computed_from": "Armor + Abilities (super powers, outside the base rules); 0 by default"
+            },
+            {
+              "name": "MaxImpactBonus",
+              "computed_from": "2*Protection + Physical Shock Threshold"
+            },
+            {
+              "name": "Physical Hit Points",
+              "computed_from": "2*(Strength + Will + Endurance)"
+            },
+            {
+              "name": "Psychical Hit Points",
+              "computed_from": "2*(Presence + Will + Instinct)"
+            },
+            {
+              "name": "Physical Shock Threshold",
+              "computed_from": "10 + UT Strength bonus"
+            },
+            {
+              "name": "Psychical Shock Threshold",
+              "computed_from": "10 + UT Presence bonus"
+            },
+            {
+              "name": "Reflex Defense",
+              "computed_from": "2 + Dodge skill level / 2, rounded down"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/DerivedValue"
+          },
+          "title": "Derived Values",
+          "type": "array"
         },
         "unspent_creation_points": {
           "default": 0,

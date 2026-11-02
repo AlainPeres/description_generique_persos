@@ -2,6 +2,36 @@
   "specific_values": {
     "system": "cthulhu6",
     "skill_value_meaning": "percentage",
+    "derived_values": [
+      {
+        "name": "Idea",
+        "computed_from": "Intelligence x 5"
+      },
+      {
+        "name": "Luck",
+        "computed_from": "Power x 5"
+      },
+      {
+        "name": "Know",
+        "computed_from": "Education x 5"
+      },
+      {
+        "name": "Damage Bonus",
+        "computed_from": "Strength + Size, damage bonus table"
+      },
+      {
+        "name": "Maximum Sanity",
+        "computed_from": "99 - Cthulhu Mythos"
+      },
+      {
+        "name": "Maximum Hit Points",
+        "computed_from": "(Constitution + Size) / 2, rounded up"
+      },
+      {
+        "name": "Maximum Magic Points",
+        "computed_from": "Power"
+      }
+    ],
     "mental_disorders": []
   },
   "name": "Generic Cthulhu 6 Character",

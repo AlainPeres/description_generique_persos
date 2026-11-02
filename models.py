@@ -24,7 +24,9 @@ from strict_model import StrictModel
 
 # Union of every system-specific block, defined in systems/specific_values.py
 # so that adding a new system never requires touching this file.
-from systems.specific_values import SpecificValues, SpecificValuesDnD
+from systems.specific_values import (
+    SAGAS_SKILL_ATTRIBUTES, SpecificValues, SpecificValuesDnD, SpecificValuesSagas,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -88,6 +90,9 @@ class Skill(StrictModel):
     # None = the system has no skill checks; False/True = unchecked/checked.
     # Left out of the JSON when None.
     checked: bool | None = Field(default=None, exclude_if=lambda v: v is None)
+    # Associated attribute, only when the rules do not fix it (e.g. a skill
+    # created by the player and the GM in SagaS). Left out of the JSON when None.
+    attribute: str | None = Field(default=None, exclude_if=lambda v: v is None)
 
 
 # Any numeric stat: characteristics, current values (HP, Sanity...)...
@@ -133,4 +138,22 @@ class Character(StrictModel):
                        if s.strip().casefold() not in known]
             if unknown:
                 raise ValueError(f"prepared spells without a matching Spell ability: {unknown}")
+        return self
+
+    # Cross-layer check: in SagaS, the rules fix the attribute of every listed
+    # skill (so it is not stored), while a NEW skill gets the one chosen by the
+    # player and the GM, among the attributes a skill can be based on.
+    @model_validator(mode="after")
+    def sagas_skill_attributes(self) -> Self:
+        if isinstance(self.specific_values, SpecificValuesSagas):
+            for skill in self.skills:
+                if skill.category == SkillCategory.NEW:
+                    if skill.attribute not in SAGAS_SKILL_ATTRIBUTES:
+                        raise ValueError(
+                            f"new skill {skill.name!r} needs an attribute among "
+                            f"{list(SAGAS_SKILL_ATTRIBUTES)}, got {skill.attribute!r}")
+                elif skill.attribute is not None:
+                    raise ValueError(
+                        f"skill {skill.name!r}: its attribute is fixed by the rules, "
+                        f"only NEW skills declare one")
         return self

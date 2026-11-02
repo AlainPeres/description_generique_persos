@@ -40,7 +40,7 @@ dans la couche générique**. La couche spécifique reste aussi petite que
 possible.
 
 Exception : les compteurs de progression ou de gestion (niveaux de classe et
-XP en D&D, points de création non utilisés en SagaS) vont dans la couche
+XP en D&D et PF1, points de création non utilisés en SagaS) vont dans la couche
 spécifique. Ce ne sont pas des caractéristiques utilisées pour les jets, et
 le bloc spécifique permet de les valider (par exemple `ge=0`). Les points de
 création SagaS ne contredisent pas le but de description : ce sont des points
@@ -48,8 +48,10 @@ mis de côté pour plus tard, donc un état du personnage.
 
 Quand un élément regroupe plusieurs informations, il devient un petit modèle
 plutôt qu'un tuple ou des listes parallèles : `DnDClass` (nom, sous-classe,
-niveau), `PF1Class` (nom, archétypes, niveau), `MentalDisorder` (nom, durée, description, guéri), `StressBox` et
-`Consequence` en Fate. Chaque information est nommée, validée, et ne peut pas
+niveau), `PF1Class` (nom, archétypes, niveau, sorts restants),
+`PreparedSpell` (nom, niveau, lancé), `MentalDisorder` (nom, durée,
+description, guéri), `StressBox` et `Consequence` en Fate, `DerivedValue`
+(nom, sources). Chaque information est nommée, validée, et ne peut pas
 se désynchroniser des autres.
 
 **Seul est stocké ce qui ne peut pas être calculé à partir des autres
@@ -58,13 +60,15 @@ bonus aux dégâts, maximums de SAN, PV et PM en Cthulhu, bonus de maîtrise et
 niveau total en D&D (somme des niveaux de classe), classe d'armure en D&D et
 en PF1 (calculée à partir de la classe, de la race, de l'armure, du
 bouclier, des objets et des sorts actifs), protection et bonus d'impact
-maximum en SagaS… ne figurent pas sur la fiche. Ils
-sont calculés **à l'extérieur du modèle**, par les outils qui lisent le
-personnage. Les stocker créerait un risque d'incohérence quand la valeur source
-change. En revanche, sont stockés :
+maximum, points de vie, seuils de choc et défense réflexe en SagaS… ne
+figurent pas sur la fiche. Les stocker créerait un risque d'incohérence quand
+la valeur source change. Ils sont calculés **à l'extérieur du modèle**, par
+les outils qui lisent le personnage.
 
-- les valeurs *actuelles* (`Current Sanity`, `Current Hit Points`…), qui
-  évoluent en jeu ;
+En revanche, sont stockés :
+
+- les valeurs *actuelles* (`Current Sanity`, `Current Hit Points`, blessures
+  et étourdissement en SagaS…), qui évoluent en jeu ;
 - les maximums qui ne se calculent pas, comme les PV maximum en D&D et en
   PF1, tirés aux dés à chaque niveau (`Maximum Hit Points`) ;
 - une **exception**, en théorie dérivée mais stockée : la disponibilité des
@@ -72,6 +76,15 @@ change. En revanche, sont stockés :
   `Consequence.available`). En Fate Core, elle découle du niveau de Physique
   ou de Volonté, mais les extras, les prouesses et les règles maison la
   modifient souvent.
+
+Pour que le lecteur du JSON sache quelles valeurs existent sans être
+stockées, chaque bloc spécifique les liste dans un champ fixe
+`derived_values` : une liste de `DerivedValue` (nom, sources ou formule),
+qui sert aussi de cahier des charges au calculateur extérieur. Comme
+`skill_value_meaning`, il a une valeur par défaut, apparaît dans chaque JSON
+et toute autre valeur est refusée. Un `Literal` ne pouvant pas contenir de
+liste, c'est le validateur `fixed(...)` qui reproduit ce comportement. Fate
+et le système sans règles n'en ont pas : rien n'y est dérivé.
 
 Le sens de `Skill.value` est une **convention fixe par système**, choisie par
 le modèle (ce ne sont pas les règles du jeu qui l'imposent). Chaque bloc
@@ -101,10 +114,23 @@ d'armure…) se calcule, et le stocker seul ferait perdre les rangs, donc par
 exemple la possibilité d'utiliser une compétence réservée aux personnages
 formés. De même, BBA, jets de sauvegarde, BMO et DMD ne sont pas stockés.
 
-En SagaS, pour la même raison, la `value` d'une compétence est son **niveau
-d'apprentissage**. Le niveau de compétence (attribut associé + niveau
-d'apprentissage) se calcule ; l'attribut associé à chaque compétence est
-fixé par les règles, il n'est donc pas stocké dans le personnage.
+En SagaS, les caractéristiques secondaires (Initiative, Combat au contact,
+Combat à distance, Vitesse) sont **stockées** comme les principales : leur
+formule ne sert qu'à les initialiser à la création, ensuite elles évoluent
+comme les principales. La classe sociale se décrit, si besoin, dans
+`occupation`, et l'espèce dans `description` : ni l'une ni l'autre n'a de
+champ propre.
+
+En SagaS toujours, pour la même raison que PF1, la `value` d'une compétence
+est son **niveau d'apprentissage**. Le niveau de compétence (attribut associé + niveau
+d'apprentissage) se calcule ; l'attribut associé à chaque compétence de la
+liste est fixé par les règles, il n'est donc pas stocké dans le personnage.
+Une compétence créée par le joueur et l'arbitre (`New`) est rattachée à la
+caractéristique qu'ils choisissent : c'est une donnée du personnage, portée
+par `Skill.attribute` (absent du JSON quand il vaut `None`). `Character`
+vérifie qu'une compétence `New` a bien un `attribute` parmi les 8
+caractéristiques principales et les 4 secondaires, et qu'aucune compétence
+de la liste n'en déclare.
 
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que
@@ -189,7 +215,8 @@ champs.
 
 ```text
 strict_model.py           StrictModel, la classe de base commune
-models.py                 le schéma : Character et ses sous-modèles
+models.py                 le schéma : Character, ses sous-modèles et les contrôles
+                          entre les deux couches
 systems/
 ├── specific_values.py    les blocs SpecificValuesX + l'union SpecificValues
 └── <jeu>.py              un personnage générique par système (generic_<jeu>)
@@ -221,8 +248,11 @@ ignoré sans prévenir.
    remplacer (`"to be specified"`).
 2. **`schema_character.json`** : le JSON Schema de `Character`. Il décrit la
    forme d'une fiche valide pour des outils extérieurs à Python (éditeur,
-   autre langage, formulaire, LLM). Il ne contient ni le sens des champs ni
-   les listes de compétences.
+   autre langage, formulaire, LLM). Il contient aussi, comme valeurs fixes,
+   le sens de `Skill.value` (`skill_value_meaning`) et la liste des valeurs
+   dérivées (`derived_values`) de chaque système, mais pas les listes de
+   compétences, ni les contrôles faits par `Character` (sorts préparés en
+   D&D, attributs des compétences nouvelles en SagaS).
 3. **Une vérification** : chaque modèle exporté est relu avec
    `Character.model_validate_json` et comparé à l'original.
 
@@ -244,7 +274,8 @@ Un champ exclu reprend sa valeur par défaut quand on relit le JSON.
 
 1. Dans `systems/specific_values.py`, créer `SpecificValuesXxx(StrictModel)` avec
    `system: Literal["xxx"]` (et `skill_value_meaning` si le système a des
-   compétences), puis l'ajouter à l'union `SpecificValues`.
+   compétences, `derived_values` s'il a des valeurs dérivées), puis
+   l'ajouter à l'union `SpecificValues`.
 2. Créer `systems/xxx.py` avec un `generic_xxx = Character(...)`, en mettant
    le maximum de données dans les listes génériques.
 3. Dans `main.py`, importer `generic_xxx` et l'ajouter à la liste `EXPORTS`.

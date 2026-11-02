@@ -2,6 +2,60 @@
   "specific_values": {
     "system": "pf1",
     "skill_value_meaning": "ranks",
+    "derived_values": [
+      {
+        "name": "Total Level",
+        "computed_from": "sum of class levels"
+      },
+      {
+        "name": "Ability Modifiers",
+        "computed_from": "(score - drain - 10) // 2, minus 1 per 2 points of ability damage"
+      },
+      {
+        "name": "Base Attack Bonus",
+        "computed_from": "sum of class progressions"
+      },
+      {
+        "name": "Saving Throws",
+        "computed_from": "sum of class base saves + ability modifier + other bonuses - negative levels"
+      },
+      {
+        "name": "Skill Totals",
+        "computed_from": "ranks + ability modifier + 3 if class skill with at least 1 rank + other bonuses - armor check penalty"
+      },
+      {
+        "name": "Armor Class",
+        "computed_from": "10 + armor, shield, Dexterity (capped by armor), size, natural armor, deflection, dodge and other bonuses"
+      },
+      {
+        "name": "Touch Armor Class",
+        "computed_from": "Armor Class without armor, shield and natural armor"
+      },
+      {
+        "name": "Flat-Footed Armor Class",
+        "computed_from": "Armor Class without Dexterity and dodge bonuses"
+      },
+      {
+        "name": "Combat Maneuver Bonus",
+        "computed_from": "BAB + Strength modifier + special size modifier"
+      },
+      {
+        "name": "Combat Maneuver Defense",
+        "computed_from": "10 + BAB + Strength and Dexterity modifiers + special size modifier"
+      },
+      {
+        "name": "Initiative",
+        "computed_from": "Dexterity modifier + other bonuses"
+      },
+      {
+        "name": "Spell Save DC",
+        "computed_from": "10 + spell level + casting ability modifier"
+      },
+      {
+        "name": "Spells per Day (maximum)",
+        "computed_from": "class level table + bonus spells from the casting ability"
+      }
+    ],
     "classes": [
       {
         "name": "to be specified",

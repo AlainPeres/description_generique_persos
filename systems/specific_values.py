@@ -12,7 +12,7 @@ here (with a `system: Literal[...]` discriminator field) and add it
 to the SpecificValues union at the bottom of this file.
 """
 
-from pydantic import Field, field_validator
+from pydantic import AfterValidator, Field, field_validator
 from typing import Annotated, Literal
 
 from strict_model import StrictModel
@@ -28,6 +28,26 @@ from strict_model import StrictModel
 SpellLevel = Annotated[int, Field(ge=1, le=9)]
 Remaining = Annotated[int, Field(ge=0)]
 
+
+# ---------------------------------------------------------------------------
+# Derived values: not stored, computed outside the model. Each system lists
+# them in a fixed `derived_values` field, so that a reader of the JSON knows
+# what exists and the external calculator knows what to produce.
+# ---------------------------------------------------------------------------
+class DerivedValue(StrictModel):
+    name: str                 # e.g. "Armor Class"
+    computed_from: str        # sources or formula, for the reader and the calculator
+
+
+# Same behavior as a single-value Literal, for values Literal cannot hold
+# (lists, models): the field has a default and any other value is rejected
+def fixed[T](expected: T) -> AfterValidator:
+    def check(value: T) -> T:
+        if value != expected:
+            raise ValueError("fixed by the system; do not edit")
+        return value
+    return AfterValidator(check)
+
 # ---------------------------------------------------------------------------
 # System-specific block: No Rules
 # ---------------------------------------------------------------------------
@@ -39,6 +59,24 @@ class SpecificValuesNoRules(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Dungeons & Dragons 5e
 # ---------------------------------------------------------------------------
+DND_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Total Level", computed_from="sum of class levels"),
+    DerivedValue(name="Ability Modifiers", computed_from="(score - 10) // 2"),
+    DerivedValue(name="Proficiency Bonus", computed_from="2 + (total level - 1) // 4"),
+    DerivedValue(name="Skill Bonuses",
+                 computed_from="ability modifier + proficiency level x proficiency bonus + other bonuses"),
+    DerivedValue(name="Saving Throw Bonuses",
+                 computed_from="ability modifier + proficiency bonus if proficient + other bonuses"),
+    DerivedValue(name="Armor Class",
+                 computed_from="armor, shield, Dexterity, class features, race, items, active spells"),
+    DerivedValue(name="Initiative", computed_from="Dexterity modifier + other bonuses"),
+    DerivedValue(name="Passive Perception", computed_from="10 + Perception bonus"),
+    DerivedValue(name="Spell Save DC", computed_from="8 + proficiency bonus + spellcasting ability modifier"),
+    DerivedValue(name="Spell Attack Bonus", computed_from="proficiency bonus + spellcasting ability modifier"),
+    DerivedValue(name="Spell Slots (maximum)", computed_from="class levels, multiclass spellcaster table"),
+    DerivedValue(name="Hit Dice (maximum)", computed_from="one per class level, die size by class"),
+)
+
 class DnDClass(StrictModel):
     name: str                 # e.g. "Fighter"
     subclass: str = ""        # e.g. "Battle Master"; empty before it is chosen
@@ -49,6 +87,7 @@ class SpecificValuesDnD(StrictModel):
     skill_value_meaning: Literal["proficiency level: 0 none, 1 proficient, 2 expertise"] = (
         "proficiency level: 0 none, 1 proficient, 2 expertise"
     )
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(DND_DERIVED)] = DND_DERIVED
     # One entry per class (several when multiclassing); the total level is
     # the sum of the class levels, so it is not stored
     classes: list[DnDClass] = Field(min_length=1)
@@ -99,6 +138,30 @@ def check_unique_class_names[C: DnDClass | PF1Class](classes: list[C]) -> list[C
 # ---------------------------------------------------------------------------
 # System-specific block: Pathfinder 1st edition
 # ---------------------------------------------------------------------------
+PF1_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Total Level", computed_from="sum of class levels"),
+    DerivedValue(name="Ability Modifiers",
+                 computed_from="(score - drain - 10) // 2, minus 1 per 2 points of ability damage"),
+    DerivedValue(name="Base Attack Bonus", computed_from="sum of class progressions"),
+    DerivedValue(name="Saving Throws",
+                 computed_from="sum of class base saves + ability modifier + other bonuses - negative levels"),
+    DerivedValue(name="Skill Totals",
+                 computed_from="ranks + ability modifier + 3 if class skill with at least 1 rank"
+                               " + other bonuses - armor check penalty"),
+    DerivedValue(name="Armor Class",
+                 computed_from="10 + armor, shield, Dexterity (capped by armor), size, natural armor,"
+                               " deflection, dodge and other bonuses"),
+    DerivedValue(name="Touch Armor Class", computed_from="Armor Class without armor, shield and natural armor"),
+    DerivedValue(name="Flat-Footed Armor Class", computed_from="Armor Class without Dexterity and dodge bonuses"),
+    DerivedValue(name="Combat Maneuver Bonus", computed_from="BAB + Strength modifier + special size modifier"),
+    DerivedValue(name="Combat Maneuver Defense",
+                 computed_from="10 + BAB + Strength and Dexterity modifiers + special size modifier"),
+    DerivedValue(name="Initiative", computed_from="Dexterity modifier + other bonuses"),
+    DerivedValue(name="Spell Save DC", computed_from="10 + spell level + casting ability modifier"),
+    DerivedValue(name="Spells per Day (maximum)",
+                 computed_from="class level table + bonus spells from the casting ability"),
+)
+
 # One entry per prepared slot: the same spell prepared twice appears twice
 class PreparedSpell(StrictModel):
     name: str
@@ -117,6 +180,7 @@ class PF1Class(StrictModel):
 class SpecificValuesPF1(StrictModel):
     system: Literal["pf1"]
     skill_value_meaning: Literal["ranks"] = "ranks"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(PF1_DERIVED)] = PF1_DERIVED
     # One entry per class; the total level is their sum, so it is not stored
     classes: list[PF1Class] = Field(min_length=1)
     favored_class: str = ""   # name of one of the classes
@@ -145,6 +209,16 @@ class SpecificValuesPF1(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Call of Cthulhu
 # ---------------------------------------------------------------------------
+CTHULHU_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Idea", computed_from="Intelligence x 5"),
+    DerivedValue(name="Luck", computed_from="Power x 5"),
+    DerivedValue(name="Know", computed_from="Education x 5"),
+    DerivedValue(name="Damage Bonus", computed_from="Strength + Size, damage bonus table"),
+    DerivedValue(name="Maximum Sanity", computed_from="99 - Cthulhu Mythos"),
+    DerivedValue(name="Maximum Hit Points", computed_from="(Constitution + Size) / 2, rounded up"),
+    DerivedValue(name="Maximum Magic Points", computed_from="Power"),
+)
+
 class MentalDisorder(StrictModel):
     name: str                 # e.g. "Claustrophobia"
     duration: Literal["temporary", "indefinite", "permanent"]
@@ -154,6 +228,7 @@ class MentalDisorder(StrictModel):
 class SpecificValuesCthulhu(StrictModel):
     system: Literal["cthulhu6"]
     skill_value_meaning: Literal["percentage"] = "percentage"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(CTHULHU_DERIVED)] = CTHULHU_DERIVED
     # Everything else (characteristics, current Sanity, skills and their
     # improvement checks) lives in the generic layer
     mental_disorders: list[MentalDisorder] = Field(default_factory=list)
@@ -191,11 +266,32 @@ class SpecificValuesFate(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: SagaS
 # ---------------------------------------------------------------------------
+# Attributes a skill can be based on: the 8 main and the 4 secondary ones.
+# Used by Character to check the attribute of skills created by the player.
+SAGAS_SKILL_ATTRIBUTES: tuple[str, ...] = (
+    "Strength", "Agility", "Endurance", "Dexterity",
+    "Wit", "Will", "Presence", "Instinct",
+    "Initiative", "Close Combat", "Ranged Combat", "Speed",
+)
+
+SAGAS_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Skill Levels", computed_from="associated attribute + learning level"),
+    DerivedValue(name="Protection",
+                 computed_from="Armor + Abilities (super powers, outside the base rules); 0 by default"),
+    DerivedValue(name="MaxImpactBonus", computed_from="2*Protection + Physical Shock Threshold"),
+    DerivedValue(name="Physical Hit Points", computed_from="2*(Strength + Will + Endurance)"),
+    DerivedValue(name="Psychical Hit Points", computed_from="2*(Presence + Will + Instinct)"),
+    DerivedValue(name="Physical Shock Threshold", computed_from="10 + UT Strength bonus"),
+    DerivedValue(name="Psychical Shock Threshold", computed_from="10 + UT Presence bonus"),
+    DerivedValue(name="Reflex Defense", computed_from="2 + Dodge skill level / 2, rounded down"),
+)
+
 class SpecificValuesSagas(StrictModel):
     system: Literal["sagas"]
     # The skill level (associated attribute + learning level) is derived;
     # the attribute associated with each skill is fixed by the rules
     skill_value_meaning: Literal["learning level"] = "learning level"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(SAGAS_DERIVED)] = SAGAS_DERIVED
     unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
     # Lasting after-effects, free text; current wounds and stun are attributes
     serious_physical_injuries: list[str] = Field(default_factory=list)

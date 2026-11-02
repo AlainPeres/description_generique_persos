@@ -2,6 +2,56 @@
   "specific_values": {
     "system": "dnd5e",
     "skill_value_meaning": "proficiency level: 0 none, 1 proficient, 2 expertise",
+    "derived_values": [
+      {
+        "name": "Total Level",
+        "computed_from": "sum of class levels"
+      },
+      {
+        "name": "Ability Modifiers",
+        "computed_from": "(score - 10) // 2"
+      },
+      {
+        "name": "Proficiency Bonus",
+        "computed_from": "2 + (total level - 1) // 4"
+      },
+      {
+        "name": "Skill Bonuses",
+        "computed_from": "ability modifier + proficiency level x proficiency bonus + other bonuses"
+      },
+      {
+        "name": "Saving Throw Bonuses",
+        "computed_from": "ability modifier + proficiency bonus if proficient + other bonuses"
+      },
+      {
+        "name": "Armor Class",
+        "computed_from": "armor, shield, Dexterity, class features, race, items, active spells"
+      },
+      {
+        "name": "Initiative",
+        "computed_from": "Dexterity modifier + other bonuses"
+      },
+      {
+        "name": "Passive Perception",
+        "computed_from": "10 + Perception bonus"
+      },
+      {
+        "name": "Spell Save DC",
+        "computed_from": "8 + proficiency bonus + spellcasting ability modifier"
+      },
+      {
+        "name": "Spell Attack Bonus",
+        "computed_from": "proficiency bonus + spellcasting ability modifier"
+      },
+      {
+        "name": "Spell Slots (maximum)",
+        "computed_from": "class levels, multiclass spellcaster table"
+      },
+      {
+        "name": "Hit Dice (maximum)",
+        "computed_from": "one per class level, die size by class"
+      }
+    ],
     "classes": [
       {
         "name": "to be specified",
