@@ -89,10 +89,10 @@ Stored instead:
   stun…), which change during play;
 - maximums that cannot be computed, such as `Maximum Hit Points` in D&D and
   PF1, rolled at each level;
-- one **exception**, derivable in theory but stored anyway:
-  `StressBox.available` / `Consequence.available` in Fate. In Fate Core they
-  follow from Physique or Will, but extras, stunts and house rules often
-  change them.
+- `StressBox.available` / `Consequence.available` in Fate. Fate Core gives
+  a starting value from Physique or Will, but a stunt, an extra or an
+  off-rules decision can change it, and no calculator can foresee every
+  case: it is not derivable.
 
 Each block lists the derived values of its system in a fixed
 `derived_values` field (list of `DerivedValue`: name, sources or formula),

@@ -237,8 +237,9 @@ class SpecificValuesCthulhu(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Fate
 # ---------------------------------------------------------------------------
-# `available` (StressBox and Consequence) follows from Physique / Will in Fate
-# Core, but is stored anyway: extras, stunts and house rules often change it
+# `available` (StressBox and Consequence) starts from Physique / Will in Fate
+# Core, but stunts, extras or off-rules decisions can change it in ways no
+# calculator can foresee: it is not derivable, so it is stored
 class StressBox(StrictModel):
     available: bool = True    # the box exists for this character
     checked: bool = False     # the box is ticked

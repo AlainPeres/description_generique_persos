@@ -25,8 +25,8 @@ generic_fate = Character(
         Refresh=3,                # Fate Core default, with 3 free stunts
         # Every character has 2 boxes per track; boxes 3 and 4 are unlocked
         # by Physique (physical) or Will (mental), hence available=False here.
-        # Exception to the no-derived-values rule: `available` is stored
-        # because extras, stunts and house rules often change it.
+        # `available` is stored, not derived: stunts, extras or off-rules
+        # decisions can change it in ways no calculator can foresee.
         PhysicalStress={"Box 1": StressBox(), "Box 2": StressBox(),
                         "Box 3": StressBox(available=False),
                         "Box 4": StressBox(available=False)},

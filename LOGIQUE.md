@@ -71,11 +71,11 @@ En revanche, sont stockés :
   et étourdissement en SagaS…), qui évoluent en jeu ;
 - les maximums qui ne se calculent pas, comme les PV maximum en D&D et en
   PF1, tirés aux dés à chaque niveau (`Maximum Hit Points`) ;
-- une **exception**, en théorie dérivée mais stockée : la disponibilité des
-  cases de stress et des conséquences en Fate (`StressBox.available`,
-  `Consequence.available`). En Fate Core, elle découle du niveau de Physique
-  ou de Volonté, mais les extras, les prouesses et les règles maison la
-  modifient souvent.
+- la disponibilité des cases de stress et des conséquences en Fate
+  (`StressBox.available`, `Consequence.available`). Fate Core en donne une
+  valeur de départ à partir de Physique ou de Volonté, mais une prouesse, un
+  extra ou une décision hors règles peut la changer, et aucun calculateur ne
+  peut prévoir toutes ces possibilités : elle n'est donc pas dérivable.
 
 Pour que le lecteur du JSON sache quelles valeurs existent sans être
 stockées, chaque bloc spécifique les liste dans un champ fixe
