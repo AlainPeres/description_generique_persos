@@ -342,6 +342,18 @@
           ],
           "default": null,
           "title": "Attribute"
+        },
+        "talent": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Talent"
         }
       },
       "required": [
@@ -425,6 +437,192 @@
         "system"
       ],
       "title": "SpecificValuesCthulhu",
+      "type": "object"
+    },
+    "SpecificValuesDaredevils": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "daredevils",
+          "title": "System",
+          "type": "string"
+        },
+        "skill_value_meaning": {
+          "const": "score 0-100; BCS = score / 5, rounded down",
+          "default": "score 0-100; BCS = score / 5, rounded down",
+          "title": "Skill Value Meaning",
+          "type": "string"
+        },
+        "derived_values": {
+          "default": [
+            {
+              "name": "Current Attributes",
+              "computed_from": "permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"
+            },
+            {
+              "name": "Attribute Groups and Effect Dice",
+              "computed_from": "current value, Attribute Group Chart"
+            },
+            {
+              "name": "Attribute Saving Throws",
+              "computed_from": "current value / 2, rounded down"
+            },
+            {
+              "name": "Critical Saving Throws",
+              "computed_from": "current value / 3, rounded down"
+            },
+            {
+              "name": "Basic Chance of Success",
+              "computed_from": "skill score / 5, rounded down"
+            },
+            {
+              "name": "Combat Dodge Ability",
+              "computed_from": "(current Deftness Group + current Speed Group) / 2"
+            },
+            {
+              "name": "Weapon Defense Ability",
+              "computed_from": "hand-to-hand BCS / 4"
+            },
+            {
+              "name": "Damage Resistance Total",
+              "computed_from": "permanent Health + Strength + Will"
+            },
+            {
+              "name": "Seriously Wounded",
+              "computed_from": "Lethal + Subdual Damage > Damage Resistance Total / 2"
+            },
+            {
+              "name": "Encumbrance Capacity",
+              "computed_from": "5 + Strength Attribute Saving Throw, in kg"
+            },
+            {
+              "name": "Freely Improvable Skills Quota",
+              "computed_from": "current Wit + current Will"
+            },
+            {
+              "name": "Learning Rate",
+              "computed_from": "Wit Group"
+            },
+            {
+              "name": "Shock Factor",
+              "computed_from": "10 + Health Group"
+            },
+            {
+              "name": "Size",
+              "computed_from": "height and weight category, Physical Aspects Chart"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/DerivedValue"
+          },
+          "title": "Derived Values",
+          "type": "array"
+        },
+        "attribute_loss": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "Wit",
+              "Will",
+              "Strength",
+              "Deftness",
+              "Speed",
+              "Health"
+            ]
+          },
+          "title": "Attribute Loss",
+          "type": "object"
+        },
+        "attribute_progress": {
+          "additionalProperties": {
+            "exclusiveMaximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "propertyNames": {
+            "enum": [
+              "Wit",
+              "Will",
+              "Strength",
+              "Deftness",
+              "Speed",
+              "Health"
+            ]
+          },
+          "title": "Attribute Progress",
+          "type": "object"
+        },
+        "favored_hand": {
+          "default": "right",
+          "enum": [
+            "right",
+            "left"
+          ],
+          "title": "Favored Hand",
+          "type": "string"
+        },
+        "height": {
+          "default": "",
+          "title": "Height",
+          "type": "string"
+        },
+        "weight_kg": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weight Kg"
+        },
+        "looks": {
+          "default": "Average",
+          "enum": [
+            "Ugly",
+            "Homely",
+            "Mediocre",
+            "Average",
+            "Good Looking",
+            "Comely",
+            "Handsome"
+          ],
+          "title": "Looks",
+          "type": "string"
+        },
+        "freely_improvable_skills": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Freely Improvable Skills",
+          "type": "array"
+        },
+        "motivation": {
+          "default": "",
+          "title": "Motivation",
+          "type": "string"
+        },
+        "method": {
+          "default": "",
+          "title": "Method",
+          "type": "string"
+        },
+        "code": {
+          "default": "",
+          "title": "Code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system"
+      ],
+      "title": "SpecificValuesDaredevils",
       "type": "object"
     },
     "SpecificValuesDnD": {
@@ -1030,6 +1228,7 @@
           "discriminator": {
             "mapping": {
               "cthulhu6": "#/$defs/SpecificValuesCthulhu",
+              "daredevils": "#/$defs/SpecificValuesDaredevils",
               "dnd5e": "#/$defs/SpecificValuesDnD",
               "fate": "#/$defs/SpecificValuesFate",
               "norules": "#/$defs/SpecificValuesNoRules",
@@ -1053,6 +1252,9 @@
             },
             {
               "$ref": "#/$defs/SpecificValuesSagas"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesDaredevils"
             },
             {
               "$ref": "#/$defs/SpecificValuesNoRules"

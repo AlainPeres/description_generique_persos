@@ -25,7 +25,8 @@ from strict_model import StrictModel
 # Union of every system-specific block, defined in systems/specific_values.py
 # so that adding a new system never requires touching this file.
 from systems.specific_values import (
-    SAGAS_SKILL_ATTRIBUTES, SpecificValues, SpecificValuesDnD, SpecificValuesSagas,
+    DAREDEVILS_ATTRIBUTES, DAREDEVILS_TALENTS, SAGAS_SKILL_ATTRIBUTES, SpecificValues,
+    SpecificValuesDaredevils, SpecificValuesDnD, SpecificValuesSagas,
 )
 
 
@@ -93,6 +94,9 @@ class Skill(StrictModel):
     # Associated attribute, only when the rules do not fix it (e.g. a skill
     # created by the player and the GM in SagaS). Left out of the JSON when None.
     attribute: str | None = Field(default=None, exclude_if=lambda v: v is None)
+    # Governing talent, same rule (e.g. a skill added by the GM in Daredevils).
+    # Left out of the JSON when None.
+    talent: str | None = Field(default=None, exclude_if=lambda v: v is None)
 
 
 # Any numeric stat: characteristics, current values (HP, Sanity...)...
@@ -156,4 +160,38 @@ class Character(StrictModel):
                     raise ValueError(
                         f"skill {skill.name!r}: its attribute is fixed by the rules, "
                         f"only NEW skills declare one")
+        return self
+
+    # Cross-layer checks for Daredevils: skill scores range from 0 to 100; a
+    # NEW skill declares its governing attribute and talent (fixed by the rules
+    # for listed skills); freely improvable skills name skills of the character.
+    # Talents only exist in Daredevils.
+    @model_validator(mode="after")
+    def daredevils_skills(self) -> Self:
+        sv = self.specific_values
+        if not isinstance(sv, SpecificValuesDaredevils):
+            with_talent = [s.name for s in self.skills if s.talent is not None]
+            if with_talent:
+                raise ValueError(f"only Daredevils skills have a governing talent: {with_talent}")
+            return self
+        for skill in self.skills:
+            if not 0 <= skill.value <= 100:
+                raise ValueError(f"skill {skill.name!r}: score must be between 0 and 100")
+            if skill.category == SkillCategory.NEW:
+                if skill.attribute not in DAREDEVILS_ATTRIBUTES:
+                    raise ValueError(
+                        f"new skill {skill.name!r} needs an attribute among "
+                        f"{list(DAREDEVILS_ATTRIBUTES)}, got {skill.attribute!r}")
+                if skill.talent not in DAREDEVILS_TALENTS:
+                    raise ValueError(
+                        f"new skill {skill.name!r} needs a talent among "
+                        f"{list(DAREDEVILS_TALENTS)}, got {skill.talent!r}")
+            elif skill.attribute is not None or skill.talent is not None:
+                raise ValueError(
+                    f"skill {skill.name!r}: its attribute and talent are fixed by the "
+                    f"rules, only NEW skills declare them")
+        known = {s.name.strip().casefold() for s in self.skills}
+        unknown = [s for s in sv.freely_improvable_skills if s.strip().casefold() not in known]
+        if unknown:
+            raise ValueError(f"freely improvable skills without a matching skill: {unknown}")
         return self

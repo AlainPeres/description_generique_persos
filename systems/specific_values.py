@@ -299,6 +299,64 @@ class SpecificValuesSagas(StrictModel):
 
 
 # ---------------------------------------------------------------------------
+# System-specific block: Daredevils (FGU)
+# ---------------------------------------------------------------------------
+# Used by Character to check the attribute and talent of skills added by the
+# GM, and as the keys of the attribute dictionaries below
+DAREDEVILS_ATTRIBUTES: tuple[str, ...] = ("Wit", "Will", "Strength", "Deftness", "Speed", "Health")
+DAREDEVILS_TALENTS: tuple[str, ...] = (
+    "Charismatic", "Combative", "Communicative", "Esthetic", "Mechanical", "Natural", "Scientific",
+)
+DaredevilsAttribute = Literal["Wit", "Will", "Strength", "Deftness", "Speed", "Health"]
+
+# Unless stated otherwise, Daredevils rounds to the nearest (3.5 rounds up)
+DAREDEVILS_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Current Attributes",
+                 computed_from="permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"),
+    DerivedValue(name="Attribute Groups and Effect Dice", computed_from="current value, Attribute Group Chart"),
+    DerivedValue(name="Attribute Saving Throws", computed_from="current value / 2, rounded down"),
+    DerivedValue(name="Critical Saving Throws", computed_from="current value / 3, rounded down"),
+    DerivedValue(name="Basic Chance of Success", computed_from="skill score / 5, rounded down"),
+    DerivedValue(name="Combat Dodge Ability", computed_from="(current Deftness Group + current Speed Group) / 2"),
+    DerivedValue(name="Weapon Defense Ability", computed_from="hand-to-hand BCS / 4"),
+    DerivedValue(name="Damage Resistance Total", computed_from="permanent Health + Strength + Will"),
+    DerivedValue(name="Seriously Wounded", computed_from="Lethal + Subdual Damage > Damage Resistance Total / 2"),
+    DerivedValue(name="Encumbrance Capacity", computed_from="5 + Strength Attribute Saving Throw, in kg"),
+    DerivedValue(name="Freely Improvable Skills Quota", computed_from="current Wit + current Will"),
+    DerivedValue(name="Learning Rate", computed_from="Wit Group"),
+    DerivedValue(name="Shock Factor", computed_from="10 + Health Group"),
+    DerivedValue(name="Size", computed_from="height and weight category, Physical Aspects Chart"),
+)
+
+class SpecificValuesDaredevils(StrictModel):
+    system: Literal["daredevils"]
+    skill_value_meaning: Literal["score 0-100; BCS = score / 5, rounded down"] = (
+        "score 0-100; BCS = score / 5, rounded down"
+    )
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(DAREDEVILS_DERIVED)] = DAREDEVILS_DERIVED
+    # Attribute points lost to wounds, disease...; the current value is
+    # derived from the permanent one (the Attribute), e.g. {"Deftness": 3}
+    attribute_loss: dict[DaredevilsAttribute, Remaining] = Field(default_factory=dict)
+    # Optional rule 1.8.5b: +0.5 to the governing attribute per BCS point
+    # gained; fractions toward the next full point, e.g. {"Deftness": 0.5}
+    attribute_progress: dict[DaredevilsAttribute, Annotated[float, Field(ge=0, lt=1)]] = Field(
+        default_factory=dict)
+    favored_hand: Literal["right", "left"] = "right"
+    # Physical characteristics
+    height: str = ""                     # e.g. "5'4\""
+    weight_kg: int | None = Field(default=None, ge=0)
+    looks: Literal["Ugly", "Homely", "Mediocre", "Average",
+                   "Good Looking", "Comely", "Handsome"] = "Average"
+    # Advanced rule: names of the designated skills (checked by Character)
+    freely_improvable_skills: list[str] = Field(default_factory=list)
+    # The hero; finances, degrees, rank, record, licenses and contacts go in
+    # Character.background
+    motivation: str = ""                 # e.g. Revenge, Altruism, Challenge, Work
+    method: str = ""                     # e.g. Vigilante, Lawman, Man of Mystery, Mastermind, Sidekick
+    code: str = ""                       # personal code of conduct
+
+
+# ---------------------------------------------------------------------------
 # Registry: every system-specific class must be listed here to be usable
 # as Character.specific_values. Written out explicitly so that type checkers
 # (Pylance, mypy) know each member. `discriminator="system"` lets Pydantic
@@ -311,6 +369,7 @@ SpecificValues = Annotated[
     | SpecificValuesCthulhu
     | SpecificValuesFate
     | SpecificValuesSagas
+    | SpecificValuesDaredevils
     | SpecificValuesNoRules,
     Field(discriminator="system"),
 ]

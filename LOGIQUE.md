@@ -3,7 +3,7 @@
 ## Le but
 
 - Décrire **un personnage de jeu de rôle**, pour un grand nombre de systèmes
-  (D&D 5e, Pathfinder 1, L'Appel de Cthulhu, Fate, SagaS, sans règles…), avec **un seul modèle
+  (D&D 5e, Pathfinder 1, L'Appel de Cthulhu, Fate, SagaS, Daredevils, sans règles…), avec **un seul modèle
   Python** (`Character`, Pydantic v2), puis l'exporter et le relire en JSON.
 
 - Rendre plus simple **l'introduction d'un nouveau système**.
@@ -93,13 +93,14 @@ spécifique d'un système à compétences la déclare dans un champ
 valeur par défaut, apparaît dans chaque JSON pour que le fichier s'explique
 seul, et toute autre valeur est refusée.
 
-| Système  | `skill_value_meaning`                                   |
-| -------- | ------------------------------------------------------- |
-| D&D 5e   | `proficiency level: 0 none, 1 proficient, 2 expertise`  |
-| PF1      | `ranks`                                                 |
-| Cthulhu  | `percentage`                                            |
-| Fate     | `rating on the Fate ladder`                             |
-| SagaS    | `learning level`                                        |
+| Système    | `skill_value_meaning`                                   |
+| ---------- | ------------------------------------------------------- |
+| D&D 5e     | `proficiency level: 0 none, 1 proficient, 2 expertise`  |
+| PF1        | `ranks`                                                 |
+| Cthulhu    | `percentage`                                            |
+| Fate       | `rating on the Fate ladder`                             |
+| SagaS      | `learning level`                                        |
+| Daredevils | `score 0-100; BCS = score / 5, rounded down`            |
 
 En D&D 5e, la `value` d'une compétence est donc son **niveau de maîtrise**
 (0 = aucune, 1 = maîtrise, 2 = expertise), et non son bonus total : celui-ci
@@ -131,6 +132,26 @@ par `Skill.attribute` (absent du JSON quand il vaut `None`). `Character`
 vérifie qu'une compétence `New` a bien un `attribute` parmi les 8
 caractéristiques principales et les 4 secondaires, et qu'aucune compétence
 de la liste n'en déclare.
+
+En Daredevils, la `value` d'une compétence est son **score** (0 à 100) : la
+chance de base de réussite (BCS = score / 5, arrondi vers le bas) se calcule,
+et la formule du score initial ne sert qu'à la création. Les attributs sont
+stockés à leur valeur **permanente** ; les points perdus (blessures,
+maladie) vont dans `attribute_loss`, et la valeur actuelle se calcule, comme
+l'affaiblissement en PF1. Les Talents (règle avancée) sont des attributs
+comme les autres, à 0 dans le modèle de fiche. La dextérité de la main non
+directrice est initialisée à la création puis améliorée seule : elle est
+stockée. La règle optionnelle d'amélioration des attributs par
+l'apprentissage accumule des fractions (+0,5 par point de BCS gagné) : le
+cumul en cours est stocké dans `attribute_progress`. Comme en SagaS, une
+compétence `New` ajoutée par l'arbitre déclare son attribut gouvernant
+(`Skill.attribute`) et, propre à Daredevils, son **Talent gouvernant**
+(`Skill.talent`), qui sert à l'apprentissage par la pratique ; `Character`
+le vérifie, ainsi que les scores (0 à 100) et les noms de
+`freely_improvable_skills`. Les finances, diplômes, grade, casier, licences
+et contacts se décrivent dans `background` ; la Chance et la Réputation ne
+sont pas modélisées pour l'instant. Sauf mention contraire, Daredevils
+arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
 
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que

@@ -5,7 +5,7 @@ Multi-system RPG character modeling with **Pydantic v2**.
 ## Goals
 
 - Describe **an RPG character** for many systems (D&D 5e, Pathfinder 1,
-  Call of Cthulhu, Fate, SagaS, no rules…) with **a single Python model** (`Character`), then
+  Call of Cthulhu, Fate, SagaS, Daredevils, no rules…) with **a single Python model** (`Character`), then
   export it to JSON and read it back.
 - Make **adding a new system** simple.
 - Produce a JSON Schema to check that **a character JSON matches the model**.
@@ -22,14 +22,16 @@ strict_model.py               StrictModel: common base class, rejects unknown fi
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem
                                imports the SpecificValues union; Character checks
                                what spans both layers (D&D prepared spells,
-                               SagaS new-skill attributes)
+                               SagaS and Daredevils new-skill attributes, Daredevils
+                               skill scores and freely improvable skills)
 systems/
-├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS + SpecificValues union
+├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS / Daredevils + SpecificValues union
 ├── norules.py                generic_norules
 ├── dnd5e.py                  generic_dnd5e
 ├── pathfinder1.py            generic_pf1
 ├── cthulhu.py                generic_cthulhu6
 ├── sagas.py                  generic_sagas
+├── daredevils.py             generic_daredevils
 └── fate.py                   generic_fate
 main.py                       imports the generic_* instances, exports JSON, validates round-trip
 ```
@@ -59,8 +61,8 @@ each object with `"additionalProperties": false` accordingly.
 Character
 ├── name, description, age, occupation, background, additional_information   (free text)
 ├── attributes:       list[Attribute]       (name + int value)
-├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked
-│                                            and attribute; both omitted from JSON when None)
+├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked,
+│                                            attribute and talent; omitted from JSON when None)
 ├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …; money is an item
@@ -136,7 +138,8 @@ single-value `Literal` with a default (like `system`): the meaning of
 `Skill.value` is a fixed convention per system (`proficiency level: 0 none,
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
 Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS,
-the skill level being associated attribute + learning level). It is written
+the skill level being associated attribute + learning level, `score 0-100;
+BCS = score / 5, rounded down` for Daredevils). It is written
 in each JSON so the file explains itself, and any other value is rejected.
 
 | System | Model | Specific fields |
@@ -147,6 +150,7 @@ in each JSON so the file explains itself, and any other value is rejected.
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
 | SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text); a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are stored like the main ones (their formula only initializes them); social class goes in `occupation`, species in `description` |
+| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `motivation`, `method`, `code`. A `New` skill must declare `Skill.attribute` (one of the 6 attributes) and `Skill.talent` (one of the 7 talents), listed skills must not; skill scores range from 0 to 100. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Luck and Reputation are not modeled |
 
 ## Generic templates
 
@@ -162,6 +166,7 @@ ready-to-use JSON blueprints:
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic); melee weapon skills are left out, players add them as `New` |
 | `generic_sagas.json` | SagaS | 113 skills (100 base + 13 generic) |
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
+| `generic_daredevils.json` | Daredevils | 6 attributes, 7 talents at 0, Off-hand Dexterity, Lethal / Subdual Damage; 87 skills (83 base + 4 generic) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system

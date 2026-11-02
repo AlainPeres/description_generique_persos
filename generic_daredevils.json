@@ -1,0 +1,587 @@
+{
+  "specific_values": {
+    "system": "daredevils",
+    "skill_value_meaning": "score 0-100; BCS = score / 5, rounded down",
+    "derived_values": [
+      {
+        "name": "Current Attributes",
+        "computed_from": "permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"
+      },
+      {
+        "name": "Attribute Groups and Effect Dice",
+        "computed_from": "current value, Attribute Group Chart"
+      },
+      {
+        "name": "Attribute Saving Throws",
+        "computed_from": "current value / 2, rounded down"
+      },
+      {
+        "name": "Critical Saving Throws",
+        "computed_from": "current value / 3, rounded down"
+      },
+      {
+        "name": "Basic Chance of Success",
+        "computed_from": "skill score / 5, rounded down"
+      },
+      {
+        "name": "Combat Dodge Ability",
+        "computed_from": "(current Deftness Group + current Speed Group) / 2"
+      },
+      {
+        "name": "Weapon Defense Ability",
+        "computed_from": "hand-to-hand BCS / 4"
+      },
+      {
+        "name": "Damage Resistance Total",
+        "computed_from": "permanent Health + Strength + Will"
+      },
+      {
+        "name": "Seriously Wounded",
+        "computed_from": "Lethal + Subdual Damage > Damage Resistance Total / 2"
+      },
+      {
+        "name": "Encumbrance Capacity",
+        "computed_from": "5 + Strength Attribute Saving Throw, in kg"
+      },
+      {
+        "name": "Freely Improvable Skills Quota",
+        "computed_from": "current Wit + current Will"
+      },
+      {
+        "name": "Learning Rate",
+        "computed_from": "Wit Group"
+      },
+      {
+        "name": "Shock Factor",
+        "computed_from": "10 + Health Group"
+      },
+      {
+        "name": "Size",
+        "computed_from": "height and weight category, Physical Aspects Chart"
+      }
+    ],
+    "attribute_loss": {},
+    "attribute_progress": {},
+    "favored_hand": "right",
+    "height": "",
+    "weight_kg": null,
+    "looks": "Average",
+    "freely_improvable_skills": [],
+    "motivation": "",
+    "method": "",
+    "code": ""
+  },
+  "name": "Generic Daredevils Character",
+  "description": "to be specified",
+  "age": "to be specified",
+  "occupation": "to be specified",
+  "background": "to be specified",
+  "additional_information": "to be specified",
+  "attributes": [
+    {
+      "name": "Wit",
+      "value": 13
+    },
+    {
+      "name": "Will",
+      "value": 13
+    },
+    {
+      "name": "Strength",
+      "value": 13
+    },
+    {
+      "name": "Deftness",
+      "value": 12
+    },
+    {
+      "name": "Speed",
+      "value": 12
+    },
+    {
+      "name": "Health",
+      "value": 12
+    },
+    {
+      "name": "Charismatic",
+      "value": 0
+    },
+    {
+      "name": "Combative",
+      "value": 0
+    },
+    {
+      "name": "Communicative",
+      "value": 0
+    },
+    {
+      "name": "Esthetic",
+      "value": 0
+    },
+    {
+      "name": "Mechanical",
+      "value": 0
+    },
+    {
+      "name": "Natural",
+      "value": 0
+    },
+    {
+      "name": "Scientific",
+      "value": 0
+    },
+    {
+      "name": "Off-hand Dexterity",
+      "value": 6
+    },
+    {
+      "name": "Lethal Damage",
+      "value": 0
+    },
+    {
+      "name": "Subdual Damage",
+      "value": 0
+    }
+  ],
+  "skills": [
+    {
+      "name": "Acrobat",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Climbing",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Jumping",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Running",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Swimming",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Cyclist",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Driver",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Driver, Heavy Equipment",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Gambling",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Horsemanship",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Hunting",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Mimicry",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Pilot",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Pilot, Aerostat",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Seamanship",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Stealth",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Survival",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Throwing",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Tracking",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Blacksmith",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Carpenter",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Electrician",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Gunsmith",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Machinist",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Cryptography",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Demolitions",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Disguise",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Interrogation",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Lockpicking",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Mechanic",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Pickpocket",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Research",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Restoration",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Safecracking",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Traps",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Anthropology",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Archaeology",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Botany",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Chemistry",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Civil Engineering",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Electrical Engineering",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Finance",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Forensic Science",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Geology",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "History",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Language",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Law",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Linguistics",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Military Science",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Navigation",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Occult Studies",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Paleontology",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Physics",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Rhetoric",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Zoology",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "First Aid",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Advanced Medical",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Pathology",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Therapy",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Medical Specialization",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Arabic Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Black African Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Chinese Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Eskimo Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "European/American Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Indian Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Japanese Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "North Amerindian Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Polynesian Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "South Amerindian Culture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Academic Subculture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Business Subculture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Criminal Subculture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Law Enforcement Subculture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Politics Subculture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "High Society Subculture",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Pistol",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Rifle",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Autofire",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Archaic Weapon",
+      "category": "Generic",
+      "value": 0
+    },
+    {
+      "name": "Bayonet Training",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Fencing",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Knife",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Nightstick",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Whip",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Brawling",
+      "category": "Base",
+      "value": 0
+    },
+    {
+      "name": "Martial Arts",
+      "category": "Base",
+      "value": 0
+    }
+  ],
+  "abilities": [],
+  "equipment": [],
+  "possessions": [],
+  "conditions": []
+}
