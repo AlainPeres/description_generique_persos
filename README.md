@@ -71,21 +71,21 @@ Character
 ## What is stored
 
 **Only what cannot be computed from other values is stored.** Modifiers,
-proficiency bonus, BAB, saves, Idea / Luck / Know, damage bonus, total
-level, Sanity / HP / MP maximums in Cthulhu… are left out: storing them
+proficiency bonus, BAB, saves, Armor Class in D&D and PF1 (computed from
+class, race, armor, shield, items and active spells), Idea / Luck / Know,
+damage bonus, total level, Sanity / HP / MP maximums in Cthulhu, Protection
+and MaxImpactBonus in SagaS… are left
+out and computed **outside the model**, by the tools that read the character: storing them
 would risk inconsistencies when the source value changes. Stored instead:
 
 - *current* values (`Current Sanity`, `Current Hit Points`…), which change
   during play;
 - maximums that cannot be computed, such as `Maximum Hit Points` in D&D and
   PF1, rolled at each level;
-- two **exceptions**, derivable in theory but depending on too many sources
-  to be recomputed without a rules engine:
-  - `Armor Class` in D&D and PF1 (armor, shield, unarmored defense, magic
-    items, spells…);
-  - `StressBox.available` / `Consequence.available` in Fate: in Fate Core
-    they follow from Physique or Will, but extras, stunts and house rules
-    often change them.
+- one **exception**, derivable in theory but stored anyway:
+  `StressBox.available` / `Consequence.available` in Fate. In Fate Core they
+  follow from Physique or Will, but extras, stunts and house rules often
+  change them.
 
 The model describes a character **between two scenes**, not in mid-combat:
 death saves, concentration, one-round conditions and temporary HP are not
@@ -123,7 +123,8 @@ Every block whose system has skills also declares `skill_value_meaning`, a
 single-value `Literal` with a default (like `system`): the meaning of
 `Skill.value` is a fixed convention per system (`proficiency level: 0 none,
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
-Cthulhu, `rating on the Fate ladder` for Fate, `skill score` for SagaS). It
+Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS, the skill level being associated attribute +
+learning level). It
 is written in each JSON so the file explains itself, and any other value is
 rejected.
 
@@ -133,7 +134,7 @@ rejected.
 | D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `saving_throw_proficiencies`; state between rests: `exhaustion` (0–6), `inspiration`, `hit_dice_remaining`, `spell_slots_remaining` (shared by all classes, level 1–9), `pact_slots_remaining`, `prepared_spells` (names of `Spell` abilities, checked by `Character`; empty = all known spells available), `resources_remaining` |
 | Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
-| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text) |
+| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
 | SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text) |
 
 ## Generic templates

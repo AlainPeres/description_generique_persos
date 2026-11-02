@@ -1,7 +1,7 @@
 {
   "specific_values": {
     "system": "sagas",
-    "skill_value_meaning": "skill score",
+    "skill_value_meaning": "learning level",
     "unspent_creation_points": 0,
     "serious_physical_injuries": [],
     "serious_psychical_injuries": []
@@ -76,14 +76,6 @@
     {
       "name": "Psychical Stun",
       "value": 0
-    },
-    {
-      "name": "Protection",
-      "value": 0
-    },
-    {
-      "name": "MaxImpactBonus",
-      "value": 10
     }
   ],
   "skills": [

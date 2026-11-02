@@ -170,7 +170,7 @@ class StressBox(StrictModel):
 
 class Consequence(StrictModel):
     available: bool = True    # the slot exists for this character
-    value: int                # stress absorbed: 2, 4 or 6 depending on severity
+    value: int                # stress absorbed: 2, 4, 6 or 8 depending on severity
     text: str = ""            # the consequence suffered, e.g. "Broken arm"
 
 class SpecificValuesFate(StrictModel):
@@ -185,15 +185,17 @@ class SpecificValuesFate(StrictModel):
     # Stress tracks, keyed by box name ("Box 1" to "Box 4")
     PhysicalStress: dict[str, StressBox] = Field(default_factory=dict, max_length=4)
     MentalStress: dict[str, StressBox] = Field(default_factory=dict, max_length=4)
-    # Keyed by slot name ("Mild", "Moderate", "Severe", "Mild Physical"...)
-    Consequences: dict[str, Consequence] = Field(default_factory=dict, max_length=5)
+    # Keyed by slot name ("Mild", "Moderate", "Severe", "Extreme", "Mild Physical"...)
+    Consequences: dict[str, Consequence] = Field(default_factory=dict, max_length=6)
 
 # ---------------------------------------------------------------------------
 # System-specific block: SagaS
 # ---------------------------------------------------------------------------
 class SpecificValuesSagas(StrictModel):
     system: Literal["sagas"]
-    skill_value_meaning: Literal["skill score"] = "skill score"
+    # The skill level (associated attribute + learning level) is derived;
+    # the attribute associated with each skill is fixed by the rules
+    skill_value_meaning: Literal["learning level"] = "learning level"
     unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
     # Lasting after-effects, free text; current wounds and stun are attributes
     serious_physical_injuries: list[str] = Field(default_factory=list)

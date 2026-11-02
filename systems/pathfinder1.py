@@ -31,11 +31,10 @@ generic_pf1 = Character(
         Attribute(name="Wisdom", value=10),
         Attribute(name="Charisma", value=10),
 
-        # Stored although AC is derivable in theory: it depends on too many
-        # sources (armor, shield, Dexterity, size, natural armor, deflection,
-        # magic items, spells); maximum HP is rolled at each level.
-        # BAB, saves, CMB, CMD and initiative are derived, so they are not stored.
-        Attribute(name="Armor Class", value=10),
+        # Maximum HP is stored: it is rolled at each level. Armor Class (normal,
+        # touch, flat-footed), BAB, saves, CMB, CMD and initiative are derived
+        # (AC from armor, shield, Dexterity, size, natural armor, items and
+        # spells), so they are not stored.
         Attribute(name="Maximum Hit Points", value=10),
         Attribute(name="Current Hit Points", value=10),
         Attribute(name="Nonlethal Damage", value=0),

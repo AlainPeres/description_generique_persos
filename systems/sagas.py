@@ -1,7 +1,7 @@
 """
 Generic SagaS character template.
 
-Default values ("to be specified", characteristics of 5, base skill scores)
+Default values ("to be specified", characteristics of 5, base learning levels)
 are meant to be replaced when describing an actual character. "Psychical"
 is the system's own term and is kept as is.
 """
@@ -40,12 +40,11 @@ generic_sagas = Character(
         Attribute(name="Psychical Wounds", value=0),
         Attribute(name="Physical Stun", value=0),
         Attribute(name="Psychical Stun", value=0),
-
-        # Armor and damage
-        Attribute(name="Protection", value=0),
-        Attribute(name="MaxImpactBonus", value=10),       
+        # Protection and MaxImpactBonus are derived from other values, so
+        # they are not stored
     ],
-    # Value = skill score; GENERIC skills are open-ended ("Climb (...)")
+    # Value = learning level; the skill level (associated attribute +
+    # learning level) is derived. GENERIC skills are open-ended ("Climb (...)")
     skills=[
         Skill(name="Arm Wrestling", category=SkillCategory.BASE, value=0),
         Skill(name="Weight Lifting", category=SkillCategory.BASE, value=0),

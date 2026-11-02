@@ -90,7 +90,7 @@ class Skill(StrictModel):
     checked: bool | None = Field(default=None, exclude_if=lambda v: v is None)
 
 
-# Any numeric stat: characteristics, current values (HP, Sanity...), AC...
+# Any numeric stat: characteristics, current values (HP, Sanity...)...
 class Attribute(StrictModel):
     name: str
     value: int

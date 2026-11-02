@@ -55,22 +55,23 @@ se désynchroniser des autres.
 **Seul est stocké ce qui ne peut pas être calculé à partir des autres
 valeurs** : Idée, Chance et Connaissance en Cthulhu (INT×5, POU×5, ÉDU×5),
 bonus aux dégâts, maximums de SAN, PV et PM en Cthulhu, bonus de maîtrise et
-niveau total en D&D (somme des niveaux de classe)… ne figurent pas sur la
-fiche. Les stocker créerait un risque d'incohérence quand la valeur source
+niveau total en D&D (somme des niveaux de classe), classe d'armure en D&D et
+en PF1 (calculée à partir de la classe, de la race, de l'armure, du
+bouclier, des objets et des sorts actifs), protection et bonus d'impact
+maximum en SagaS… ne figurent pas sur la fiche. Ils
+sont calculés **à l'extérieur du modèle**, par les outils qui lisent le
+personnage. Les stocker créerait un risque d'incohérence quand la valeur source
 change. En revanche, sont stockés :
 
 - les valeurs *actuelles* (`Current Sanity`, `Current Hit Points`…), qui
   évoluent en jeu ;
 - les maximums qui ne se calculent pas, comme les PV maximum en D&D et en
   PF1, tirés aux dés à chaque niveau (`Maximum Hit Points`) ;
-- deux **exceptions**, en théorie dérivées mais stockées parce qu'elles
-  dépendent de trop de sources pour être recalculées sans moteur de règles :
-  - la classe d'armure en D&D et en PF1 (`Armor Class`) : armure, bouclier,
-    défense sans armure, objets magiques, sorts… ;
-  - la disponibilité des cases de stress et des conséquences en Fate
-    (`StressBox.available`, `Consequence.available`) : en Fate Core, elle
-    découle du niveau de Physique ou de Volonté, mais les extras, les
-    prouesses et les règles maison la modifient souvent.
+- une **exception**, en théorie dérivée mais stockée : la disponibilité des
+  cases de stress et des conséquences en Fate (`StressBox.available`,
+  `Consequence.available`). En Fate Core, elle découle du niveau de Physique
+  ou de Volonté, mais les extras, les prouesses et les règles maison la
+  modifient souvent.
 
 Le sens de `Skill.value` est une **convention fixe par système**, choisie par
 le modèle (ce ne sont pas les règles du jeu qui l'imposent). Chaque bloc
@@ -85,7 +86,7 @@ seul, et toute autre valeur est refusée.
 | PF1      | `ranks`                                                 |
 | Cthulhu  | `percentage`                                            |
 | Fate     | `rating on the Fate ladder`                             |
-| SagaS    | `skill score`                                           |
+| SagaS    | `learning level`                                        |
 
 En D&D 5e, la `value` d'une compétence est donc son **niveau de maîtrise**
 (0 = aucune, 1 = maîtrise, 2 = expertise), et non son bonus total : celui-ci
@@ -99,6 +100,11 @@ de caractéristique, +3 de compétence de classe, dons, objets, malus
 d'armure…) se calcule, et le stocker seul ferait perdre les rangs, donc par
 exemple la possibilité d'utiliser une compétence réservée aux personnages
 formés. De même, BBA, jets de sauvegarde, BMO et DMD ne sont pas stockés.
+
+En SagaS, pour la même raison, la `value` d'une compétence est son **niveau
+d'apprentissage**. Le niveau de compétence (attribut associé + niveau
+d'apprentissage) se calcule ; l'attribut associé à chaque compétence est
+fixé par les règles, il n'est donc pas stocké dans le personnage.
 
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que

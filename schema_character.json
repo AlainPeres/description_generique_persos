@@ -569,7 +569,7 @@
           "additionalProperties": {
             "$ref": "#/$defs/Consequence"
           },
-          "maxProperties": 5,
+          "maxProperties": 6,
           "title": "Consequences",
           "type": "object"
         }
@@ -745,8 +745,8 @@
           "type": "string"
         },
         "skill_value_meaning": {
-          "const": "skill score",
-          "default": "skill score",
+          "const": "learning level",
+          "default": "learning level",
           "title": "Skill Value Meaning",
           "type": "string"
         },

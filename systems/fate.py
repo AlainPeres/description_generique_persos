@@ -22,12 +22,11 @@ generic_fate = Character(
         Aspects=["to be specified"],
         Extras=["to be specified"],
         FatePoints=0,
-        Refresh=2,
+        Refresh=3,                # Fate Core default, with 3 free stunts
         # Every character has 2 boxes per track; boxes 3 and 4 are unlocked
         # by Physique (physical) or Will (mental), hence available=False here.
-        # Exception to the no-derived-values rule, like AC in D&D and PF1:
-        # `available` is stored because extras, stunts and house rules often
-        # change it.
+        # Exception to the no-derived-values rule: `available` is stored
+        # because extras, stunts and house rules often change it.
         PhysicalStress={"Box 1": StressBox(), "Box 2": StressBox(),
                         "Box 3": StressBox(available=False),
                         "Box 4": StressBox(available=False)},
@@ -35,10 +34,13 @@ generic_fate = Character(
                       "Box 3": StressBox(available=False),
                       "Box 4": StressBox(available=False)},
         # Mild, Moderate and Severe absorb 2, 4 and 6 stress. The extra mild
-        # slots are unlocked by a Superb (+5) Physique or Will.
+        # slots are unlocked by a Superb (+5) Physique or Will. Extreme
+        # absorbs 8 and permanently replaces one of the character's aspects;
+        # it can be used once between two major milestones.
         Consequences={"Mild": Consequence(value=2),
                       "Moderate": Consequence(value=4),
                       "Severe": Consequence(value=6),
+                      "Extreme": Consequence(value=8),
                       "Mild Physical": Consequence(value=2, available=False),
                       "Mild Mental": Consequence(value=2, available=False)},
     ),    
