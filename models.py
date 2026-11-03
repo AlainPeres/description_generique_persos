@@ -79,6 +79,10 @@ class Ability(StrictModel):
     category: AbilityCategory
     value: int | None = None          # only for abilities that have a rating
     description: str = ""             # effect, conditions of use
+    # Provenance, independent of category: Base = from the official rules,
+    # New = added by the player or the GM (house spell, custom stunt, super
+    # power outside the base rules...). Generic and Specialization make no
+    # sense here. Descriptive only: no validator reads it.
     origin: SkillCategory = SkillCategory.BASE
 
 

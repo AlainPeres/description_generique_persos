@@ -215,7 +215,11 @@ restent à part : ce sont des séquelles, avec leurs propres informations.
   Advantage, Spell…
 
 Une `Ability` porte donc les deux : `category` pour son type, `origin` pour sa
-provenance. **Un sort n'est pas un modèle à part** : c'est une `Ability` avec
+provenance. `origin` vaut `Base` par défaut (capacité des règles officielles)
+ou `New` (ajoutée par le joueur ou le MJ : sort maison, prouesse inventée,
+super-pouvoir hors règles…) ; `Generic` et `Specialization` n'ont pas de sens
+pour une capacité. Ce champ est purement descriptif : aucun validateur ne le
+lit. **Un sort n'est pas un modèle à part** : c'est une `Ability` avec
 `category=Spell`, et son effet va dans `description`.
 
 ## Comment Pydantic sait de quel système il s'agit

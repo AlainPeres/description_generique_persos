@@ -125,7 +125,11 @@ Two orthogonal axes:
   Spell …).
 
 That is why `Ability` carries both: `category: AbilityCategory` for its type
-and `origin: SkillCategory` (default `Base`) for its provenance. Spells are no
+and `origin: SkillCategory` (default `Base`) for its provenance: `Base` for
+an ability from the official rules, `New` for one added by the player or the
+GM (house spell, custom stunt, super power outside the base rules…);
+`Generic` and `Specialization` make no sense for an ability. `origin` is
+descriptive only: no validator reads it. Spells are no
 longer a separate model — a spell is an `Ability` with `category=Spell`, its
 effect going in `description`.
 
