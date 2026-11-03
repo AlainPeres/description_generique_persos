@@ -8,8 +8,12 @@
         "computed_from": "sum of class levels"
       },
       {
+        "name": "Current Ability Scores",
+        "computed_from": "score - ability reduction"
+      },
+      {
         "name": "Ability Modifiers",
-        "computed_from": "(score - 10) // 2"
+        "computed_from": "(current score - 10) // 2"
       },
       {
         "name": "Proficiency Bonus",
@@ -72,6 +76,7 @@
     ],
     "saving_throw_proficiencies": [],
     "exhaustion": 0,
+    "ability_reduction": {},
     "inspiration": false,
     "hit_dice_remaining": null,
     "spell_slots_remaining": {},

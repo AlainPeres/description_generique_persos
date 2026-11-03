@@ -19,7 +19,7 @@ system's character data lives in its own module under `systems/`:
 
 ```text
 strict_model.py               StrictModel: common base class, rejects unknown fields
-models.py                     Character, Attribute, Skill, Ability, EquipmentItem
+models.py                     Character, Attribute, Skill, Ability, EquipmentItem, Condition
                                imports the SpecificValues union; Character checks
                                what spans both layers (D&D prepared spells,
                                SagaS and Daredevils new-skill attributes, Daredevils
@@ -68,7 +68,8 @@ Character
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …; money is an item
 │                                            whose quantity is the amount)
 ├── possessions:      list[str]             (what is not carried equipment: house, land, shares …)
-├── conditions:       list[str]             (lasting effects: curse, disease, long-duration spell …)
+├── conditions:       list[Condition]       (lasting effects: name + kind Physical / Mental / Other +
+│                                            optional duration + description + cured)
 └── specific_values:  SpecificValues | None   (discriminated union on `system`)
 ```
 
@@ -114,6 +115,7 @@ stored. What lasts until the next rest is stored as *remaining* values
 | `Skill` | `SkillCategory` | Base / New / Generic / Specialization |
 | `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage / Spell |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable / money |
+| `Condition` | `ConditionKind` | Physical / Mental / Other |
 
 Two orthogonal axes:
 
@@ -142,19 +144,19 @@ single-value `Literal` with a default (like `system`): the meaning of
 `Skill.value` is a fixed convention per system (`proficiency level: 0 none,
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
 Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS,
-the skill level being associated attribute + learning level, `score 0-100;
+the skill level being associated attribute + learning level, `score (0 or more);
 BCS = score / 5, rounded down` for Daredevils). It is written
 in each JSON so the file explains itself, and any other value is rejected.
 
 | System | Model | Specific fields |
 | --- | --- | --- |
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
-| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `saving_throw_proficiencies`; state between rests: `exhaustion` (0–6), `inspiration`, `hit_dice_remaining`, `spell_slots_remaining` (shared by all classes, level 1–9), `pact_slots_remaining`, `prepared_spells` (names of `Spell` abilities, checked by `Character`; empty = all known spells available), `resources_remaining` |
+| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `saving_throw_proficiencies`; state between rests: `exhaustion` (0–6), `ability_reduction` (points lost per ability until a rest or a restoration; current score = score − reduction), `inspiration`, `hit_dice_remaining`, `spell_slots_remaining` (shared by all classes, level 1–9), `pact_slots_remaining`, `prepared_spells` (names of `Spell` abilities, checked by `Character`; empty = all known spells available), `resources_remaining` |
 | Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
-| Call of Cthulhu 6 | `SpecificValuesCthulhu` | `mental_disorders` (`MentalDisorder`: name, duration temporary/indefinite/permanent, description, cured); other data lives in generic layer, skill improvement checks use `Skill.checked` |
+| Call of Cthulhu 6 | `SpecificValuesCthulhu` | no specific field besides `derived_values`: mental disorders are `Condition`s of kind `Mental` (duration temporary / indefinite / permanent); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
-| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later), `serious_physical_injuries`, `serious_psychical_injuries` (lists of text); a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are stored like the main ones (their formula only initializes them); social class goes in `occupation`, species in `description` |
-| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `motivation`, `method`, `code`. A `New` skill must declare `Skill.attribute` (one of the 6 attributes) and `Skill.talent` (one of the 7 talents), listed skills must not; skill scores range from 0 to 100. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Luck and Reputation are not modeled |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are stored like the main ones (their formula only initializes them); social class goes in `occupation`, species in `description` |
+| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `motivation`, `method`, `code`. A `New` skill must declare `Skill.attribute` (one of the 6 attributes) and `Skill.talent` (one of the 7 talents), listed skills must not; skill scores are 0 or more, with no maximum. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Luck and Reputation are not modeled |
 
 ## Generic templates
 

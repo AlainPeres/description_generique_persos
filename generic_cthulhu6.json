@@ -31,8 +31,7 @@
         "name": "Maximum Magic Points",
         "computed_from": "Power"
       }
-    ],
-    "mental_disorders": []
+    ]
   },
   "name": "Generic Cthulhu 6 Character",
   "description": "to be specified",

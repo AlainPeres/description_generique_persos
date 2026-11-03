@@ -27,13 +27,12 @@ Un personnage se décompose en deux parties.
    | `abilities`                                                                        | dons, pouvoirs, avantages, sorts…                                                  |
    | `equipment`                                                                        | objets, armes, armures, consommables, monnaie (la somme est la quantité)           |
    | `possessions`                                                                      | biens qui ne sont pas de l'équipement transporté (maison, terres…), en texte libre |
-   | `conditions`                                                                       | effets durables, en texte libre                                                    |
+   | `conditions`                                                                       | effets durables physiques, mentaux ou autres (`Condition`)                         |
 
 2. **Une couche spécifique** (`specific_values`), facultative. Elle contient ce
    qui ne rentre pas dans « nom + valeur » : les classes (multiclasse,
-   sous-classes ou archétypes) et la race en D&D et Pathfinder, les troubles mentaux en Cthulhu, les
-   aspects et le stress en Fate, les blessures graves en SagaS, des tags
-   libres en sans règles…
+   sous-classes ou archétypes) et la race en D&D et Pathfinder, les aspects
+   et le stress en Fate, des tags libres en sans règles…
 
 Règle de répartition : **si une donnée peut s'écrire « nom + valeur », elle va
 dans la couche générique**. La couche spécifique reste aussi petite que
@@ -49,7 +48,7 @@ mis de côté pour plus tard, donc un état du personnage.
 Quand un élément regroupe plusieurs informations, il devient un petit modèle
 plutôt qu'un tuple ou des listes parallèles : `DnDClass` (nom, sous-classe,
 niveau), `PF1Class` (nom, archétypes, niveau, sorts restants),
-`PreparedSpell` (nom, niveau, lancé), `MentalDisorder` (nom, durée,
+`PreparedSpell` (nom, niveau, lancé), `Condition` (nom, nature, durée,
 description, guéri), `StressBox` et `Consequence` en Fate, `DerivedValue`
 (nom, sources). Chaque information est nommée, validée, et ne peut pas
 se désynchroniser des autres.
@@ -100,13 +99,19 @@ seul, et toute autre valeur est refusée.
 | Cthulhu    | `percentage`                                            |
 | Fate       | `rating on the Fate ladder`                             |
 | SagaS      | `learning level`                                        |
-| Daredevils | `score 0-100; BCS = score / 5, rounded down`            |
+| Daredevils | `score (0 or more); BCS = score / 5, rounded down`      |
 
 En D&D 5e, la `value` d'une compétence est donc son **niveau de maîtrise**
 (0 = aucune, 1 = maîtrise, 2 = expertise), et non son bonus total : celui-ci
 se calcule à partir du modificateur de caractéristique et du bonus de
 maîtrise, qui dépend du niveau total. Une montée de niveau ne demande ainsi
 aucune correction des compétences.
+
+Toujours en D&D 5e, les caractéristiques sont stockées à leur valeur
+**permanente**. Les points perdus jusqu'à un repos ou une restauration
+(*Strength Drain* de l'Ombre, *Feeblemind*…) vont dans `ability_reduction`,
+et la valeur actuelle se calcule, comme `attribute_loss` en Daredevils. Une
+perte définitive, elle, se traite en modifiant directement la caractéristique.
 
 En Pathfinder 1, la `value` d'une compétence est son **nombre de rangs** :
 ce sont des choix du joueur, impossibles à recalculer. Le total (modificateur
@@ -133,7 +138,7 @@ vérifie qu'une compétence `New` a bien un `attribute` parmi les 8
 caractéristiques principales et les 4 secondaires, et qu'aucune compétence
 de la liste n'en déclare.
 
-En Daredevils, la `value` d'une compétence est son **score** (0 à 100) : la
+En Daredevils, la `value` d'une compétence est son **score** (0 ou plus, sans maximum) : la
 chance de base de réussite (BCS = score / 5, arrondi vers le bas) se calcule,
 et la formule du score initial ne sert qu'à la création. Les attributs sont
 stockés à leur valeur **permanente** ; les points perdus (blessures,
@@ -147,7 +152,7 @@ cumul en cours est stocké dans `attribute_progress`. Comme en SagaS, une
 compétence `New` ajoutée par l'arbitre déclare son attribut gouvernant
 (`Skill.attribute`) et, propre à Daredevils, son **Talent gouvernant**
 (`Skill.talent`), qui sert à l'apprentissage par la pratique ; `Character`
-le vérifie, ainsi que les scores (0 à 100) et les noms de
+le vérifie, ainsi que les scores (jamais négatifs) et les noms de
 `freely_improvable_skills`. Les finances, diplômes, grade, casier, licences
 et contacts se décrivent dans `background` ; la Chance et la Réputation ne
 sont pas modélisées pour l'instant. Sauf mention contraire, Daredevils
@@ -193,14 +198,26 @@ Ce qui dure jusqu'au prochain repos est stocké, toujours sous forme de
   libres (`{"Ki": 3}`) plutôt qu'un champ par ressource. Les sorts lancés
   une fois par repos sans emplacement (sorts raciaux, de dons, *Mystic
   Arcanum*…) y figurent aussi, sous le nom du sort ;
-- compteurs propres au système : épuisement, inspiration et dés de vie en
-  D&D ; affaiblissement, diminution, niveaux négatifs et points d'héroïsme
-  en PF1.
+- compteurs propres au système : épuisement, réduction de caractéristique
+  (`ability_reduction`), inspiration et dés de vie en D&D ; affaiblissement,
+  diminution, niveaux négatifs et points d'héroïsme en PF1.
 
-Les effets durables (malédiction, maladie, sort de longue durée) vont dans
-`Character.conditions`, une liste de textes libres commune à tous les
-systèmes. Les troubles mentaux de Cthulhu et les blessures graves de SagaS
-restent à part : ce sont des séquelles, avec leurs propres informations.
+Les effets durables vont dans `Character.conditions`, une liste de
+`Condition` commune à tous les systèmes : nom, nature (`kind`), durée
+facultative (`temporary`, `indefinite` ou `permanent`), description, et
+`cured`, conservé pour l'histoire du personnage. La nature vaut :
+
+- `Physical` : blessure, maladie, poison… dont les **blessures graves
+  physiques** de SagaS ;
+- `Mental` : les **troubles mentaux** de Cthulhu, et ce que SagaS appelle
+  **psychique** (*Psychical*) : une blessure grave psychique de SagaS est
+  une `Condition` de nature `Mental` ;
+- `Other` : malédiction, sort de longue durée, effet magique…
+
+Les états chiffrés que les règles exploitent restent dans le bloc
+spécifique : épuisement et `ability_reduction` en D&D, affaiblissement,
+diminution et niveaux négatifs en PF1, conséquences en Fate,
+`attribute_loss` en Daredevils.
 
 ## Les catégories : deux axes indépendants
 

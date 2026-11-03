@@ -45,7 +45,7 @@ generic_daredevils = Character(
         Attribute(name="Lethal Damage", value=0),
         Attribute(name="Subdual Damage", value=0),
     ],
-    # Value = skill score (0 to 100); the BCS is derived. GENERIC skills must
+    # Value = skill score (0 or more, no maximum); the BCS is derived. GENERIC skills must
     # be specified: "History (Roman Empire)", "Language (French)"...
     skills=[
         # Practical skills

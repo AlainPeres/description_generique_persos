@@ -3,7 +3,7 @@ RPG character schema (multi-system) with Pydantic.
 
 Architecture:
 - A common base (Character) with two complementary layers:
-  1. Generic layer: attributes, skills, abilities, equipment
+  1. Generic layer: attributes, skills, abilities, equipment, conditions
      (system-agnostic, usable across all RPGs; spells are an Ability with
      category=SPELL)
   2. Optional system-specific block (specific_values: SpecificValuesDnD | SpecificValuesCthulhu | ...)
@@ -18,7 +18,7 @@ Only the schema lives here. Per-system character data lives in systems/.
 
 from enum import Enum
 from pydantic import Field, model_validator
-from typing import Any, Self
+from typing import Any, Literal, Self
 
 from strict_model import StrictModel
 
@@ -109,6 +109,26 @@ class Attribute(StrictModel):
     value: int
 
 
+# What a lasting condition affects
+class ConditionKind(str, Enum):
+    PHYSICAL = "Physical"             # injury, disease, poison...
+    MENTAL = "Mental"                 # Cthulhu mental disorder; also covers what
+                                      # SagaS calls "Psychical" (psychical injury)
+    OTHER = "Other"                   # curse, long-duration spell, magical effect...
+
+
+# A lasting state described in text. Numeric states used by the rules
+# (D&D exhaustion, PF1 ability damage, Fate consequences...) stay in
+# specific_values.
+class Condition(StrictModel):
+    name: str                         # e.g. "Claustrophobia", "Broken leg"
+    kind: ConditionKind
+    # None = not specified by the system
+    duration: Literal["temporary", "indefinite", "permanent"] | None = None
+    description: str = ""             # circumstances, effects
+    cured: bool = False               # kept for the character's history
+
+
 # ---------------------------------------------------------------------------
 # Common base
 # ---------------------------------------------------------------------------
@@ -131,8 +151,9 @@ class Character(StrictModel):
     equipment: list[EquipmentItem] = Field(default_factory=list)
     # Possessions not described as equipment (house, land, shares...), free text
     possessions: list[str] = Field(default_factory=list)
-    # Lasting effects (curse, disease, long-duration spell...), free text
-    conditions: list[str] = Field(default_factory=list)
+    # Lasting effects: curse, disease, Cthulhu mental disorder, SagaS serious
+    # physical or psychical injury...
+    conditions: list[Condition] = Field(default_factory=list)
 
     # Cross-layer check: in D&D, prepared_spells (specific layer) names Spell
     # abilities (generic layer), so a typo would point to no spell. Names are
@@ -166,7 +187,7 @@ class Character(StrictModel):
                         f"only NEW skills declare one")
         return self
 
-    # Cross-layer checks for Daredevils: skill scores range from 0 to 100; a
+    # Cross-layer checks for Daredevils: skill scores are not negative; a
     # NEW skill declares its governing attribute and talent (fixed by the rules
     # for listed skills); freely improvable skills name skills of the character.
     # Talents only exist in Daredevils.
@@ -179,8 +200,8 @@ class Character(StrictModel):
                 raise ValueError(f"only Daredevils skills have a governing talent: {with_talent}")
             return self
         for skill in self.skills:
-            if not 0 <= skill.value <= 100:
-                raise ValueError(f"skill {skill.name!r}: score must be between 0 and 100")
+            if skill.value < 0:
+                raise ValueError(f"skill {skill.name!r}: score must not be negative")
             if skill.category == SkillCategory.NEW:
                 if skill.attribute not in DAREDEVILS_ATTRIBUTES:
                     raise ValueError(

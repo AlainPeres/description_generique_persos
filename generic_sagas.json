@@ -36,9 +36,7 @@
         "computed_from": "2 + Dodge skill level / 2, rounded down"
       }
     ],
-    "unspent_creation_points": 0,
-    "serious_physical_injuries": [],
-    "serious_psychical_injuries": []
+    "unspent_creation_points": 0
   },
   "name": "Generic SagaS Character",
   "description": "to be specified",

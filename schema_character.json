@@ -71,6 +71,60 @@
       "title": "Attribute",
       "type": "object"
     },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ConditionKind"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "enum": [
+                "temporary",
+                "indefinite",
+                "permanent"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "cured": {
+          "default": false,
+          "title": "Cured",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "kind"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionKind": {
+      "enum": [
+        "Physical",
+        "Mental",
+        "Other"
+      ],
+      "title": "ConditionKind",
+      "type": "string"
+    },
     "Consequence": {
       "additionalProperties": false,
       "properties": {
@@ -201,40 +255,6 @@
       ],
       "title": "ItemCategory",
       "type": "string"
-    },
-    "MentalDisorder": {
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "duration": {
-          "enum": [
-            "temporary",
-            "indefinite",
-            "permanent"
-          ],
-          "title": "Duration",
-          "type": "string"
-        },
-        "description": {
-          "default": "",
-          "title": "Description",
-          "type": "string"
-        },
-        "cured": {
-          "default": false,
-          "title": "Cured",
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "name",
-        "duration"
-      ],
-      "title": "MentalDisorder",
-      "type": "object"
     },
     "PF1Class": {
       "additionalProperties": false,
@@ -424,13 +444,6 @@
           },
           "title": "Derived Values",
           "type": "array"
-        },
-        "mental_disorders": {
-          "items": {
-            "$ref": "#/$defs/MentalDisorder"
-          },
-          "title": "Mental Disorders",
-          "type": "array"
         }
       },
       "required": [
@@ -448,8 +461,8 @@
           "type": "string"
         },
         "skill_value_meaning": {
-          "const": "score 0-100; BCS = score / 5, rounded down",
-          "default": "score 0-100; BCS = score / 5, rounded down",
+          "const": "score (0 or more); BCS = score / 5, rounded down",
+          "default": "score (0 or more); BCS = score / 5, rounded down",
           "title": "Skill Value Meaning",
           "type": "string"
         },
@@ -646,8 +659,12 @@
               "computed_from": "sum of class levels"
             },
             {
+              "name": "Current Ability Scores",
+              "computed_from": "score - ability reduction"
+            },
+            {
               "name": "Ability Modifiers",
-              "computed_from": "(score - 10) // 2"
+              "computed_from": "(current score - 10) // 2"
             },
             {
               "name": "Proficiency Bonus",
@@ -762,6 +779,24 @@
           "minimum": 0,
           "title": "Exhaustion",
           "type": "integer"
+        },
+        "ability_reduction": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "Strength",
+              "Dexterity",
+              "Constitution",
+              "Intelligence",
+              "Wisdom",
+              "Charisma"
+            ]
+          },
+          "title": "Ability Reduction",
+          "type": "object"
         },
         "inspiration": {
           "default": false,
@@ -1071,14 +1106,36 @@
         },
         "ability_damage": {
           "additionalProperties": {
+            "minimum": 0,
             "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "Strength",
+              "Dexterity",
+              "Constitution",
+              "Intelligence",
+              "Wisdom",
+              "Charisma"
+            ]
           },
           "title": "Ability Damage",
           "type": "object"
         },
         "ability_drain": {
           "additionalProperties": {
+            "minimum": 0,
             "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "Strength",
+              "Dexterity",
+              "Constitution",
+              "Intelligence",
+              "Wisdom",
+              "Charisma"
+            ]
           },
           "title": "Ability Drain",
           "type": "object"
@@ -1180,20 +1237,6 @@
           "minimum": 0,
           "title": "Unspent Creation Points",
           "type": "integer"
-        },
-        "serious_physical_injuries": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Serious Physical Injuries",
-          "type": "array"
-        },
-        "serious_psychical_injuries": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Serious Psychical Injuries",
-          "type": "array"
         }
       },
       "required": [
@@ -1335,7 +1378,7 @@
     },
     "conditions": {
       "items": {
-        "type": "string"
+        "$ref": "#/$defs/Condition"
       },
       "title": "Conditions",
       "type": "array"

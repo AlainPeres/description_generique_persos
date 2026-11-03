@@ -61,7 +61,8 @@ class SpecificValuesNoRules(StrictModel):
 # ---------------------------------------------------------------------------
 DND_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Total Level", computed_from="sum of class levels"),
-    DerivedValue(name="Ability Modifiers", computed_from="(score - 10) // 2"),
+    DerivedValue(name="Current Ability Scores", computed_from="score - ability reduction"),
+    DerivedValue(name="Ability Modifiers", computed_from="(current score - 10) // 2"),
     DerivedValue(name="Proficiency Bonus", computed_from="2 + (total level - 1) // 4"),
     DerivedValue(name="Skill Bonuses",
                  computed_from="ability modifier + proficiency level x proficiency bonus + other bonuses"),
@@ -76,6 +77,8 @@ DND_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Spell Slots (maximum)", computed_from="class levels, multiclass spellcaster table"),
     DerivedValue(name="Hit Dice (maximum)", computed_from="one per class level, die size by class"),
 )
+
+DnDAbility = Literal["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
 
 class DnDClass(StrictModel):
     name: str                 # e.g. "Fighter"
@@ -102,6 +105,9 @@ class SpecificValuesDnD(StrictModel):
     saving_throw_proficiencies: list[str] = Field(default_factory=list)  # e.g. ["Strength", "Constitution"]
     # State between two rests
     exhaustion: int = Field(default=0, ge=0, le=6)
+    # Points lost until a rest or a restoration (Shadow's Strength Drain,
+    # Feeblemind...); scores in attributes stay permanent. e.g. {"Strength": 3}
+    ability_reduction: dict[DnDAbility, Remaining] = Field(default_factory=dict)
     inspiration: bool = False
     hit_dice_remaining: int | None = Field(default=None, ge=0)     # None = all available
     # Slots are shared by all classes; pact magic (warlock) is separate.
@@ -193,9 +199,9 @@ class SpecificValuesPF1(StrictModel):
     languages: list[str] = Field(default_factory=list)
     # Class skills granted by traits; those from the class lists are derived
     additional_class_skills: list[str] = Field(default_factory=list)
-    # Lasting states, e.g. {"Strength": 2}
-    ability_damage: dict[str, int] = Field(default_factory=dict)
-    ability_drain: dict[str, int] = Field(default_factory=dict)
+    # Lasting states, e.g. {"Strength": 2}; same six abilities as D&D
+    ability_damage: dict[DnDAbility, Remaining] = Field(default_factory=dict)
+    ability_drain: dict[DnDAbility, Remaining] = Field(default_factory=dict)
     negative_levels: int = Field(default=0, ge=0)
     hero_points: int | None = Field(default=None, ge=0)   # None = optional rule not used
     resources_remaining: dict[str, Remaining] = Field(default_factory=dict)  # e.g. {"Rage rounds": 5}
@@ -219,19 +225,14 @@ CTHULHU_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Maximum Magic Points", computed_from="Power"),
 )
 
-class MentalDisorder(StrictModel):
-    name: str                 # e.g. "Claustrophobia"
-    duration: Literal["temporary", "indefinite", "permanent"]
-    description: str = ""     # circumstances, effects
-    cured: bool = False
-
 class SpecificValuesCthulhu(StrictModel):
     system: Literal["cthulhu6"]
     skill_value_meaning: Literal["percentage"] = "percentage"
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(CTHULHU_DERIVED)] = CTHULHU_DERIVED
-    # Everything else (characteristics, current Sanity, skills and their
-    # improvement checks) lives in the generic layer
-    mental_disorders: list[MentalDisorder] = Field(default_factory=list)
+    # Everything else lives in the generic layer: characteristics, current
+    # Sanity, skills and their improvement checks, and mental disorders
+    # (Character.conditions, kind Mental, duration temporary / indefinite /
+    # permanent)
 
 
 # ---------------------------------------------------------------------------
@@ -294,9 +295,8 @@ class SpecificValuesSagas(StrictModel):
     skill_value_meaning: Literal["learning level"] = "learning level"
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(SAGAS_DERIVED)] = SAGAS_DERIVED
     unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
-    # Lasting after-effects, free text; current wounds and stun are attributes
-    serious_physical_injuries: list[str] = Field(default_factory=list)
-    serious_psychical_injuries: list[str] = Field(default_factory=list)
+    # Current wounds and stun are attributes; serious injuries are
+    # Character.conditions, kind Physical, or kind Mental for psychical ones
 
 
 # ---------------------------------------------------------------------------
@@ -331,8 +331,8 @@ DAREDEVILS_DERIVED: tuple[DerivedValue, ...] = (
 
 class SpecificValuesDaredevils(StrictModel):
     system: Literal["daredevils"]
-    skill_value_meaning: Literal["score 0-100; BCS = score / 5, rounded down"] = (
-        "score 0-100; BCS = score / 5, rounded down"
+    skill_value_meaning: Literal["score (0 or more); BCS = score / 5, rounded down"] = (
+        "score (0 or more); BCS = score / 5, rounded down"
     )
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(DAREDEVILS_DERIVED)] = DAREDEVILS_DERIVED
     # Attribute points lost to wounds, disease...; the current value is
