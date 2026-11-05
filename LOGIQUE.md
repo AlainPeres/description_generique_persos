@@ -53,6 +53,14 @@ description, guéri), `StressBox` et `Consequence` en Fate, `DerivedValue`
 (nom, sources). Chaque information est nommée, validée, et ne peut pas
 se désynchroniser des autres.
 
+`DnDClass` et `PF1Class` héritent d'une base commune, `CharacterClass` (nom,
+niveau 1–20), sur laquelle porte aussi le contrôle d'unicité des noms de
+classe. Chaque système ajoute ses propres champs : une sous-classe unique en
+D&D, des archétypes cumulables et des sorts par classe en PF1. Une classe
+unique aux champs facultatifs aurait accepté, par exemple, des sorts préparés
+par classe en D&D, où les emplacements sont partagés. Un futur système à
+classes réutilisera la base.
+
 **Seul est stocké ce qui ne peut pas être calculé à partir des autres
 valeurs** : Idée, Chance et Connaissance en Cthulhu (INT×5, POU×5, ÉDU×5),
 bonus aux dégâts, maximums de SAN, PV et PM en Cthulhu, bonus de maîtrise et

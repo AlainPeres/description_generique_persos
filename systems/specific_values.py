@@ -48,6 +48,23 @@ def fixed[T](expected: T) -> AfterValidator:
         return value
     return AfterValidator(check)
 
+
+# ---------------------------------------------------------------------------
+# Character classes: common base of the class-based systems (D&D, PF1), each
+# system adding its own fields
+# ---------------------------------------------------------------------------
+class CharacterClass(StrictModel):
+    name: str                 # e.g. "Fighter"
+    level: int = Field(ge=1, le=20)
+
+# A class taken again is a higher level, not a new entry. Names are compared
+# without case or surrounding spaces ("Fighter" = " fighter").
+def check_unique_class_names[C: CharacterClass](classes: list[C]) -> list[C]:
+    names = [c.name.strip().casefold() for c in classes]
+    if len(names) != len(set(names)):
+        raise ValueError("each class must appear only once; raise its level instead")
+    return classes
+
 # ---------------------------------------------------------------------------
 # System-specific block: No Rules
 # ---------------------------------------------------------------------------
@@ -80,10 +97,8 @@ DND_DERIVED: tuple[DerivedValue, ...] = (
 
 DnDAbility = Literal["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
 
-class DnDClass(StrictModel):
-    name: str                 # e.g. "Fighter"
+class DnDClass(CharacterClass):
     subclass: str = ""        # e.g. "Battle Master"; empty before it is chosen
-    level: int = Field(ge=1, le=20)
 
 class SpecificValuesDnD(StrictModel):
     system: Literal["dnd5e"]
@@ -132,14 +147,6 @@ class SpecificValuesDnD(StrictModel):
         return check_unique_class_names(classes)
 
 
-# Shared by D&D and PF1: a class taken again is a higher level, not a new entry.
-# Names are compared without case or surrounding spaces ("Fighter" = " fighter").
-def check_unique_class_names[C: DnDClass | PF1Class](classes: list[C]) -> list[C]:
-    names = [c.name.strip().casefold() for c in classes]
-    if len(names) != len(set(names)):
-        raise ValueError("each class must appear only once; raise its level instead")
-    return classes
-
 
 # ---------------------------------------------------------------------------
 # System-specific block: Pathfinder 1st edition
@@ -174,10 +181,8 @@ class PreparedSpell(StrictModel):
     level: int = Field(ge=0, le=9)   # 0 = orison / cantrip
     cast: bool = False        # already used since it was prepared
 
-class PF1Class(StrictModel):
-    name: str                                            # e.g. "Fighter"
+class PF1Class(CharacterClass):
     archetypes: list[str] = Field(default_factory=list)  # PF1 allows several per class
-    level: int = Field(ge=1, le=20)
     # Each class has its own spells per day. Spontaneous casters: a missing
     # level means all its spells per day are available, a spent level is 0.
     spells_remaining: dict[SpellLevel, Remaining] = Field(default_factory=dict)

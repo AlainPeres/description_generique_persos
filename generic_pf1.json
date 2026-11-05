@@ -59,8 +59,8 @@
     "classes": [
       {
         "name": "to be specified",
-        "archetypes": [],
         "level": 1,
+        "archetypes": [],
         "spells_remaining": {},
         "prepared_spells": []
       }

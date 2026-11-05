@@ -175,16 +175,16 @@
           "title": "Name",
           "type": "string"
         },
-        "subclass": {
-          "default": "",
-          "title": "Subclass",
-          "type": "string"
-        },
         "level": {
           "maximum": 20,
           "minimum": 1,
           "title": "Level",
           "type": "integer"
+        },
+        "subclass": {
+          "default": "",
+          "title": "Subclass",
+          "type": "string"
         }
       },
       "required": [
@@ -263,18 +263,18 @@
           "title": "Name",
           "type": "string"
         },
+        "level": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
         "archetypes": {
           "items": {
             "type": "string"
           },
           "title": "Archetypes",
           "type": "array"
-        },
-        "level": {
-          "maximum": 20,
-          "minimum": 1,
-          "title": "Level",
-          "type": "integer"
         },
         "spells_remaining": {
           "additionalProperties": {

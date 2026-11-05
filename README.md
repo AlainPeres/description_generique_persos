@@ -148,6 +148,11 @@ the skill level being associated attribute + learning level, `score (0 or more);
 BCS = score / 5, rounded down` for Daredevils). It is written
 in each JSON so the file explains itself, and any other value is rejected.
 
+`DnDClass` and `PF1Class` inherit from a common `CharacterClass` (name,
+level 1–20), which also carries the unique-class-name check; each adds its
+own fields (one subclass in D&D; stackable archetypes and per-class spells in
+PF1). A future class-based system can reuse it.
+
 | System | Model | Specific fields |
 | --- | --- | --- |
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
