@@ -85,9 +85,9 @@
     "weight_kg": null,
     "looks": "Average",
     "freely_improvable_skills": [],
-    "motivation": "",
-    "method": "",
-    "code": ""
+    "hero_motivation": "",
+    "hero_method": "",
+    "hero_code": ""
   },
   "name": "Generic Daredevils Character",
   "description": "to be specified",

@@ -669,19 +669,19 @@
           "title": "Freely Improvable Skills",
           "type": "array"
         },
-        "motivation": {
+        "hero_motivation": {
           "default": "",
-          "title": "Motivation",
+          "title": "Hero Motivation",
           "type": "string"
         },
-        "method": {
+        "hero_method": {
           "default": "",
-          "title": "Method",
+          "title": "Hero Method",
           "type": "string"
         },
-        "code": {
+        "hero_code": {
           "default": "",
-          "title": "Code",
+          "title": "Hero Code",
           "type": "string"
         }
       },

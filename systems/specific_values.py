@@ -374,11 +374,11 @@ class SpecificValuesDaredevils(StrictModel):
                    "Good Looking", "Comely", "Handsome"] = "Average"
     # Advanced rule: names of the designated skills (checked by Character)
     freely_improvable_skills: list[str] = Field(default_factory=list)
-    # The hero; finances, degrees, rank, record, licenses and contacts go in
-    # Character.background
-    motivation: str = ""                 # e.g. Revenge, Altruism, Challenge, Work
-    method: str = ""                     # e.g. Vigilante, Lawman, Man of Mystery, Mastermind, Sidekick
-    code: str = ""                       # personal code of conduct
+    # The hero (§1.9), role-play guides with no game effect; finances,
+    # degrees, rank, record, licenses and contacts go in Character.background
+    hero_motivation: str = ""            # why: Revenge, Altruism, Challenge, Work...
+    hero_method: str = ""                # how: Vigilante, Lawman, Man of Mystery, Mastermind, Sidekick...
+    hero_code: str = ""                  # personal code of conduct, e.g. "never kills"
 
 
 # ---------------------------------------------------------------------------
