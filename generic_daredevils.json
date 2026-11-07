@@ -17,7 +17,7 @@
       },
       {
         "name": "Critical Saving Throws",
-        "computed_from": "current value / 3, rounded down"
+        "computed_from": "current value / 3"
       },
       {
         "name": "Basic Chance of Success",
@@ -33,11 +33,23 @@
       },
       {
         "name": "Damage Resistance Total",
-        "computed_from": "permanent Health + Strength + Will"
+        "computed_from": "permanent Health + permanent Strength / 2 + permanent Will / 2"
       },
       {
         "name": "Seriously Wounded",
         "computed_from": "Lethal + Subdual Damage > Damage Resistance Total / 2"
+      },
+      {
+        "name": "Unconscious",
+        "computed_from": "Lethal + Subdual Damage > Damage Resistance Total"
+      },
+      {
+        "name": "Dead",
+        "computed_from": "Lethal Damage > Damage Resistance Total + Health Group"
+      },
+      {
+        "name": "Healing Rate",
+        "computed_from": "Health Group, modified by care and activity"
       },
       {
         "name": "Encumbrance Capacity",
@@ -52,6 +64,10 @@
         "computed_from": "Wit Group"
       },
       {
+        "name": "Travel Rate",
+        "computed_from": "10 + current Speed, in km per day"
+      },
+      {
         "name": "Shock Factor",
         "computed_from": "10 + Health Group"
       },
@@ -62,6 +78,8 @@
     ],
     "attribute_loss": {},
     "attribute_progress": {},
+    "critical_damage": {},
+    "luck_points": null,
     "favored_hand": "right",
     "height": "",
     "weight_kg": null,

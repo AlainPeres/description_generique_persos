@@ -482,7 +482,7 @@
             },
             {
               "name": "Critical Saving Throws",
-              "computed_from": "current value / 3, rounded down"
+              "computed_from": "current value / 3"
             },
             {
               "name": "Basic Chance of Success",
@@ -498,11 +498,23 @@
             },
             {
               "name": "Damage Resistance Total",
-              "computed_from": "permanent Health + Strength + Will"
+              "computed_from": "permanent Health + permanent Strength / 2 + permanent Will / 2"
             },
             {
               "name": "Seriously Wounded",
               "computed_from": "Lethal + Subdual Damage > Damage Resistance Total / 2"
+            },
+            {
+              "name": "Unconscious",
+              "computed_from": "Lethal + Subdual Damage > Damage Resistance Total"
+            },
+            {
+              "name": "Dead",
+              "computed_from": "Lethal Damage > Damage Resistance Total + Health Group"
+            },
+            {
+              "name": "Healing Rate",
+              "computed_from": "Health Group, modified by care and activity"
             },
             {
               "name": "Encumbrance Capacity",
@@ -515,6 +527,10 @@
             {
               "name": "Learning Rate",
               "computed_from": "Wit Group"
+            },
+            {
+              "name": "Travel Rate",
+              "computed_from": "10 + current Speed, in km per day"
             },
             {
               "name": "Shock Factor",
@@ -567,6 +583,43 @@
           },
           "title": "Attribute Progress",
           "type": "object"
+        },
+        "critical_damage": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "Head",
+              "Chest",
+              "Mid body",
+              "Lower body",
+              "Upper right arm",
+              "Upper left arm",
+              "Right hand",
+              "Left hand",
+              "Upper right leg",
+              "Upper left leg",
+              "Lower right leg",
+              "Lower left leg"
+            ]
+          },
+          "title": "Critical Damage",
+          "type": "object"
+        },
+        "luck_points": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Luck Points"
         },
         "favored_hand": {
           "default": "right",

@@ -4,7 +4,8 @@ Generic Daredevils (FGU, 1982) character template.
 Default values ("to be specified", 75 attribute points spread evenly, talents
 and skill scores of 0) are meant to be replaced when describing an actual
 character. Finances, degrees, military rank, criminal record, licenses and
-contacts are described in `background`. Luck and Reputation are not modeled.
+contacts are described in `background`. Reputation is not modeled (its
+rules are not in the rulebook).
 """
 
 from models import Character, Attribute, Skill, SkillCategory
@@ -41,7 +42,8 @@ generic_daredevils = Character(
         # so it is stored
         Attribute(name="Off-hand Dexterity", value=6),
 
-        # Current damage, in points
+        # Current damage, in points; critical damage is kept per location
+        # in specific_values.critical_damage
         Attribute(name="Lethal Damage", value=0),
         Attribute(name="Subdual Damage", value=0),
     ],

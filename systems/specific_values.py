@@ -314,6 +314,12 @@ DAREDEVILS_TALENTS: tuple[str, ...] = (
     "Charismatic", "Combative", "Communicative", "Esthetic", "Mechanical", "Natural", "Scientific",
 )
 DaredevilsAttribute = Literal["Wit", "Will", "Strength", "Deftness", "Speed", "Health"]
+# Critical Hit Location Table (men)
+DaredevilsLocation = Literal[
+    "Head", "Chest", "Mid body", "Lower body",
+    "Upper right arm", "Upper left arm", "Right hand", "Left hand",
+    "Upper right leg", "Upper left leg", "Lower right leg", "Lower left leg",
+]
 
 # Unless stated otherwise, Daredevils rounds to the nearest (3.5 rounds up)
 DAREDEVILS_DERIVED: tuple[DerivedValue, ...] = (
@@ -321,15 +327,22 @@ DAREDEVILS_DERIVED: tuple[DerivedValue, ...] = (
                  computed_from="permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"),
     DerivedValue(name="Attribute Groups and Effect Dice", computed_from="current value, Attribute Group Chart"),
     DerivedValue(name="Attribute Saving Throws", computed_from="current value / 2, rounded down"),
-    DerivedValue(name="Critical Saving Throws", computed_from="current value / 3, rounded down"),
+    DerivedValue(name="Critical Saving Throws", computed_from="current value / 3"),
     DerivedValue(name="Basic Chance of Success", computed_from="skill score / 5, rounded down"),
     DerivedValue(name="Combat Dodge Ability", computed_from="(current Deftness Group + current Speed Group) / 2"),
     DerivedValue(name="Weapon Defense Ability", computed_from="hand-to-hand BCS / 4"),
-    DerivedValue(name="Damage Resistance Total", computed_from="permanent Health + Strength + Will"),
+    # The glossary formula, followed by every example in the rules (§1.3.2
+    # gives the full sum of the three attributes)
+    DerivedValue(name="Damage Resistance Total",
+                 computed_from="permanent Health + permanent Strength / 2 + permanent Will / 2"),
     DerivedValue(name="Seriously Wounded", computed_from="Lethal + Subdual Damage > Damage Resistance Total / 2"),
+    DerivedValue(name="Unconscious", computed_from="Lethal + Subdual Damage > Damage Resistance Total"),
+    DerivedValue(name="Dead", computed_from="Lethal Damage > Damage Resistance Total + Health Group"),
+    DerivedValue(name="Healing Rate", computed_from="Health Group, modified by care and activity"),
     DerivedValue(name="Encumbrance Capacity", computed_from="5 + Strength Attribute Saving Throw, in kg"),
     DerivedValue(name="Freely Improvable Skills Quota", computed_from="current Wit + current Will"),
     DerivedValue(name="Learning Rate", computed_from="Wit Group"),
+    DerivedValue(name="Travel Rate", computed_from="10 + current Speed, in km per day"),
     DerivedValue(name="Shock Factor", computed_from="10 + Health Group"),
     DerivedValue(name="Size", computed_from="height and weight category, Physical Aspects Chart"),
 )
@@ -344,9 +357,15 @@ class SpecificValuesDaredevils(StrictModel):
     # derived from the permanent one (the Attribute), e.g. {"Deftness": 3}
     attribute_loss: dict[DaredevilsAttribute, Remaining] = Field(default_factory=dict)
     # Optional rule 1.8.5b: +0.5 to the governing attribute per BCS point
-    # gained; fractions toward the next full point, e.g. {"Deftness": 0.5}
+    # gained (the text says .05, its example gives 0.5); fractions toward the
+    # next full point, e.g. {"Deftness": 0.5}
     attribute_progress: dict[DaredevilsAttribute, Annotated[float, Field(ge=0, lt=1)]] = Field(
         default_factory=dict)
+    # Critical damage per location: not added to the damage total, it
+    # disables the body part until healed, e.g. {"Upper left arm": 4}
+    critical_damage: dict[DaredevilsLocation, Remaining] = Field(default_factory=dict)
+    # Optional rule 3.1: points rolled before each adventure; None = not used
+    luck_points: int | None = Field(default=None, ge=0)
     favored_hand: Literal["right", "left"] = "right"
     # Physical characteristics
     height: str = ""                     # e.g. "5'4\""

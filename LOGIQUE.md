@@ -155,15 +155,25 @@ l'affaiblissement en PF1. Les Talents (règle avancée) sont des attributs
 comme les autres, à 0 dans le modèle de fiche. La dextérité de la main non
 directrice est initialisée à la création puis améliorée seule : elle est
 stockée. La règle optionnelle d'amélioration des attributs par
-l'apprentissage accumule des fractions (+0,5 par point de BCS gagné) : le
-cumul en cours est stocké dans `attribute_progress`. Comme en SagaS, une
+l'apprentissage accumule des fractions (+0,5 par point de BCS gagné ; le
+texte dit 0,05 mais son exemple donne 0,5) : le cumul en cours est stocké
+dans `attribute_progress`. Les dégâts létaux et non létaux sont des
+attributs ; les **dégâts critiques**, eux, se comptent par localisation (les
+12 de la table de localisation), ne s'ajoutent pas au total et rendent la
+partie du corps inutilisable jusqu'à guérison : ils vont dans
+`critical_damage`. Les points de **Chance** (règle optionnelle, tirés avant
+chaque aventure) restants vont dans `luck_points`, `None` voulant dire que
+la règle n'est pas utilisée. Le livre se contredit sur le total de
+résistance aux dégâts (DRT) : le §1.3.2 additionne Santé, Force et Volonté,
+le glossaire donne Santé + Force / 2 + Volonté / 2. C'est le glossaire qui
+est retenu, car tous les exemples chiffrés le suivent. Comme en SagaS, une
 compétence `New` ajoutée par l'arbitre déclare son attribut gouvernant
 (`Skill.attribute`) et, propre à Daredevils, son **Talent gouvernant**
 (`Skill.talent`), qui sert à l'apprentissage par la pratique ; `Character`
 le vérifie, ainsi que les scores (jamais négatifs) et les noms de
 `freely_improvable_skills`. Les finances, diplômes, grade, casier, licences
-et contacts se décrivent dans `background` ; la Chance et la Réputation ne
-sont pas modélisées pour l'instant. Sauf mention contraire, Daredevils
+et contacts se décrivent dans `background` ; la Réputation n'est pas
+modélisée, ses règles ne figurant pas dans le livre. Sauf mention contraire, Daredevils
 arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
 
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
