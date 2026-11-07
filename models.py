@@ -26,7 +26,7 @@ from strict_model import StrictModel
 # so that adding a new system never requires touching this file.
 from systems.specific_values import (
     DAREDEVILS_ATTRIBUTES, DAREDEVILS_TALENTS, SAGAS_SKILL_ATTRIBUTES, SpecificValues,
-    SpecificValuesDaredevils, SpecificValuesDnD, SpecificValuesSagas,
+    SpecificValuesDaredevils, SpecificValuesDnD, SpecificValuesOpenQuest, SpecificValuesSagas,
 )
 
 
@@ -219,4 +219,20 @@ class Character(StrictModel):
         unknown = [s for s in sv.freely_improvable_skills if s.strip().casefold() not in known]
         if unknown:
             raise ValueError(f"freely improvable skills without a matching skill: {unknown}")
+        return self
+
+    # Cross-layer checks for OpenQuest: 100% is the upper limit for skills;
+    # divine_spells_cast names Spell abilities, compared as prepared_spells.
+    @model_validator(mode="after")
+    def openquest_checks(self) -> Self:
+        sv = self.specific_values
+        if isinstance(sv, SpecificValuesOpenQuest):
+            for skill in self.skills:
+                if not 0 <= skill.value <= 100:
+                    raise ValueError(f"skill {skill.name!r}: percentage must be between 0 and 100")
+            known = {a.name.strip().casefold() for a in self.abilities
+                     if a.category == AbilityCategory.SPELL}
+            unknown = [s for s in sv.divine_spells_cast if s.strip().casefold() not in known]
+            if unknown:
+                raise ValueError(f"cast divine spells without a matching Spell ability: {unknown}")
         return self

@@ -1,0 +1,249 @@
+{
+  "specific_values": {
+    "system": "openquest3",
+    "skill_value_meaning": "percentage (0-100)",
+    "derived_values": [
+      {
+        "name": "Damage Modifier",
+        "computed_from": "STR + SIZ, Damage Modifier table"
+      },
+      {
+        "name": "Maximum Hit Points",
+        "computed_from": "(SIZ + CON) / 2, rounded up"
+      },
+      {
+        "name": "Maximum Magic Points",
+        "computed_from": "POW"
+      },
+      {
+        "name": "Mortal Wound",
+        "computed_from": "current Hit Points below zero"
+      },
+      {
+        "name": "Movement Rate",
+        "computed_from": "15 metres for humans, the creature's rate otherwise"
+      },
+      {
+        "name": "Skill Expertise",
+        "computed_from": "0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"
+      },
+      {
+        "name": "Growth Cost per +5%",
+        "computed_from": "1, 2, 3, 5 or 10 depending on skill expertise"
+      }
+    ],
+    "concept": "",
+    "fortune_points": 2,
+    "growth_points": 0,
+    "motives": [],
+    "religion": "",
+    "religious_rank": "",
+    "specialist_caster": "",
+    "divine_spells_cast": []
+  },
+  "name": "Generic OpenQuest 3 Character",
+  "description": "to be specified",
+  "age": "to be specified",
+  "occupation": "to be specified",
+  "background": "to be specified",
+  "additional_information": "to be specified",
+  "attributes": [
+    {
+      "name": "Strength",
+      "value": 12
+    },
+    {
+      "name": "Constitution",
+      "value": 12
+    },
+    {
+      "name": "Dexterity",
+      "value": 12
+    },
+    {
+      "name": "Size",
+      "value": 13
+    },
+    {
+      "name": "Intelligence",
+      "value": 13
+    },
+    {
+      "name": "Power",
+      "value": 12
+    },
+    {
+      "name": "Charisma",
+      "value": 12
+    },
+    {
+      "name": "Current Hit Points",
+      "value": 13
+    },
+    {
+      "name": "Current Magic Points",
+      "value": 12
+    }
+  ],
+  "skills": [
+    {
+      "name": "Dodge",
+      "category": "Base",
+      "value": 22
+    },
+    {
+      "name": "Persistence",
+      "category": "Base",
+      "value": 22
+    },
+    {
+      "name": "Resilience",
+      "category": "Base",
+      "value": 24
+    },
+    {
+      "name": "Close Combat",
+      "category": "Base",
+      "value": 24
+    },
+    {
+      "name": "Ranged Combat",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Unarmed Combat",
+      "category": "Base",
+      "value": 24
+    },
+    {
+      "name": "Culture (Own)",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Language (Own)",
+      "category": "Base",
+      "value": 63
+    },
+    {
+      "name": "Natural Lore",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Culture (Other)",
+      "category": "Generic",
+      "value": 13
+    },
+    {
+      "name": "Language (Other)",
+      "category": "Generic",
+      "value": 13
+    },
+    {
+      "name": "Lore",
+      "category": "Generic",
+      "value": 13
+    },
+    {
+      "name": "Athletics",
+      "category": "Base",
+      "value": 24
+    },
+    {
+      "name": "Craft",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Deception",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Driving",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Engineering",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Healing",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Influence",
+      "category": "Base",
+      "value": 22
+    },
+    {
+      "name": "Mechanisms",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Perception",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Performance",
+      "category": "Base",
+      "value": 22
+    },
+    {
+      "name": "Riding",
+      "category": "Base",
+      "value": 24
+    },
+    {
+      "name": "Sailing",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Streetwise",
+      "category": "Base",
+      "value": 24
+    },
+    {
+      "name": "Trade",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Wealth",
+      "category": "Base",
+      "value": 25
+    },
+    {
+      "name": "Personal Magic Casting",
+      "category": "Base",
+      "value": 36
+    },
+    {
+      "name": "Sorcery Casting",
+      "category": "Base",
+      "value": 13
+    },
+    {
+      "name": "Religion (Own)",
+      "category": "Base",
+      "value": 23
+    },
+    {
+      "name": "Religion (Other)",
+      "category": "Generic",
+      "value": 13
+    }
+  ],
+  "abilities": [],
+  "equipment": [],
+  "possessions": [],
+  "conditions": []
+}

@@ -3,7 +3,7 @@
 ## Le but
 
 - Décrire **un personnage de jeu de rôle**, pour un grand nombre de systèmes
-  (D&D 5e, Pathfinder 1, L'Appel de Cthulhu, Fate, SagaS, Daredevils, sans règles…), avec **un seul modèle
+  (D&D 5e, Pathfinder 1, L'Appel de Cthulhu, Fate, SagaS, Daredevils, OpenQuest 3, sans règles…), avec **un seul modèle
   Python** (`Character`, Pydantic v2), puis l'exporter et le relire en JSON.
 
 - Rendre plus simple **l'introduction d'un nouveau système**.
@@ -108,6 +108,7 @@ seul, et toute autre valeur est refusée.
 | Fate       | `rating on the Fate ladder`                             |
 | SagaS      | `learning level`                                        |
 | Daredevils | `score (0 or more); BCS = score / 5, rounded down`      |
+| OpenQuest  | `percentage (0-100)`                                    |
 
 En D&D 5e, la `value` d'une compétence est donc son **niveau de maîtrise**
 (0 = aucune, 1 = maîtrise, 2 = expertise), et non son bonus total : celui-ci
@@ -175,6 +176,23 @@ le vérifie, ainsi que les scores (jamais négatifs) et les noms de
 et contacts se décrivent dans `background` ; la Réputation n'est pas
 modélisée, ses règles ne figurant pas dans le livre. Sauf mention contraire, Daredevils
 arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
+
+En OpenQuest 3, la `value` d'une compétence est son **pourcentage total**
+(base + points de création + croissance), comme en Cthulhu : la base
+(somme de caractéristiques) ne sert qu'à la création, les règles ne la
+recalculent jamais, et la croissance s'ajoute au total. `Character` vérifie
+qu'il reste entre 0 et 100, la limite des règles. Les maximums de PV
+((TAI + CON) / 2, arrondi au-dessus) et de PM (POU), le modificateur de
+dégâts, le mouvement et le niveau d'expertise se calculent ; seuls les PV
+et PM actuels sont stockés. Le bloc spécifique porte le concept, les points
+de fortune et de croissance non dépensés, les motivations (`Motive` : texte,
+de saga ou de quête, mise en jeu — l'astérisque —, accomplie), la religion,
+le rang et le statut de lanceur spécialiste en texte libre, et les sorts de
+magie divine déjà lancés, qui restent dépensés jusqu'à leur récupération
+(`divine_spells_cast`, vérifiés contre les `Ability` de catégorie `Spell`).
+Les sorts sont des `Ability` `Spell` dont la `value` est la magnitude. Une
+créature non humaine décrit son espèce dans `description`, ses traits et
+armes naturelles dans `abilities`.
 
 Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que

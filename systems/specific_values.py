@@ -382,6 +382,47 @@ class SpecificValuesDaredevils(StrictModel):
 
 
 # ---------------------------------------------------------------------------
+# System-specific block: OpenQuest 3
+# ---------------------------------------------------------------------------
+OPENQUEST_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Damage Modifier", computed_from="STR + SIZ, Damage Modifier table"),
+    DerivedValue(name="Maximum Hit Points", computed_from="(SIZ + CON) / 2, rounded up"),
+    DerivedValue(name="Maximum Magic Points", computed_from="POW"),
+    DerivedValue(name="Mortal Wound", computed_from="current Hit Points below zero"),
+    DerivedValue(name="Movement Rate", computed_from="15 metres for humans, the creature's rate otherwise"),
+    DerivedValue(name="Skill Expertise",
+                 computed_from="0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"),
+    DerivedValue(name="Growth Cost per +5%", computed_from="1, 2, 3, 5 or 10 depending on skill expertise"),
+)
+
+# Saga motives span a campaign, Quest motives the current adventure
+class Motive(StrictModel):
+    text: str                            # e.g. "Avenge my father"
+    kind: Literal["saga", "quest"]
+    brought_into_play: bool = False      # the * mark, cleared at the end of the Quest
+    completed: bool = False              # completed Saga motives stay on the sheet
+
+class SpecificValuesOpenQuest(StrictModel):
+    system: Literal["openquest3"]
+    # The percentage rolled against: base + points spent + growth. The base
+    # (characteristics) only matters at creation, so the total is stored
+    skill_value_meaning: Literal["percentage (0-100)"] = "percentage (0-100)"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(OPENQUEST_DERIVED)] = OPENQUEST_DERIVED
+    concept: str = ""                    # one sentence summing up the character
+    fortune_points: int = Field(default=2, ge=0)
+    growth_points: int = Field(default=0, ge=0)   # earned, not yet spent
+    motives: list[Motive] = Field(default_factory=list)
+    # Magical standing, free text: religion and rank (lay member, initiate,
+    # priest...), specialist caster (Shaman, Wise, Priest, Adept)
+    religion: str = ""
+    religious_rank: str = ""
+    specialist_caster: str = ""
+    # Names of Divine Magic Spell abilities already cast, which stay spent
+    # until regained (checked by Character)
+    divine_spells_cast: list[str] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
 # Registry: every system-specific class must be listed here to be usable
 # as Character.specific_values. Written out explicitly so that type checkers
 # (Pylance, mypy) know each member. `discriminator="system"` lets Pydantic
@@ -395,6 +436,7 @@ SpecificValues = Annotated[
     | SpecificValuesFate
     | SpecificValuesSagas
     | SpecificValuesDaredevils
+    | SpecificValuesOpenQuest
     | SpecificValuesNoRules,
     Field(discriminator="system"),
 ]

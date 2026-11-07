@@ -256,6 +256,39 @@
       "title": "ItemCategory",
       "type": "string"
     },
+    "Motive": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "saga",
+            "quest"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "brought_into_play": {
+          "default": false,
+          "title": "Brought Into Play",
+          "type": "boolean"
+        },
+        "completed": {
+          "default": false,
+          "title": "Completed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text",
+        "kind"
+      ],
+      "title": "Motive",
+      "type": "object"
+    },
     "PF1Class": {
       "additionalProperties": false,
       "properties": {
@@ -1017,6 +1050,110 @@
       "title": "SpecificValuesNoRules",
       "type": "object"
     },
+    "SpecificValuesOpenQuest": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "openquest3",
+          "title": "System",
+          "type": "string"
+        },
+        "skill_value_meaning": {
+          "const": "percentage (0-100)",
+          "default": "percentage (0-100)",
+          "title": "Skill Value Meaning",
+          "type": "string"
+        },
+        "derived_values": {
+          "default": [
+            {
+              "name": "Damage Modifier",
+              "computed_from": "STR + SIZ, Damage Modifier table"
+            },
+            {
+              "name": "Maximum Hit Points",
+              "computed_from": "(SIZ + CON) / 2, rounded up"
+            },
+            {
+              "name": "Maximum Magic Points",
+              "computed_from": "POW"
+            },
+            {
+              "name": "Mortal Wound",
+              "computed_from": "current Hit Points below zero"
+            },
+            {
+              "name": "Movement Rate",
+              "computed_from": "15 metres for humans, the creature's rate otherwise"
+            },
+            {
+              "name": "Skill Expertise",
+              "computed_from": "0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"
+            },
+            {
+              "name": "Growth Cost per +5%",
+              "computed_from": "1, 2, 3, 5 or 10 depending on skill expertise"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/DerivedValue"
+          },
+          "title": "Derived Values",
+          "type": "array"
+        },
+        "concept": {
+          "default": "",
+          "title": "Concept",
+          "type": "string"
+        },
+        "fortune_points": {
+          "default": 2,
+          "minimum": 0,
+          "title": "Fortune Points",
+          "type": "integer"
+        },
+        "growth_points": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Growth Points",
+          "type": "integer"
+        },
+        "motives": {
+          "items": {
+            "$ref": "#/$defs/Motive"
+          },
+          "title": "Motives",
+          "type": "array"
+        },
+        "religion": {
+          "default": "",
+          "title": "Religion",
+          "type": "string"
+        },
+        "religious_rank": {
+          "default": "",
+          "title": "Religious Rank",
+          "type": "string"
+        },
+        "specialist_caster": {
+          "default": "",
+          "title": "Specialist Caster",
+          "type": "string"
+        },
+        "divine_spells_cast": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Divine Spells Cast",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system"
+      ],
+      "title": "SpecificValuesOpenQuest",
+      "type": "object"
+    },
     "SpecificValuesPF1": {
       "additionalProperties": false,
       "properties": {
@@ -1328,6 +1465,7 @@
               "dnd5e": "#/$defs/SpecificValuesDnD",
               "fate": "#/$defs/SpecificValuesFate",
               "norules": "#/$defs/SpecificValuesNoRules",
+              "openquest3": "#/$defs/SpecificValuesOpenQuest",
               "pf1": "#/$defs/SpecificValuesPF1",
               "sagas": "#/$defs/SpecificValuesSagas"
             },
@@ -1351,6 +1489,9 @@
             },
             {
               "$ref": "#/$defs/SpecificValuesDaredevils"
+            },
+            {
+              "$ref": "#/$defs/SpecificValuesOpenQuest"
             },
             {
               "$ref": "#/$defs/SpecificValuesNoRules"

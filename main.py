@@ -19,6 +19,7 @@ from systems.cthulhu import generic_cthulhu6
 from systems.sagas import generic_sagas
 from systems.fate import generic_fate
 from systems.daredevils import generic_daredevils
+from systems.openquest import generic_openquest3
 from systems.norules import generic_norules
 
 
@@ -45,6 +46,7 @@ EXPORTS: list[tuple[str, Character, set[str]]] = [
     ("generic_sagas.json", generic_sagas, set()),
     ("generic_fate.json", generic_fate, set()),
     ("generic_daredevils.json", generic_daredevils, set()),
+    ("generic_openquest3.json", generic_openquest3, set()),
     ("generic_norules.json", generic_norules, {"attributes", "skills", "abilities"}),
 ]
 

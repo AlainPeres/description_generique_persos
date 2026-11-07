@@ -5,7 +5,7 @@ Multi-system RPG character modeling with **Pydantic v2**.
 ## Goals
 
 - Describe **an RPG character** for many systems (D&D 5e, Pathfinder 1,
-  Call of Cthulhu, Fate, SagaS, Daredevils, no rules…) with **a single Python model** (`Character`), then
+  Call of Cthulhu, Fate, SagaS, Daredevils, OpenQuest 3, no rules…) with **a single Python model** (`Character`), then
   export it to JSON and read it back.
 - Make **adding a new system** simple.
 - Produce a JSON Schema to check that **a character JSON matches the model**.
@@ -23,15 +23,17 @@ models.py                     Character, Attribute, Skill, Ability, EquipmentIte
                                imports the SpecificValues union; Character checks
                                what spans both layers (D&D prepared spells,
                                SagaS and Daredevils new-skill attributes, Daredevils
-                               skill scores and freely improvable skills)
+                               skill scores and freely improvable skills, OpenQuest
+                               skill percentages and cast divine spells)
 systems/
-├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS / Daredevils + SpecificValues union
+├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS / Daredevils / OpenQuest + SpecificValues union
 ├── norules.py                generic_norules
 ├── dnd5e.py                  generic_dnd5e
 ├── pathfinder1.py            generic_pf1
 ├── cthulhu.py                generic_cthulhu6
 ├── sagas.py                  generic_sagas
 ├── daredevils.py             generic_daredevils
+├── openquest.py              generic_openquest3
 └── fate.py                   generic_fate
 main.py                       imports the generic_* instances, exports JSON, validates round-trip
 ```
@@ -145,7 +147,7 @@ single-value `Literal` with a default (like `system`): the meaning of
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
 Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS,
 the skill level being associated attribute + learning level, `score (0 or more);
-BCS = score / 5, rounded down` for Daredevils). It is written
+BCS = score / 5, rounded down` for Daredevils, `percentage (0-100)` for OpenQuest 3). It is written
 in each JSON so the file explains itself, and any other value is rejected.
 
 `DnDClass` and `PF1Class` inherit from a common `CharacterClass` (name,
@@ -162,6 +164,7 @@ PF1). A future class-based system can reuse it.
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
 | SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are stored like the main ones (their formula only initializes them); social class goes in `occupation`, species in `description` |
 | Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `critical_damage` (per hit location; it disables the body part until healed), `luck_points` (optional rule; `None` = not used), `hero_motivation`, `hero_method`, `hero_code` (role-play guides of §1.9, no game effect). A `New` skill must declare `Skill.attribute` (one of the 6 attributes) and `Skill.talent` (one of the 7 talents), listed skills must not; skill scores are 0 or more, with no maximum. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Reputation is not modeled (its rules are not in the rulebook) |
+| OpenQuest 3 | `SpecificValuesOpenQuest` | `concept` (one sentence), `fortune_points` (2 at start), `growth_points` (earned, not yet spent), `motives` (`Motive`: text, kind saga / quest, brought into play, completed), `religion`, `religious_rank`, `specialist_caster` (free text), `divine_spells_cast` (names of `Spell` abilities, checked by `Character`). Skill value is the total percentage, 100 at most; a non-human's species goes in `description`, its traits and natural weapons in `abilities` |
 
 ## Generic templates
 
@@ -177,6 +180,7 @@ ready-to-use JSON blueprints:
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic); melee weapon skills are left out, players add them as `New` |
 | `generic_sagas.json` | SagaS | 113 skills (100 base + 13 generic) |
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
+| `generic_openquest3.json` | OpenQuest 3 | 7 characteristics (8 each + 30 points), current HP / MP; 31 skills at their base (27 base + 4 generic), Wealth included (optional rule) |
 | `generic_daredevils.json` | Daredevils | 6 attributes, 7 talents at 0, Off-hand Dexterity, Lethal / Subdual Damage; 87 skills (83 base + 4 generic) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
