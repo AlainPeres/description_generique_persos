@@ -282,7 +282,7 @@ SAGAS_SKILL_ATTRIBUTES: tuple[str, ...] = (
 )
 
 SAGAS_DERIVED: tuple[DerivedValue, ...] = (
-    DerivedValue(name="Skill Levels", computed_from="associated attribute + learning level"),
+    DerivedValue(name="Learning Levels", computed_from="skill level - associated attribute"),
     DerivedValue(name="Protection",
                  computed_from="Armor + Abilities (super powers, outside the base rules); 0 by default"),
     DerivedValue(name="MaxImpactBonus", computed_from="2*Protection + Physical Shock Threshold"),
@@ -291,13 +291,26 @@ SAGAS_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Physical Shock Threshold", computed_from="10 + UT Strength bonus"),
     DerivedValue(name="Psychical Shock Threshold", computed_from="10 + UT Presence bonus"),
     DerivedValue(name="Reflex Defense", computed_from="2 + Dodge skill level / 2, rounded down"),
+    # The secondary characteristics are stored as final values; the creation
+    # points bought for each are deduced from them
+    DerivedValue(name="Initiative Creation Bonus",
+                 computed_from="Initiative - (Agility + Wit) / 2, rounded down"),
+    DerivedValue(name="Close Combat Creation Bonus",
+                 computed_from="Close Combat - (Strength + 2*Agility + Instinct + Will) / 5, rounded down"),
+    DerivedValue(name="Ranged Combat Creation Bonus",
+                 computed_from="Ranged Combat - (3*Dexterity + 2*Instinct) / 5, rounded down"),
+    DerivedValue(name="Speed Creation Bonus",
+                 computed_from="Speed - species base (6 for humans) - (Endurance + Agility) / 4, rounded down"),
 )
 
 class SpecificValuesSagas(StrictModel):
     system: Literal["sagas"]
-    # The skill level (associated attribute + learning level) is derived;
-    # the attribute associated with each skill is fixed by the rules
-    skill_value_meaning: Literal["learning level"] = "learning level"
+    # The final skill level is stored, so the sheet reads as played; the
+    # learning level (bought with points) is derived. The attribute associated
+    # with each skill is fixed by the rules
+    skill_value_meaning: Literal["skill level (associated attribute + learning level)"] = (
+        "skill level (associated attribute + learning level)"
+    )
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(SAGAS_DERIVED)] = SAGAS_DERIVED
     unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
     # Current wounds and stun are attributes; serious injuries are

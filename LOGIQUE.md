@@ -106,7 +106,7 @@ seul, et toute autre valeur est refusée.
 | PF1        | `ranks`                                                 |
 | Cthulhu    | `percentage`                                            |
 | Fate       | `rating on the Fate ladder`                             |
-| SagaS      | `learning level`                                        |
+| SagaS      | `skill level (associated attribute + learning level)`   |
 | Daredevils | `score (0 or more); BCS = score / 5, rounded down`      |
 | OpenQuest  | `percentage (0-100)`                                    |
 
@@ -129,17 +129,39 @@ d'armure…) se calcule, et le stocker seul ferait perdre les rangs, donc par
 exemple la possibilité d'utiliser une compétence réservée aux personnages
 formés. De même, BBA, jets de sauvegarde, BMO et DMD ne sont pas stockés.
 
-En SagaS, les caractéristiques secondaires (Initiative, Combat au contact,
-Combat à distance, Vitesse) sont **stockées** comme les principales : leur
-formule ne sert qu'à les initialiser à la création, ensuite elles évoluent
-comme les principales. La classe sociale se décrit, si besoin, dans
-`occupation`, et l'espèce dans `description` : ni l'une ni l'autre n'a de
-champ propre.
+En SagaS, les caractéristiques secondaires se calculent **en permanence** à
+partir des caractéristiques principales et des points de création achetés :
+si une caractéristique principale change, la secondaire change aussi.
 
-En SagaS toujours, pour la même raison que PF1, la `value` d'une compétence
-est son **niveau d'apprentissage**. Le niveau de compétence (attribut associé + niveau
-d'apprentissage) se calcule ; l'attribut associé à chaque compétence de la
-liste est fixé par les règles, il n'est donc pas stocké dans le personnage.
+- Initiative = (Agilité + Astuce) / 2 + bonus de création ;
+- Combat au contact = (Force + 2 × Agilité + Instinct + Volonté) / 5 + bonus
+  de création ;
+- Combat à distance = (3 × Dextérité + 2 × Instinct) / 5 + bonus de
+  création ;
+- Vitesse = base de l'espèce (6 pour un humain) + (Endurance + Agilité) /
+  4 + bonus de création.
+
+Le total et le bonus se déduisent l'un de l'autre sans ambiguïté (bonus =
+total − partie calculée). Comme le JSON doit pouvoir être lu par un humain,
+c'est la **valeur finale** qui est stockée (Initiative 5, Vitesse 8… dans le
+modèle de fiche, pour un bonus de 0), et les quatre bonus de création
+figurent dans `derived_values`. En contrepartie, un total doit être
+recalculé quand une caractéristique principale change, à bonus constant.
+La classe sociale se décrit, si besoin, dans `occupation`, et l'espèce dans
+`description` : ni l'une ni l'autre n'a de champ propre.
+
+En SagaS toujours, et pour la même raison, la `value` d'une compétence est
+son **niveau de compétence**, la valeur jouée (caractéristique associée +
+niveau d'apprentissage). Le niveau d'apprentissage, acheté avec des points,
+s'en déduit sans ambiguïté (niveau − caractéristique associée) et figure dans
+`derived_values` ; un niveau doit être recalculé quand sa caractéristique
+change, à niveau d'apprentissage constant. Contrairement à PF1, où le total
+dépend de bonus absents de la fiche (dons, objets…), rien ne se perd. Dans
+le modèle de fiche, toutes les caractéristiques valent 5 (Vitesse 8) : le
+niveau est donc la caractéristique plus le niveau d'apprentissage initial
+(Esquive 5, Acrobaties −10, Course 8…). L'attribut associé à chaque
+compétence de la liste est fixé par les règles, il n'est donc pas stocké
+dans le personnage.
 Une compétence créée par le joueur et l'arbitre (`New`) est rattachée à la
 caractéristique qu'ils choisissent : c'est une donnée du personnage, portée
 par `Skill.attribute` (absent du JSON quand il vaut `None`). `Character`
@@ -148,8 +170,18 @@ caractéristiques principales et les 4 secondaires, et qu'aucune compétence
 de la liste n'en déclare.
 
 En Daredevils, la `value` d'une compétence est son **score** (0 ou plus, sans maximum) : la
-chance de base de réussite (BCS = score / 5, arrondi vers le bas) se calcule,
-et la formule du score initial ne sert qu'à la création. Les attributs sont
+chance de base de réussite (BCS = score / 5, arrondi vers le bas) se calcule.
+Un score de **0 veut dire compétence non acquise** : contrairement à Cthulhu
+ou OpenQuest, il n'y a pas de score de base, le personnage se rabat sur son
+Talent brut ou ses attributs. Une compétence acquise (à la création ou plus
+tard) reçoit un score initial, attribut gouvernant + second attribut +
+Talent gouvernant, calculé avec les valeurs du moment ; elle progresse
+ensuite seule. Un changement d'attribut ne la modifie pas : dans l'exemple
+de création du livre, les points d'attribut sont répartis après le calcul
+des compétences sans les changer, et la blessure grave ajoute un malus de
+BCS séparé de la baisse de Dextérité et de Vitesse. Le score stocké n'a donc
+pas de part dérivée. Dans le modèle de fiche, les 87 compétences sont à 0
+(non acquises). Les attributs sont
 stockés à leur valeur **permanente** ; les points perdus (blessures,
 maladie) vont dans `attribute_loss`, et la valeur actuelle se calcule, comme
 l'affaiblissement en PF1. Les Talents (règle avancée) sont des attributs
@@ -178,9 +210,13 @@ modélisée, ses règles ne figurant pas dans le livre. Sauf mention contraire, 
 arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
 
 En OpenQuest 3, la `value` d'une compétence est son **pourcentage total**
-(base + points de création + croissance), comme en Cthulhu : la base
-(somme de caractéristiques) ne sert qu'à la création, les règles ne la
-recalculent jamais, et la croissance s'ajoute au total. `Character` vérifie
+(base + points de création + croissance), la valeur jouée ; la croissance
+s'ajoute au total. Les extraits du SRD ne disent pas si la base (somme de
+caractéristiques) est recalculée quand une caractéristique augmente ; le
+texte sur la croissance des caractéristiques (« overcome the innate
+weaknesses ») et la filiation RuneQuest le laissent penser, ce qui reste à
+confirmer. Dans ce cas, la part acquise serait dérivée (total − base).
+`Character` vérifie
 qu'il reste entre 0 et 100, la limite des règles. Les maximums de PV
 ((TAI + CON) / 2, arrondi au-dessus) et de PM (POU), le modificateur de
 dégâts, le mouvement et le niveau d'expertise se calculent ; seuls les PV

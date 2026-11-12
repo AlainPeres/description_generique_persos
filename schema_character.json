@@ -1376,16 +1376,16 @@
           "type": "string"
         },
         "skill_value_meaning": {
-          "const": "learning level",
-          "default": "learning level",
+          "const": "skill level (associated attribute + learning level)",
+          "default": "skill level (associated attribute + learning level)",
           "title": "Skill Value Meaning",
           "type": "string"
         },
         "derived_values": {
           "default": [
             {
-              "name": "Skill Levels",
-              "computed_from": "associated attribute + learning level"
+              "name": "Learning Levels",
+              "computed_from": "skill level - associated attribute"
             },
             {
               "name": "Protection",
@@ -1414,6 +1414,22 @@
             {
               "name": "Reflex Defense",
               "computed_from": "2 + Dodge skill level / 2, rounded down"
+            },
+            {
+              "name": "Initiative Creation Bonus",
+              "computed_from": "Initiative - (Agility + Wit) / 2, rounded down"
+            },
+            {
+              "name": "Close Combat Creation Bonus",
+              "computed_from": "Close Combat - (Strength + 2*Agility + Instinct + Will) / 5, rounded down"
+            },
+            {
+              "name": "Ranged Combat Creation Bonus",
+              "computed_from": "Ranged Combat - (3*Dexterity + 2*Instinct) / 5, rounded down"
+            },
+            {
+              "name": "Speed Creation Bonus",
+              "computed_from": "Speed - species base (6 for humans) - (Endurance + Agility) / 4, rounded down"
             }
           ],
           "items": {

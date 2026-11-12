@@ -47,8 +47,13 @@ generic_daredevils = Character(
         Attribute(name="Lethal Damage", value=0),
         Attribute(name="Subdual Damage", value=0),
     ],
-    # Value = skill score (0 or more, no maximum); the BCS is derived. GENERIC skills must
-    # be specified: "History (Roman Empire)", "Language (French)"...
+    # Value = skill score (0 or more, no maximum); the BCS is derived. 0 = skill
+    # not acquired: unlike Cthulhu or OpenQuest there is no base score, the
+    # character falls back on raw Talent or Attributes. A skill acquired gets
+    # its initial score (governing attribute + attribute + governing talent,
+    # with the values of the moment), then improves on its own: later changes
+    # to the attributes do not affect it. GENERIC skills must be specified:
+    # "History (Roman Empire)", "Language (French)"...
     skills=[
         # Practical skills
         Skill(name="Acrobat", category=SkillCategory.BASE, value=0),

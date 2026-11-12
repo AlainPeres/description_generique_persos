@@ -145,8 +145,9 @@ Every block whose system has skills also declares `skill_value_meaning`, a
 single-value `Literal` with a default (like `system`): the meaning of
 `Skill.value` is a fixed convention per system (`proficiency level: 0 none,
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
-Cthulhu, `rating on the Fate ladder` for Fate, `learning level` for SagaS,
-the skill level being associated attribute + learning level, `score (0 or more);
+Cthulhu, `rating on the Fate ladder` for Fate, `skill level (associated
+attribute + learning level)` for SagaS, the final value played, the learning
+level being derived from it, `score (0 or more);
 BCS = score / 5, rounded down` for Daredevils, `percentage (0-100)` for OpenQuest 3). It is written
 in each JSON so the file explains itself, and any other value is rejected.
 
@@ -162,7 +163,7 @@ PF1). A future class-based system can reuse it.
 | Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | no specific field besides `derived_values`: mental disorders are `Condition`s of kind `Mental` (duration temporary / indefinite / permanent); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
-| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are stored like the main ones (their formula only initializes them); social class goes in `occupation`, species in `description` |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are always computed from the main ones plus the creation points bought for them; their final values are stored, so the JSON reads as played, and the creation bonuses are derived from them; a total must be recomputed when a main attribute changes; social class goes in `occupation`, species in `description` |
 | Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `critical_damage` (per hit location; it disables the body part until healed), `luck_points` (optional rule; `None` = not used), `hero_motivation`, `hero_method`, `hero_code` (role-play guides of §1.9, no game effect). A `New` skill must declare `Skill.attribute` (one of the 6 attributes) and `Skill.talent` (one of the 7 talents), listed skills must not; skill scores are 0 or more, with no maximum. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Reputation is not modeled (its rules are not in the rulebook) |
 | OpenQuest 3 | `SpecificValuesOpenQuest` | `concept` (one sentence), `fortune_points` (2 at start), `growth_points` (earned, not yet spent), `motives` (`Motive`: text, kind saga / quest, brought into play, completed), `religion`, `religious_rank`, `specialist_caster` (free text), `divine_spells_cast` (names of `Spell` abilities, checked by `Character`). Skill value is the total percentage, 100 at most; a non-human's species goes in `description`, its traits and natural weapons in `abilities` |
 
@@ -178,10 +179,10 @@ ready-to-use JSON blueprints:
 | `generic_dnd5e.json` | D&D 5e | 18 base skills (value = proficiency level: 0 none, 1 proficient, 2 expertise; the total bonus is derived) + 1 example feat |
 | `generic_pf1.json` | Pathfinder 1 | 35 skills (32 base + 3 generic; value = ranks, the total bonus is derived) + 1 example feat |
 | `generic_cthulhu6.json` | Call of Cthulhu 6 | 60 skills (56 base + 4 generic); melee weapon skills are left out, players add them as `New` |
-| `generic_sagas.json` | SagaS | 113 skills (100 base + 13 generic) |
+| `generic_sagas.json` | SagaS | 113 skills (100 base + 13 generic), at their skill level for the initial learning level (characteristics of 5, Speed 8) |
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
 | `generic_openquest3.json` | OpenQuest 3 | 7 characteristics (8 each + 30 points), current HP / MP; 31 skills at their base (27 base + 4 generic), Wealth included (optional rule) |
-| `generic_daredevils.json` | Daredevils | 6 attributes, 7 talents at 0, Off-hand Dexterity, Lethal / Subdual Damage; 87 skills (83 base + 4 generic) |
+| `generic_daredevils.json` | Daredevils | 6 attributes, 7 talents at 0, Off-hand Dexterity, Lethal / Subdual Damage; 87 skills (83 base + 4 generic) at 0, meaning not acquired (Daredevils has no base score; an acquired skill gets its initial score from the attributes and talent of the moment, then is independent of them) |
 | `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
 
 ## Adding a new system
