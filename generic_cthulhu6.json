@@ -5,30 +5,37 @@
     "derived_values": [
       {
         "name": "Idea",
+        "applies_to": "character",
         "computed_from": "Intelligence x 5"
       },
       {
         "name": "Luck",
+        "applies_to": "character",
         "computed_from": "Power x 5"
       },
       {
         "name": "Know",
+        "applies_to": "character",
         "computed_from": "Education x 5"
       },
       {
         "name": "Damage Bonus",
+        "applies_to": "character",
         "computed_from": "Strength + Size, damage bonus table"
       },
       {
         "name": "Maximum Sanity",
+        "applies_to": "character",
         "computed_from": "99 - Cthulhu Mythos"
       },
       {
         "name": "Maximum Hit Points",
+        "applies_to": "character",
         "computed_from": "(Constitution + Size) / 2, rounded up"
       },
       {
         "name": "Maximum Magic Points",
+        "applies_to": "character",
         "computed_from": "Power"
       }
     ]
@@ -42,50 +49,62 @@
   "attributes": [
     {
       "name": "Strength",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Constitution",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Size",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Dexterity",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Appearance",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Intelligence",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Power",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Education",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Current Sanity",
+      "category": "State",
       "value": 10
     },
     {
       "name": "Current Hit Points",
+      "category": "State",
       "value": 10
     },
     {
       "name": "Current Magic Points",
+      "category": "State",
       "value": 10
     },
     {
       "name": "Move",
+      "category": "Secondary",
       "value": 8
     }
   ],

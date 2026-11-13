@@ -5,7 +5,7 @@ Default values ("to be specified", ability scores of 10) are meant to be
 replaced when describing an actual character.
 """
 
-from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
+from models import Character, Attribute, AttributeCategory, Skill, SkillCategory, Ability, AbilityCategory
 from systems.specific_values import SpecificValuesDnD, DnDClass
 
 generic_dnd5e = Character(
@@ -24,19 +24,19 @@ generic_dnd5e = Character(
         languages=["Common"],
     ),
     attributes=[
-        Attribute(name="Strength", value=10),
-        Attribute(name="Dexterity", value=10),
-        Attribute(name="Constitution", value=10),
-        Attribute(name="Intelligence", value=10),
-        Attribute(name="Wisdom", value=10),
-        Attribute(name="Charisma", value=10),
+        Attribute(name="Strength", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Dexterity", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Constitution", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Intelligence", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Wisdom", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Charisma", category=AttributeCategory.MAIN, value=10),
 
         # Maximum HP is stored: it is rolled at each level. Armor Class,
         # modifiers, proficiency bonus, initiative and passive Perception are
         # derived (AC from class, race, armor, shield, items and active
         # spells), so they are not stored.
-        Attribute(name="Maximum Hit Points", value=10),
-        Attribute(name="Current Hit Points", value=10),
+        Attribute(name="Maximum Hit Points", category=AttributeCategory.SECONDARY, value=10),
+        Attribute(name="Current Hit Points", category=AttributeCategory.STATE, value=10),
     ],
     # Skill value = proficiency level: 0 none, 1 proficient, 2 expertise;
     # the total bonus is derived from it, the ability modifier and the level

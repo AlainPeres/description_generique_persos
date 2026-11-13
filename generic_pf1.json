@@ -5,54 +5,67 @@
     "derived_values": [
       {
         "name": "Total Level",
+        "applies_to": "character",
         "computed_from": "sum of class levels"
       },
       {
         "name": "Ability Modifiers",
+        "applies_to": "Main",
         "computed_from": "(score - drain - 10) // 2, minus 1 per 2 points of ability damage"
       },
       {
         "name": "Base Attack Bonus",
+        "applies_to": "character",
         "computed_from": "sum of class progressions"
       },
       {
         "name": "Saving Throws",
+        "applies_to": "character",
         "computed_from": "sum of class base saves + ability modifier + other bonuses - negative levels"
       },
       {
         "name": "Skill Totals",
+        "applies_to": "skill",
         "computed_from": "ranks + ability modifier + 3 if class skill with at least 1 rank + other bonuses - armor check penalty"
       },
       {
         "name": "Armor Class",
+        "applies_to": "character",
         "computed_from": "10 + armor, shield, Dexterity (capped by armor), size, natural armor, deflection, dodge and other bonuses"
       },
       {
         "name": "Touch Armor Class",
+        "applies_to": "character",
         "computed_from": "Armor Class without armor, shield and natural armor"
       },
       {
         "name": "Flat-Footed Armor Class",
+        "applies_to": "character",
         "computed_from": "Armor Class without Dexterity and dodge bonuses"
       },
       {
         "name": "Combat Maneuver Bonus",
+        "applies_to": "character",
         "computed_from": "BAB + Strength modifier + special size modifier"
       },
       {
         "name": "Combat Maneuver Defense",
+        "applies_to": "character",
         "computed_from": "10 + BAB + Strength and Dexterity modifiers + special size modifier"
       },
       {
         "name": "Initiative",
+        "applies_to": "character",
         "computed_from": "Dexterity modifier + other bonuses"
       },
       {
         "name": "Spell Save DC",
+        "applies_to": "character",
         "computed_from": "10 + spell level + casting ability modifier"
       },
       {
         "name": "Spells per Day (maximum)",
+        "applies_to": "character",
         "computed_from": "class level table + bonus spells from the casting ability"
       }
     ],
@@ -93,38 +106,47 @@
   "attributes": [
     {
       "name": "Strength",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Dexterity",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Constitution",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Intelligence",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Wisdom",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Charisma",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Maximum Hit Points",
+      "category": "Secondary",
       "value": 10
     },
     {
       "name": "Current Hit Points",
+      "category": "State",
       "value": 10
     },
     {
       "name": "Nonlethal Damage",
+      "category": "State",
       "value": 0
     }
   ],

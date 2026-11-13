@@ -5,7 +5,7 @@ Default values ("to be specified", base skill percentages) are meant to be
 replaced when describing an actual investigator.
 """
 
-from models import Character, Attribute, Skill, SkillCategory
+from models import Character, Attribute, AttributeCategory, Skill, SkillCategory
 from systems.specific_values import SpecificValuesCthulhu
 
 generic_cthulhu6 = Character(
@@ -17,21 +17,21 @@ generic_cthulhu6 = Character(
     additional_information="to be specified",
     specific_values=SpecificValuesCthulhu(system="cthulhu6"),
     attributes=[
-        Attribute(name="Strength", value=10),
-        Attribute(name="Constitution", value=10),
-        Attribute(name="Size", value=10),
-        Attribute(name="Dexterity", value=10),
-        Attribute(name="Appearance", value=10),
-        Attribute(name="Intelligence", value=10),
-        Attribute(name="Power", value=10),
-        Attribute(name="Education", value=10),
+        Attribute(name="Strength", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Constitution", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Size", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Dexterity", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Appearance", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Intelligence", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Power", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Education", category=AttributeCategory.MAIN, value=10),
         # Only current values: the maximums are derived (Sanity 99 - Cthulhu
         # Mythos, Hit Points (CON+SIZ)/2, Magic Points POW), as are Idea,
         # Luck, Know (INT, POW, EDU x5) and the damage bonus
-        Attribute(name="Current Sanity", value=10),
-        Attribute(name="Current Hit Points", value=10),
-        Attribute(name="Current Magic Points", value=10),
-        Attribute(name="Move", value=8),
+        Attribute(name="Current Sanity", category=AttributeCategory.STATE, value=10),
+        Attribute(name="Current Hit Points", category=AttributeCategory.STATE, value=10),
+        Attribute(name="Current Magic Points", category=AttributeCategory.STATE, value=10),
+        Attribute(name="Move", category=AttributeCategory.SECONDARY, value=8),
     ],
     # Value = percentage. checked=False: improvement check not ticked yet.
     # Melee weapon skills are deliberately left out: players add the ones

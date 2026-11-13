@@ -5,54 +5,67 @@
     "derived_values": [
       {
         "name": "Total Level",
+        "applies_to": "character",
         "computed_from": "sum of class levels"
       },
       {
         "name": "Current Ability Scores",
+        "applies_to": "Main",
         "computed_from": "score - ability reduction"
       },
       {
         "name": "Ability Modifiers",
+        "applies_to": "Main",
         "computed_from": "(current score - 10) // 2"
       },
       {
         "name": "Proficiency Bonus",
+        "applies_to": "character",
         "computed_from": "2 + (total level - 1) // 4"
       },
       {
         "name": "Skill Bonuses",
+        "applies_to": "skill",
         "computed_from": "ability modifier + proficiency level x proficiency bonus + other bonuses"
       },
       {
         "name": "Saving Throw Bonuses",
+        "applies_to": "Main",
         "computed_from": "ability modifier + proficiency bonus if proficient + other bonuses"
       },
       {
         "name": "Armor Class",
+        "applies_to": "character",
         "computed_from": "armor, shield, Dexterity, class features, race, items, active spells"
       },
       {
         "name": "Initiative",
+        "applies_to": "character",
         "computed_from": "Dexterity modifier + other bonuses"
       },
       {
         "name": "Passive Perception",
+        "applies_to": "character",
         "computed_from": "10 + Perception bonus"
       },
       {
         "name": "Spell Save DC",
+        "applies_to": "character",
         "computed_from": "8 + proficiency bonus + spellcasting ability modifier"
       },
       {
         "name": "Spell Attack Bonus",
+        "applies_to": "character",
         "computed_from": "proficiency bonus + spellcasting ability modifier"
       },
       {
         "name": "Spell Slots (maximum)",
+        "applies_to": "character",
         "computed_from": "class levels, multiclass spellcaster table"
       },
       {
         "name": "Hit Dice (maximum)",
+        "applies_to": "character",
         "computed_from": "one per class level, die size by class"
       }
     ],
@@ -93,34 +106,42 @@
   "attributes": [
     {
       "name": "Strength",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Dexterity",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Constitution",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Intelligence",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Wisdom",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Charisma",
+      "category": "Main",
       "value": 10
     },
     {
       "name": "Maximum Hit Points",
+      "category": "Secondary",
       "value": 10
     },
     {
       "name": "Current Hit Points",
+      "category": "State",
       "value": 10
     }
   ],

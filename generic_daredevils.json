@@ -5,74 +5,92 @@
     "derived_values": [
       {
         "name": "Current Attributes",
+        "applies_to": "Main",
         "computed_from": "permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"
       },
       {
         "name": "Attribute Groups and Effect Dice",
+        "applies_to": "Main",
         "computed_from": "current value, Attribute Group Chart"
       },
       {
         "name": "Attribute Saving Throws",
+        "applies_to": "Main",
         "computed_from": "current value / 2, rounded down"
       },
       {
         "name": "Critical Saving Throws",
+        "applies_to": "Main",
         "computed_from": "current value / 3"
       },
       {
         "name": "Basic Chance of Success",
+        "applies_to": "skill",
         "computed_from": "skill score / 5, rounded down"
       },
       {
         "name": "Combat Dodge Ability",
+        "applies_to": "character",
         "computed_from": "(current Deftness Group + current Speed Group) / 2"
       },
       {
         "name": "Weapon Defense Ability",
+        "applies_to": "skill",
         "computed_from": "hand-to-hand BCS / 4"
       },
       {
         "name": "Damage Resistance Total",
+        "applies_to": "character",
         "computed_from": "permanent Health + permanent Strength / 2 + permanent Will / 2"
       },
       {
         "name": "Seriously Wounded",
+        "applies_to": "character",
         "computed_from": "Lethal + Subdual Damage > Damage Resistance Total / 2"
       },
       {
         "name": "Unconscious",
+        "applies_to": "character",
         "computed_from": "Lethal + Subdual Damage > Damage Resistance Total"
       },
       {
         "name": "Dead",
+        "applies_to": "character",
         "computed_from": "Lethal Damage > Damage Resistance Total + Health Group"
       },
       {
         "name": "Healing Rate",
+        "applies_to": "character",
         "computed_from": "Health Group, modified by care and activity"
       },
       {
         "name": "Encumbrance Capacity",
+        "applies_to": "character",
         "computed_from": "5 + Strength Attribute Saving Throw, in kg"
       },
       {
         "name": "Freely Improvable Skills Quota",
+        "applies_to": "character",
         "computed_from": "current Wit + current Will"
       },
       {
         "name": "Learning Rate",
+        "applies_to": "character",
         "computed_from": "Wit Group"
       },
       {
         "name": "Travel Rate",
+        "applies_to": "character",
         "computed_from": "10 + current Speed, in km per day"
       },
       {
         "name": "Shock Factor",
+        "applies_to": "character",
         "computed_from": "10 + Health Group"
       },
       {
         "name": "Size",
+        "applies_to": "character",
         "computed_from": "height and weight category, Physical Aspects Chart"
       }
     ],
@@ -98,66 +116,82 @@
   "attributes": [
     {
       "name": "Wit",
+      "category": "Main",
       "value": 13
     },
     {
       "name": "Will",
+      "category": "Main",
       "value": 13
     },
     {
       "name": "Strength",
+      "category": "Main",
       "value": 13
     },
     {
       "name": "Deftness",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Speed",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Health",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Charismatic",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Combative",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Communicative",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Esthetic",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Mechanical",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Natural",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Scientific",
+      "category": "Talent",
       "value": 0
     },
     {
       "name": "Off-hand Dexterity",
+      "category": "Secondary",
       "value": 6
     },
     {
       "name": "Lethal Damage",
+      "category": "State",
       "value": 0
     },
     {
       "name": "Subdual Damage",
+      "category": "State",
       "value": 0
     }
   ],
@@ -165,437 +199,524 @@
     {
       "name": "Acrobat",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Speed + Natural"
     },
     {
       "name": "Climbing",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Strength + Natural"
     },
     {
       "name": "Jumping",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Strength + Natural"
     },
     {
       "name": "Running",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Speed + Strength + Natural"
     },
     {
       "name": "Swimming",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Speed + Strength + Natural"
     },
     {
       "name": "Cyclist",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Driver",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Driver, Heavy Equipment",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Gambling",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Charismatic"
     },
     {
       "name": "Horsemanship",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Will + Deftness + Natural"
     },
     {
       "name": "Hunting",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Natural"
     },
     {
       "name": "Mimicry",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Pilot",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Pilot, Aerostat",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Seamanship",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Natural"
     },
     {
       "name": "Stealth",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Natural"
     },
     {
       "name": "Survival",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Health + Wit + Natural"
     },
     {
       "name": "Throwing",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Combative"
     },
     {
       "name": "Tracking",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Natural + Natural"
     },
     {
       "name": "Blacksmith",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Carpenter",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Electrician",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Gunsmith",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Machinist",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Cryptography",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Esthetic"
     },
     {
       "name": "Demolitions",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Disguise",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Charismatic"
     },
     {
       "name": "Interrogation",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Will + Charismatic"
     },
     {
       "name": "Lockpicking",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Mechanic",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Pickpocket",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Charismatic"
     },
     {
       "name": "Research",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Communicative"
     },
     {
       "name": "Restoration",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Esthetic"
     },
     {
       "name": "Safecracking",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Traps",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Mechanical"
     },
     {
       "name": "Anthropology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Communicative"
     },
     {
       "name": "Archaeology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Mechanical"
     },
     {
       "name": "Botany",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Natural"
     },
     {
       "name": "Chemistry",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Mechanical"
     },
     {
       "name": "Civil Engineering",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Mechanical + Scientific"
     },
     {
       "name": "Electrical Engineering",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Mechanical"
     },
     {
       "name": "Finance",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Charismatic"
     },
     {
       "name": "Forensic Science",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Scientific"
     },
     {
       "name": "Geology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Natural"
     },
     {
       "name": "History",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Natural + Scientific"
     },
     {
       "name": "Language",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Esthetic"
     },
     {
       "name": "Law",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "Linguistics",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Scientific"
     },
     {
       "name": "Military Science",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Combative"
     },
     {
       "name": "Navigation",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Natural + Scientific"
     },
     {
       "name": "Occult Studies",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Natural"
     },
     {
       "name": "Paleontology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Natural"
     },
     {
       "name": "Physics",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Mechanical"
     },
     {
       "name": "Rhetoric",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Will + Charismatic + Communicative"
     },
     {
       "name": "Zoology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Natural"
     },
     {
       "name": "First Aid",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Scientific"
     },
     {
       "name": "Advanced Medical",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Scientific"
     },
     {
       "name": "Pathology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Scientific"
     },
     {
       "name": "Therapy",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Deftness + Scientific"
     },
     {
       "name": "Medical Specialization",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Scientific + Scientific"
     },
     {
       "name": "Arabic Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Black African Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Chinese Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Eskimo Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "European/American Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Indian Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Japanese Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "North Amerindian Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Polynesian Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "South Amerindian Culture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Esthetic + Communicative"
     },
     {
       "name": "Academic Subculture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "Business Subculture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "Criminal Subculture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "Law Enforcement Subculture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "Politics Subculture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "High Society Subculture",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Wit + Communicative + Charismatic"
     },
     {
       "name": "Pistol",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Combative"
     },
     {
       "name": "Rifle",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Combative"
     },
     {
       "name": "Autofire",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Combative"
     },
     {
       "name": "Archaic Weapon",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Strength + Deftness + Combative"
     },
     {
       "name": "Bayonet Training",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Strength + Deftness + Combative"
     },
     {
       "name": "Fencing",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Speed + Deftness + Combative"
     },
     {
       "name": "Knife",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Speed + Combative"
     },
     {
       "name": "Nightstick",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Strength + Deftness + Combative"
     },
     {
       "name": "Whip",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Wit + Combative"
     },
     {
       "name": "Brawling",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Strength + Deftness + Combative"
     },
     {
       "name": "Martial Arts",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Deftness + Speed + Combative"
     }
   ],
   "abilities": [],

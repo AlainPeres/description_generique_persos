@@ -5,7 +5,7 @@ Default values ("to be specified", ability scores of 10, no ranks) are meant
 to be replaced when describing an actual character.
 """
 
-from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
+from models import Character, Attribute, AttributeCategory, Skill, SkillCategory, Ability, AbilityCategory
 from systems.specific_values import SpecificValuesPF1, PF1Class
 
 generic_pf1 = Character(
@@ -24,20 +24,20 @@ generic_pf1 = Character(
         languages=["Common"],
     ),
     attributes=[
-        Attribute(name="Strength", value=10),
-        Attribute(name="Dexterity", value=10),
-        Attribute(name="Constitution", value=10),
-        Attribute(name="Intelligence", value=10),
-        Attribute(name="Wisdom", value=10),
-        Attribute(name="Charisma", value=10),
+        Attribute(name="Strength", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Dexterity", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Constitution", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Intelligence", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Wisdom", category=AttributeCategory.MAIN, value=10),
+        Attribute(name="Charisma", category=AttributeCategory.MAIN, value=10),
 
         # Maximum HP is stored: it is rolled at each level. Armor Class (normal,
         # touch, flat-footed), BAB, saves, CMB, CMD and initiative are derived
         # (AC from armor, shield, Dexterity, size, natural armor, items and
         # spells), so they are not stored.
-        Attribute(name="Maximum Hit Points", value=10),
-        Attribute(name="Current Hit Points", value=10),
-        Attribute(name="Nonlethal Damage", value=0),
+        Attribute(name="Maximum Hit Points", category=AttributeCategory.SECONDARY, value=10),
+        Attribute(name="Current Hit Points", category=AttributeCategory.STATE, value=10),
+        Attribute(name="Nonlethal Damage", category=AttributeCategory.STATE, value=0),
     ],
     # Skill value = ranks; the total bonus (ability modifier, +3 class skill,
     # feats, items, armor check penalty...) is derived from them

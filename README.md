@@ -19,10 +19,11 @@ system's character data lives in its own module under `systems/`:
 
 ```text
 strict_model.py               StrictModel: common base class, rejects unknown fields
+attribute_category.py         AttributeCategory, shared by models.py and systems/specific_values.py
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem, Condition
                                imports the SpecificValues union; Character checks
                                what spans both layers (D&D prepared spells,
-                               SagaS and Daredevils new-skill attributes, Daredevils
+                               SagaS, Daredevils and OpenQuest skill bases, Daredevils
                                skill scores and freely improvable skills, OpenQuest
                                skill percentages and cast divine spells)
 systems/
@@ -62,9 +63,9 @@ each object with `"additionalProperties": false` accordingly.
 ```text
 Character
 ├── name, description, age, occupation, background, additional_information   (free text)
-├── attributes:       list[Attribute]       (name + int value)
+├── attributes:       list[Attribute]       (name + AttributeCategory + int value)
 ├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked,
-│                                            attribute and talent; omitted from JSON when None)
+│                                            base formula; omitted from JSON when None)
 ├── abilities:        list[Ability]         (name + AbilityCategory + optional int value + description + origin;
 │                                            spells are category=Spell)
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …; money is an item
@@ -98,11 +99,15 @@ Stored instead:
   case: it is not derivable.
 
 Each block lists the derived values of its system in a fixed
-`derived_values` field (list of `DerivedValue`: name, sources or formula),
-so a reader of the JSON knows what exists and the external calculator knows
+`derived_values` field (list of `DerivedValue`: name, `applies_to` and
+sources or formula), so a reader of the JSON knows what exists and the external calculator knows
 what to produce. Like `skill_value_meaning`, it has a default and any other
 value is rejected (through the `fixed(...)` validator, since `Literal`
-cannot hold a list). Fate and no rules have none.
+cannot hold a list). Fate and no rules have none. `applies_to` says whether
+the value is single for the character (`character`, the default, e.g. maximum
+HP) or whether the formula applies to each attribute of a category (`Main`, `Secondary`, `Talent` or `State`; e.g. `Main` for D&D
+ability modifiers, Daredevils saving throws) or to each skill (`skill`, e.g.
+Daredevils BCS, SagaS learning levels, OpenQuest expertise).
 
 The model describes a character **between two scenes**, not in mid-combat:
 death saves, concentration, one-round conditions and temporary HP are not
@@ -113,11 +118,18 @@ stored. What lasts until the next rest is stored as *remaining* values
 
 | Model | Enum | Values |
 | --- | --- | --- |
-| `Attribute` | — | any numeric stat (STR, DEX, HP …) |
+| `Attribute` | `AttributeCategory` | Main (characteristics) / Secondary (other lasting stats, usually based on the main ones: SagaS Initiative, maximum HP, Move) / Talent (Daredevils Talents) / State (current values that change in play: HP, Sanity, wounds, damage) |
 | `Skill` | `SkillCategory` | Base / New / Generic / Specialization |
 | `Ability` | `AbilityCategory` | Feat / Origin Ability / Class Ability / Power / Advantage / Disadvantage / Spell |
 | `EquipmentItem` | `ItemCategory` | weapon / armor / item / consumable / money |
 | `Condition` | `ConditionKind` | Physical / Mental / Other |
+
+`Skill.base` (optional, omitted from the JSON when `None`) is the skill's
+formula over the attributes, written to be read by a human: `Agility` in
+SagaS, `Deftness + Wit + Natural` in Daredevils (initial score; the first
+attribute and the first talent govern), `Dexterity + 10` in OpenQuest. The
+templates fill it for every listed skill; each system checks the names it
+uses.
 
 Two orthogonal axes:
 
@@ -163,9 +175,9 @@ PF1). A future class-based system can reuse it.
 | Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | no specific field besides `derived_values`: mental disorders are `Condition`s of kind `Mental` (duration temporary / indefinite / permanent); other data lives in generic layer, skill improvement checks use `Skill.checked` |
 | FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
-| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; a `New` skill must declare `Skill.attribute` (one of the 8 main or 4 secondary attributes, checked by `Character`), listed skills must not. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are always computed from the main ones plus the creation points bought for them; their final values are stored, so the JSON reads as played, and the creation bonuses are derived from them; a total must be recomputed when a main attribute changes; social class goes in `occupation`, species in `description` |
-| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `critical_damage` (per hit location; it disables the body part until healed), `luck_points` (optional rule; `None` = not used), `hero_motivation`, `hero_method`, `hero_code` (role-play guides of §1.9, no game effect). A `New` skill must declare `Skill.attribute` (one of the 6 attributes) and `Skill.talent` (one of the 7 talents), listed skills must not; skill scores are 0 or more, with no maximum. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Reputation is not modeled (its rules are not in the rulebook) |
-| OpenQuest 3 | `SpecificValuesOpenQuest` | `concept` (one sentence), `fortune_points` (2 at start), `growth_points` (earned, not yet spent), `motives` (`Motive`: text, kind saga / quest, brought into play, completed), `religion`, `religious_rank`, `specialist_caster` (free text), `divine_spells_cast` (names of `Spell` abilities, checked by `Character`). Skill value is the total percentage, 100 at most; a non-human's species goes in `description`, its traits and natural weapons in `abilities` |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; each skill's `base` is its one associated attribute (one of the 8 main or 4 secondary ones, checked by `Character`), filled in the template and required for a `New` skill. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are always computed from the main ones plus the creation points bought for them; their final values are stored, so the JSON reads as played, and the creation bonuses are derived from them; a total must be recomputed when a main attribute changes; social class goes in `occupation`, species in `description` |
+| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `critical_damage` (per hit location; it disables the body part until healed), `luck_points` (optional rule; `None` = not used), `hero_motivation`, `hero_method`, `hero_code` (role-play guides of §1.9, no game effect). Each skill's `base` is its initial-score formula, e.g. `Deftness + Wit + Natural`: it starts with the governing attribute and holds the governing talent (checked by `Character`), is filled in the template and required for a `New` skill; skill scores are 0 or more, with no maximum. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Reputation is not modeled (its rules are not in the rulebook) |
+| OpenQuest 3 | `SpecificValuesOpenQuest` | `concept` (one sentence), `fortune_points` (2 at start), `growth_points` (earned, not yet spent), `motives` (`Motive`: text, kind saga / quest, brought into play, completed), `religion`, `religious_rank`, `specialist_caster` (free text), `divine_spells_cast` (names of `Spell` abilities, checked by `Character`). Skill value is the total percentage, 100 at most; a non-human's species goes in `description`, its traits and natural weapons in `abilities`; each skill's `base` gives its base formula, e.g. `Dexterity + 10` (characteristic names checked by `Character`) |
 
 ## Generic templates
 

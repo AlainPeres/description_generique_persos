@@ -15,6 +15,7 @@ to the SpecificValues union at the bottom of this file.
 from pydantic import AfterValidator, Field, field_validator
 from typing import Annotated, Literal
 
+from attribute_category import AttributeCategory
 from strict_model import StrictModel
 
 # Conventions shared by every block:
@@ -36,6 +37,10 @@ Remaining = Annotated[int, Field(ge=0)]
 # ---------------------------------------------------------------------------
 class DerivedValue(StrictModel):
     name: str                 # e.g. "Armor Class"
+    # One value for the character, or one per skill, or one per attribute of
+    # the given category (the formula then reads the skill or attribute it
+    # applies to)
+    applies_to: Literal["character", "skill"] | AttributeCategory = "character"
     computed_from: str        # sources or formula, for the reader and the calculator
 
 
@@ -78,12 +83,12 @@ class SpecificValuesNoRules(StrictModel):
 # ---------------------------------------------------------------------------
 DND_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Total Level", computed_from="sum of class levels"),
-    DerivedValue(name="Current Ability Scores", computed_from="score - ability reduction"),
-    DerivedValue(name="Ability Modifiers", computed_from="(current score - 10) // 2"),
+    DerivedValue(name="Current Ability Scores", applies_to=AttributeCategory.MAIN, computed_from="score - ability reduction"),
+    DerivedValue(name="Ability Modifiers", applies_to=AttributeCategory.MAIN, computed_from="(current score - 10) // 2"),
     DerivedValue(name="Proficiency Bonus", computed_from="2 + (total level - 1) // 4"),
-    DerivedValue(name="Skill Bonuses",
+    DerivedValue(name="Skill Bonuses", applies_to="skill",
                  computed_from="ability modifier + proficiency level x proficiency bonus + other bonuses"),
-    DerivedValue(name="Saving Throw Bonuses",
+    DerivedValue(name="Saving Throw Bonuses", applies_to=AttributeCategory.MAIN,
                  computed_from="ability modifier + proficiency bonus if proficient + other bonuses"),
     DerivedValue(name="Armor Class",
                  computed_from="armor, shield, Dexterity, class features, race, items, active spells"),
@@ -153,12 +158,12 @@ class SpecificValuesDnD(StrictModel):
 # ---------------------------------------------------------------------------
 PF1_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Total Level", computed_from="sum of class levels"),
-    DerivedValue(name="Ability Modifiers",
+    DerivedValue(name="Ability Modifiers", applies_to=AttributeCategory.MAIN,
                  computed_from="(score - drain - 10) // 2, minus 1 per 2 points of ability damage"),
     DerivedValue(name="Base Attack Bonus", computed_from="sum of class progressions"),
     DerivedValue(name="Saving Throws",
                  computed_from="sum of class base saves + ability modifier + other bonuses - negative levels"),
-    DerivedValue(name="Skill Totals",
+    DerivedValue(name="Skill Totals", applies_to="skill",
                  computed_from="ranks + ability modifier + 3 if class skill with at least 1 rank"
                                " + other bonuses - armor check penalty"),
     DerivedValue(name="Armor Class",
@@ -282,7 +287,7 @@ SAGAS_SKILL_ATTRIBUTES: tuple[str, ...] = (
 )
 
 SAGAS_DERIVED: tuple[DerivedValue, ...] = (
-    DerivedValue(name="Learning Levels", computed_from="skill level - associated attribute"),
+    DerivedValue(name="Learning Levels", applies_to="skill", computed_from="skill level - associated attribute"),
     DerivedValue(name="Protection",
                  computed_from="Armor + Abilities (super powers, outside the base rules); 0 by default"),
     DerivedValue(name="MaxImpactBonus", computed_from="2*Protection + Physical Shock Threshold"),
@@ -336,14 +341,14 @@ DaredevilsLocation = Literal[
 
 # Unless stated otherwise, Daredevils rounds to the nearest (3.5 rounds up)
 DAREDEVILS_DERIVED: tuple[DerivedValue, ...] = (
-    DerivedValue(name="Current Attributes",
+    DerivedValue(name="Current Attributes", applies_to=AttributeCategory.MAIN,
                  computed_from="permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"),
-    DerivedValue(name="Attribute Groups and Effect Dice", computed_from="current value, Attribute Group Chart"),
-    DerivedValue(name="Attribute Saving Throws", computed_from="current value / 2, rounded down"),
-    DerivedValue(name="Critical Saving Throws", computed_from="current value / 3"),
-    DerivedValue(name="Basic Chance of Success", computed_from="skill score / 5, rounded down"),
+    DerivedValue(name="Attribute Groups and Effect Dice", applies_to=AttributeCategory.MAIN, computed_from="current value, Attribute Group Chart"),
+    DerivedValue(name="Attribute Saving Throws", applies_to=AttributeCategory.MAIN, computed_from="current value / 2, rounded down"),
+    DerivedValue(name="Critical Saving Throws", applies_to=AttributeCategory.MAIN, computed_from="current value / 3"),
+    DerivedValue(name="Basic Chance of Success", applies_to="skill", computed_from="skill score / 5, rounded down"),
     DerivedValue(name="Combat Dodge Ability", computed_from="(current Deftness Group + current Speed Group) / 2"),
-    DerivedValue(name="Weapon Defense Ability", computed_from="hand-to-hand BCS / 4"),
+    DerivedValue(name="Weapon Defense Ability", applies_to="skill", computed_from="hand-to-hand BCS / 4"),
     # The glossary formula, followed by every example in the rules (§1.3.2
     # gives the full sum of the three attributes)
     DerivedValue(name="Damage Resistance Total",
@@ -397,15 +402,20 @@ class SpecificValuesDaredevils(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: OpenQuest 3
 # ---------------------------------------------------------------------------
+# Used by Character to check the names in skill base formulas
+OPENQUEST_CHARACTERISTICS: tuple[str, ...] = (
+    "Strength", "Constitution", "Dexterity", "Size", "Intelligence", "Power", "Charisma",
+)
+
 OPENQUEST_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Damage Modifier", computed_from="STR + SIZ, Damage Modifier table"),
     DerivedValue(name="Maximum Hit Points", computed_from="(SIZ + CON) / 2, rounded up"),
     DerivedValue(name="Maximum Magic Points", computed_from="POW"),
     DerivedValue(name="Mortal Wound", computed_from="current Hit Points below zero"),
     DerivedValue(name="Movement Rate", computed_from="15 metres for humans, the creature's rate otherwise"),
-    DerivedValue(name="Skill Expertise",
+    DerivedValue(name="Skill Expertise", applies_to="skill",
                  computed_from="0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"),
-    DerivedValue(name="Growth Cost per +5%", computed_from="1, 2, 3, 5 or 10 depending on skill expertise"),
+    DerivedValue(name="Growth Cost per +5%", applies_to="skill", computed_from="1, 2, 3, 5 or 10 depending on skill expertise"),
 )
 
 # Saga motives span a campaign, Quest motives the current adventure

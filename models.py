@@ -16,18 +16,29 @@ Architecture:
 Only the schema lives here. Per-system character data lives in systems/.
 """
 
+import re
 from enum import Enum
 from pydantic import Field, model_validator
 from typing import Any, Literal, Self
 
 from strict_model import StrictModel
+# Shared with systems/specific_values.py (DerivedValue.applies_to)
+from attribute_category import AttributeCategory
 
 # Union of every system-specific block, defined in systems/specific_values.py
 # so that adding a new system never requires touching this file.
 from systems.specific_values import (
-    DAREDEVILS_ATTRIBUTES, DAREDEVILS_TALENTS, SAGAS_SKILL_ATTRIBUTES, SpecificValues,
-    SpecificValuesDaredevils, SpecificValuesDnD, SpecificValuesOpenQuest, SpecificValuesSagas,
+    DAREDEVILS_ATTRIBUTES, DAREDEVILS_TALENTS, OPENQUEST_CHARACTERISTICS, SAGAS_SKILL_ATTRIBUTES,
+    SpecificValues, SpecificValuesDaredevils, SpecificValuesDnD, SpecificValuesOpenQuest,
+    SpecificValuesSagas,
 )
+
+
+# Names used in a skill base formula ("Deftness + Wit + Natural",
+# "Dexterity + 10", "Power * 3"): the operands that are not numbers, in order
+def base_names(base: str) -> list[str]:
+    operands = (t.strip() for t in re.split(r"[-+*/()]", base))
+    return [t for t in operands if t and not t.isdigit()]
 
 
 # ---------------------------------------------------------------------------
@@ -95,17 +106,18 @@ class Skill(StrictModel):
     # None = the system has no skill checks; False/True = unchecked/checked.
     # Left out of the JSON when None.
     checked: bool | None = Field(default=None, exclude_if=lambda v: v is None)
-    # Associated attribute, only when the rules do not fix it (e.g. a skill
-    # created by the player and the GM in SagaS). Left out of the JSON when None.
-    attribute: str | None = Field(default=None, exclude_if=lambda v: v is None)
-    # Governing talent, same rule (e.g. a skill added by the GM in Daredevils).
-    # Left out of the JSON when None.
-    talent: str | None = Field(default=None, exclude_if=lambda v: v is None)
+    # How the skill is computed from the attributes, as a readable formula:
+    # "Agility" (SagaS), "Deftness + Wit + Natural" (Daredevils initial score;
+    # the first attribute and the first talent govern), "Dexterity + 10"
+    # (OpenQuest base). Filled in the templates for listed skills; required
+    # for NEW skills in SagaS and Daredevils. Left out of the JSON when None.
+    base: str | None = Field(default=None, exclude_if=lambda v: v is None)
 
 
 # Any numeric stat: characteristics, current values (HP, Sanity...)...
 class Attribute(StrictModel):
     name: str
+    category: AttributeCategory
     value: int
 
 
@@ -169,60 +181,56 @@ class Character(StrictModel):
                 raise ValueError(f"prepared spells without a matching Spell ability: {unknown}")
         return self
 
-    # Cross-layer check: in SagaS, the rules fix the attribute of every listed
-    # skill (so it is not stored), while a NEW skill gets the one chosen by the
-    # player and the GM, among the attributes a skill can be based on.
+    # Cross-layer check: in SagaS, a skill is based on one attribute, among
+    # the main and secondary ones; a NEW skill must declare it (the template
+    # gives it for listed skills).
     @model_validator(mode="after")
-    def sagas_skill_attributes(self) -> Self:
+    def sagas_skill_bases(self) -> Self:
         if isinstance(self.specific_values, SpecificValuesSagas):
             for skill in self.skills:
-                if skill.category == SkillCategory.NEW:
-                    if skill.attribute not in SAGAS_SKILL_ATTRIBUTES:
-                        raise ValueError(
-                            f"new skill {skill.name!r} needs an attribute among "
-                            f"{list(SAGAS_SKILL_ATTRIBUTES)}, got {skill.attribute!r}")
-                elif skill.attribute is not None:
+                if skill.base is None:
+                    if skill.category == SkillCategory.NEW:
+                        raise ValueError(f"new skill {skill.name!r} needs a base attribute")
+                    continue
+                names = base_names(skill.base)
+                if len(names) != 1 or names[0] not in SAGAS_SKILL_ATTRIBUTES:
                     raise ValueError(
-                        f"skill {skill.name!r}: its attribute is fixed by the rules, "
-                        f"only NEW skills declare one")
+                        f"skill {skill.name!r}: base must be one attribute among "
+                        f"{list(SAGAS_SKILL_ATTRIBUTES)}, got {skill.base!r}")
         return self
 
     # Cross-layer checks for Daredevils: skill scores are not negative; a
-    # NEW skill declares its governing attribute and talent (fixed by the rules
-    # for listed skills); freely improvable skills name skills of the character.
-    # Talents only exist in Daredevils.
+    # base names attributes and talents, starting with the governing attribute
+    # and holding the governing talent; a NEW skill must declare one; freely
+    # improvable skills name skills of the character.
     @model_validator(mode="after")
     def daredevils_skills(self) -> Self:
         sv = self.specific_values
         if not isinstance(sv, SpecificValuesDaredevils):
-            with_talent = [s.name for s in self.skills if s.talent is not None]
-            if with_talent:
-                raise ValueError(f"only Daredevils skills have a governing talent: {with_talent}")
             return self
         for skill in self.skills:
             if skill.value < 0:
                 raise ValueError(f"skill {skill.name!r}: score must not be negative")
-            if skill.category == SkillCategory.NEW:
-                if skill.attribute not in DAREDEVILS_ATTRIBUTES:
-                    raise ValueError(
-                        f"new skill {skill.name!r} needs an attribute among "
-                        f"{list(DAREDEVILS_ATTRIBUTES)}, got {skill.attribute!r}")
-                if skill.talent not in DAREDEVILS_TALENTS:
-                    raise ValueError(
-                        f"new skill {skill.name!r} needs a talent among "
-                        f"{list(DAREDEVILS_TALENTS)}, got {skill.talent!r}")
-            elif skill.attribute is not None or skill.talent is not None:
+            if skill.base is None:
+                if skill.category == SkillCategory.NEW:
+                    raise ValueError(f"new skill {skill.name!r} needs a base formula")
+                continue
+            names = base_names(skill.base)
+            unknown = [n for n in names if n not in DAREDEVILS_ATTRIBUTES + DAREDEVILS_TALENTS]
+            if (unknown or not names or names[0] not in DAREDEVILS_ATTRIBUTES
+                    or not any(n in DAREDEVILS_TALENTS for n in names)):
                 raise ValueError(
-                    f"skill {skill.name!r}: its attribute and talent are fixed by the "
-                    f"rules, only NEW skills declare them")
+                    f"skill {skill.name!r}: base must start with a governing attribute "
+                    f"and hold a talent, got {skill.base!r}")
         known = {s.name.strip().casefold() for s in self.skills}
         unknown = [s for s in sv.freely_improvable_skills if s.strip().casefold() not in known]
         if unknown:
             raise ValueError(f"freely improvable skills without a matching skill: {unknown}")
         return self
 
-    # Cross-layer checks for OpenQuest: 100% is the upper limit for skills;
-    # divine_spells_cast names Spell abilities, compared as prepared_spells.
+    # Cross-layer checks for OpenQuest: 100% is the upper limit for skills; a
+    # base names characteristics; divine_spells_cast names Spell abilities,
+    # compared as prepared_spells.
     @model_validator(mode="after")
     def openquest_checks(self) -> Self:
         sv = self.specific_values
@@ -230,6 +238,11 @@ class Character(StrictModel):
             for skill in self.skills:
                 if not 0 <= skill.value <= 100:
                     raise ValueError(f"skill {skill.name!r}: percentage must be between 0 and 100")
+                if skill.base is not None:
+                    unknown = [n for n in base_names(skill.base) if n not in OPENQUEST_CHARACTERISTICS]
+                    if unknown:
+                        raise ValueError(
+                            f"skill {skill.name!r}: base names unknown characteristics {unknown}")
             known = {a.name.strip().casefold() for a in self.abilities
                      if a.category == AbilityCategory.SPELL}
             unknown = [s for s in sv.divine_spells_cast if s.strip().casefold() not in known]

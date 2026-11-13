@@ -59,6 +59,9 @@
           "title": "Name",
           "type": "string"
         },
+        "category": {
+          "$ref": "#/$defs/AttributeCategory"
+        },
         "value": {
           "title": "Value",
           "type": "integer"
@@ -66,10 +69,21 @@
       },
       "required": [
         "name",
+        "category",
         "value"
       ],
       "title": "Attribute",
       "type": "object"
+    },
+    "AttributeCategory": {
+      "enum": [
+        "Main",
+        "Secondary",
+        "Talent",
+        "State"
+      ],
+      "title": "AttributeCategory",
+      "type": "string"
     },
     "Condition": {
       "additionalProperties": false,
@@ -155,6 +169,22 @@
         "name": {
           "title": "Name",
           "type": "string"
+        },
+        "applies_to": {
+          "anyOf": [
+            {
+              "enum": [
+                "character",
+                "skill"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/AttributeCategory"
+            }
+          ],
+          "default": "character",
+          "title": "Applies To"
         },
         "computed_from": {
           "title": "Computed From",
@@ -384,7 +414,7 @@
           "default": null,
           "title": "Checked"
         },
-        "attribute": {
+        "base": {
           "anyOf": [
             {
               "type": "string"
@@ -394,19 +424,7 @@
             }
           ],
           "default": null,
-          "title": "Attribute"
-        },
-        "talent": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Talent"
+          "title": "Base"
         }
       },
       "required": [
@@ -445,30 +463,37 @@
           "default": [
             {
               "name": "Idea",
+              "applies_to": "character",
               "computed_from": "Intelligence x 5"
             },
             {
               "name": "Luck",
+              "applies_to": "character",
               "computed_from": "Power x 5"
             },
             {
               "name": "Know",
+              "applies_to": "character",
               "computed_from": "Education x 5"
             },
             {
               "name": "Damage Bonus",
+              "applies_to": "character",
               "computed_from": "Strength + Size, damage bonus table"
             },
             {
               "name": "Maximum Sanity",
+              "applies_to": "character",
               "computed_from": "99 - Cthulhu Mythos"
             },
             {
               "name": "Maximum Hit Points",
+              "applies_to": "character",
               "computed_from": "(Constitution + Size) / 2, rounded up"
             },
             {
               "name": "Maximum Magic Points",
+              "applies_to": "character",
               "computed_from": "Power"
             }
           ],
@@ -503,74 +528,92 @@
           "default": [
             {
               "name": "Current Attributes",
+              "applies_to": "Main",
               "computed_from": "permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"
             },
             {
               "name": "Attribute Groups and Effect Dice",
+              "applies_to": "Main",
               "computed_from": "current value, Attribute Group Chart"
             },
             {
               "name": "Attribute Saving Throws",
+              "applies_to": "Main",
               "computed_from": "current value / 2, rounded down"
             },
             {
               "name": "Critical Saving Throws",
+              "applies_to": "Main",
               "computed_from": "current value / 3"
             },
             {
               "name": "Basic Chance of Success",
+              "applies_to": "skill",
               "computed_from": "skill score / 5, rounded down"
             },
             {
               "name": "Combat Dodge Ability",
+              "applies_to": "character",
               "computed_from": "(current Deftness Group + current Speed Group) / 2"
             },
             {
               "name": "Weapon Defense Ability",
+              "applies_to": "skill",
               "computed_from": "hand-to-hand BCS / 4"
             },
             {
               "name": "Damage Resistance Total",
+              "applies_to": "character",
               "computed_from": "permanent Health + permanent Strength / 2 + permanent Will / 2"
             },
             {
               "name": "Seriously Wounded",
+              "applies_to": "character",
               "computed_from": "Lethal + Subdual Damage > Damage Resistance Total / 2"
             },
             {
               "name": "Unconscious",
+              "applies_to": "character",
               "computed_from": "Lethal + Subdual Damage > Damage Resistance Total"
             },
             {
               "name": "Dead",
+              "applies_to": "character",
               "computed_from": "Lethal Damage > Damage Resistance Total + Health Group"
             },
             {
               "name": "Healing Rate",
+              "applies_to": "character",
               "computed_from": "Health Group, modified by care and activity"
             },
             {
               "name": "Encumbrance Capacity",
+              "applies_to": "character",
               "computed_from": "5 + Strength Attribute Saving Throw, in kg"
             },
             {
               "name": "Freely Improvable Skills Quota",
+              "applies_to": "character",
               "computed_from": "current Wit + current Will"
             },
             {
               "name": "Learning Rate",
+              "applies_to": "character",
               "computed_from": "Wit Group"
             },
             {
               "name": "Travel Rate",
+              "applies_to": "character",
               "computed_from": "10 + current Speed, in km per day"
             },
             {
               "name": "Shock Factor",
+              "applies_to": "character",
               "computed_from": "10 + Health Group"
             },
             {
               "name": "Size",
+              "applies_to": "character",
               "computed_from": "height and weight category, Physical Aspects Chart"
             }
           ],
@@ -742,54 +785,67 @@
           "default": [
             {
               "name": "Total Level",
+              "applies_to": "character",
               "computed_from": "sum of class levels"
             },
             {
               "name": "Current Ability Scores",
+              "applies_to": "Main",
               "computed_from": "score - ability reduction"
             },
             {
               "name": "Ability Modifiers",
+              "applies_to": "Main",
               "computed_from": "(current score - 10) // 2"
             },
             {
               "name": "Proficiency Bonus",
+              "applies_to": "character",
               "computed_from": "2 + (total level - 1) // 4"
             },
             {
               "name": "Skill Bonuses",
+              "applies_to": "skill",
               "computed_from": "ability modifier + proficiency level x proficiency bonus + other bonuses"
             },
             {
               "name": "Saving Throw Bonuses",
+              "applies_to": "Main",
               "computed_from": "ability modifier + proficiency bonus if proficient + other bonuses"
             },
             {
               "name": "Armor Class",
+              "applies_to": "character",
               "computed_from": "armor, shield, Dexterity, class features, race, items, active spells"
             },
             {
               "name": "Initiative",
+              "applies_to": "character",
               "computed_from": "Dexterity modifier + other bonuses"
             },
             {
               "name": "Passive Perception",
+              "applies_to": "character",
               "computed_from": "10 + Perception bonus"
             },
             {
               "name": "Spell Save DC",
+              "applies_to": "character",
               "computed_from": "8 + proficiency bonus + spellcasting ability modifier"
             },
             {
               "name": "Spell Attack Bonus",
+              "applies_to": "character",
               "computed_from": "proficiency bonus + spellcasting ability modifier"
             },
             {
               "name": "Spell Slots (maximum)",
+              "applies_to": "character",
               "computed_from": "class levels, multiclass spellcaster table"
             },
             {
               "name": "Hit Dice (maximum)",
+              "applies_to": "character",
               "computed_from": "one per class level, die size by class"
             }
           ],
@@ -1068,30 +1124,37 @@
           "default": [
             {
               "name": "Damage Modifier",
+              "applies_to": "character",
               "computed_from": "STR + SIZ, Damage Modifier table"
             },
             {
               "name": "Maximum Hit Points",
+              "applies_to": "character",
               "computed_from": "(SIZ + CON) / 2, rounded up"
             },
             {
               "name": "Maximum Magic Points",
+              "applies_to": "character",
               "computed_from": "POW"
             },
             {
               "name": "Mortal Wound",
+              "applies_to": "character",
               "computed_from": "current Hit Points below zero"
             },
             {
               "name": "Movement Rate",
+              "applies_to": "character",
               "computed_from": "15 metres for humans, the creature's rate otherwise"
             },
             {
               "name": "Skill Expertise",
+              "applies_to": "skill",
               "computed_from": "0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"
             },
             {
               "name": "Growth Cost per +5%",
+              "applies_to": "skill",
               "computed_from": "1, 2, 3, 5 or 10 depending on skill expertise"
             }
           ],
@@ -1172,54 +1235,67 @@
           "default": [
             {
               "name": "Total Level",
+              "applies_to": "character",
               "computed_from": "sum of class levels"
             },
             {
               "name": "Ability Modifiers",
+              "applies_to": "Main",
               "computed_from": "(score - drain - 10) // 2, minus 1 per 2 points of ability damage"
             },
             {
               "name": "Base Attack Bonus",
+              "applies_to": "character",
               "computed_from": "sum of class progressions"
             },
             {
               "name": "Saving Throws",
+              "applies_to": "character",
               "computed_from": "sum of class base saves + ability modifier + other bonuses - negative levels"
             },
             {
               "name": "Skill Totals",
+              "applies_to": "skill",
               "computed_from": "ranks + ability modifier + 3 if class skill with at least 1 rank + other bonuses - armor check penalty"
             },
             {
               "name": "Armor Class",
+              "applies_to": "character",
               "computed_from": "10 + armor, shield, Dexterity (capped by armor), size, natural armor, deflection, dodge and other bonuses"
             },
             {
               "name": "Touch Armor Class",
+              "applies_to": "character",
               "computed_from": "Armor Class without armor, shield and natural armor"
             },
             {
               "name": "Flat-Footed Armor Class",
+              "applies_to": "character",
               "computed_from": "Armor Class without Dexterity and dodge bonuses"
             },
             {
               "name": "Combat Maneuver Bonus",
+              "applies_to": "character",
               "computed_from": "BAB + Strength modifier + special size modifier"
             },
             {
               "name": "Combat Maneuver Defense",
+              "applies_to": "character",
               "computed_from": "10 + BAB + Strength and Dexterity modifiers + special size modifier"
             },
             {
               "name": "Initiative",
+              "applies_to": "character",
               "computed_from": "Dexterity modifier + other bonuses"
             },
             {
               "name": "Spell Save DC",
+              "applies_to": "character",
               "computed_from": "10 + spell level + casting ability modifier"
             },
             {
               "name": "Spells per Day (maximum)",
+              "applies_to": "character",
               "computed_from": "class level table + bonus spells from the casting ability"
             }
           ],
@@ -1385,50 +1461,62 @@
           "default": [
             {
               "name": "Learning Levels",
+              "applies_to": "skill",
               "computed_from": "skill level - associated attribute"
             },
             {
               "name": "Protection",
+              "applies_to": "character",
               "computed_from": "Armor + Abilities (super powers, outside the base rules); 0 by default"
             },
             {
               "name": "MaxImpactBonus",
+              "applies_to": "character",
               "computed_from": "2*Protection + Physical Shock Threshold"
             },
             {
               "name": "Physical Hit Points",
+              "applies_to": "character",
               "computed_from": "2*(Strength + Will + Endurance)"
             },
             {
               "name": "Psychical Hit Points",
+              "applies_to": "character",
               "computed_from": "2*(Presence + Will + Instinct)"
             },
             {
               "name": "Physical Shock Threshold",
+              "applies_to": "character",
               "computed_from": "10 + UT Strength bonus"
             },
             {
               "name": "Psychical Shock Threshold",
+              "applies_to": "character",
               "computed_from": "10 + UT Presence bonus"
             },
             {
               "name": "Reflex Defense",
+              "applies_to": "character",
               "computed_from": "2 + Dodge skill level / 2, rounded down"
             },
             {
               "name": "Initiative Creation Bonus",
+              "applies_to": "character",
               "computed_from": "Initiative - (Agility + Wit) / 2, rounded down"
             },
             {
               "name": "Close Combat Creation Bonus",
+              "applies_to": "character",
               "computed_from": "Close Combat - (Strength + 2*Agility + Instinct + Will) / 5, rounded down"
             },
             {
               "name": "Ranged Combat Creation Bonus",
+              "applies_to": "character",
               "computed_from": "Ranged Combat - (3*Dexterity + 2*Instinct) / 5, rounded down"
             },
             {
               "name": "Speed Creation Bonus",
+              "applies_to": "character",
               "computed_from": "Speed - species base (6 for humans) - (Endurance + Agility) / 4, rounded down"
             }
           ],

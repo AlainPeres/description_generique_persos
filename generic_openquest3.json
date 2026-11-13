@@ -5,30 +5,37 @@
     "derived_values": [
       {
         "name": "Damage Modifier",
+        "applies_to": "character",
         "computed_from": "STR + SIZ, Damage Modifier table"
       },
       {
         "name": "Maximum Hit Points",
+        "applies_to": "character",
         "computed_from": "(SIZ + CON) / 2, rounded up"
       },
       {
         "name": "Maximum Magic Points",
+        "applies_to": "character",
         "computed_from": "POW"
       },
       {
         "name": "Mortal Wound",
+        "applies_to": "character",
         "computed_from": "current Hit Points below zero"
       },
       {
         "name": "Movement Rate",
+        "applies_to": "character",
         "computed_from": "15 metres for humans, the creature's rate otherwise"
       },
       {
         "name": "Skill Expertise",
+        "applies_to": "skill",
         "computed_from": "0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"
       },
       {
         "name": "Growth Cost per +5%",
+        "applies_to": "skill",
         "computed_from": "1, 2, 3, 5 or 10 depending on skill expertise"
       }
     ],
@@ -50,38 +57,47 @@
   "attributes": [
     {
       "name": "Strength",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Constitution",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Dexterity",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Size",
+      "category": "Main",
       "value": 13
     },
     {
       "name": "Intelligence",
+      "category": "Main",
       "value": 13
     },
     {
       "name": "Power",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Charisma",
+      "category": "Main",
       "value": 12
     },
     {
       "name": "Current Hit Points",
+      "category": "State",
       "value": 13
     },
     {
       "name": "Current Magic Points",
+      "category": "State",
       "value": 12
     }
   ],
@@ -89,157 +105,188 @@
     {
       "name": "Dodge",
       "category": "Base",
-      "value": 22
+      "value": 22,
+      "base": "Dexterity + 10"
     },
     {
       "name": "Persistence",
       "category": "Base",
-      "value": 22
+      "value": 22,
+      "base": "Power + 10"
     },
     {
       "name": "Resilience",
       "category": "Base",
-      "value": 24
+      "value": 24,
+      "base": "Constitution + Power"
     },
     {
       "name": "Close Combat",
       "category": "Base",
-      "value": 24
+      "value": 24,
+      "base": "Dexterity + Strength"
     },
     {
       "name": "Ranged Combat",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Dexterity + Intelligence"
     },
     {
       "name": "Unarmed Combat",
       "category": "Base",
-      "value": 24
+      "value": 24,
+      "base": "Dexterity + Strength"
     },
     {
       "name": "Culture (Own)",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Language (Own)",
       "category": "Base",
-      "value": 63
+      "value": 63,
+      "base": "Intelligence + 50"
     },
     {
       "name": "Natural Lore",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Culture (Other)",
       "category": "Generic",
-      "value": 13
+      "value": 13,
+      "base": "Intelligence"
     },
     {
       "name": "Language (Other)",
       "category": "Generic",
-      "value": 13
+      "value": 13,
+      "base": "Intelligence"
     },
     {
       "name": "Lore",
       "category": "Generic",
-      "value": 13
+      "value": 13,
+      "base": "Intelligence"
     },
     {
       "name": "Athletics",
       "category": "Base",
-      "value": 24
+      "value": 24,
+      "base": "Dexterity + Strength"
     },
     {
       "name": "Craft",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Deception",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Dexterity + Intelligence"
     },
     {
       "name": "Driving",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Dexterity + Intelligence"
     },
     {
       "name": "Engineering",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Healing",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Influence",
       "category": "Base",
-      "value": 22
+      "value": 22,
+      "base": "Charisma + 10"
     },
     {
       "name": "Mechanisms",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Dexterity + Intelligence"
     },
     {
       "name": "Perception",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Intelligence + Power"
     },
     {
       "name": "Performance",
       "category": "Base",
-      "value": 22
+      "value": 22,
+      "base": "Charisma + 10"
     },
     {
       "name": "Riding",
       "category": "Base",
-      "value": 24
+      "value": 24,
+      "base": "Dexterity + Power"
     },
     {
       "name": "Sailing",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Dexterity + Intelligence"
     },
     {
       "name": "Streetwise",
       "category": "Base",
-      "value": 24
+      "value": 24,
+      "base": "Charisma + Power"
     },
     {
       "name": "Trade",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Wealth",
       "category": "Base",
-      "value": 25
+      "value": 25,
+      "base": "Intelligence + Charisma"
     },
     {
       "name": "Personal Magic Casting",
       "category": "Base",
-      "value": 36
+      "value": 36,
+      "base": "Power * 3"
     },
     {
       "name": "Sorcery Casting",
       "category": "Base",
-      "value": 13
+      "value": 13,
+      "base": "Intelligence"
     },
     {
       "name": "Religion (Own)",
       "category": "Base",
-      "value": 23
+      "value": 23,
+      "base": "Intelligence + 10"
     },
     {
       "name": "Religion (Other)",
       "category": "Generic",
-      "value": 13
+      "value": 13,
+      "base": "Intelligence"
     }
   ],
   "abilities": [],

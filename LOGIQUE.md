@@ -22,7 +22,7 @@ Un personnage se décompose en deux parties.
    | Champ                                                                              | Contenu                                                                            |
    | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
    | `name`, `description`, `age`, `occupation`, `background`, `additional_information` | texte libre                                                                        |
-   | `attributes`                                                                       | caractéristiques chiffrées (FOR, DEX, PV…)                                         |
+   | `attributes`                                                                       | valeurs chiffrées, avec une catégorie                                              |
    | `skills`                                                                           | compétences, avec une catégorie                                                    |
    | `abilities`                                                                        | dons, pouvoirs, avantages, sorts…                                                  |
    | `equipment`                                                                        | objets, armes, armures, consommables, monnaie (la somme est la quantité)           |
@@ -50,7 +50,7 @@ plutôt qu'un tuple ou des listes parallèles : `DnDClass` (nom, sous-classe,
 niveau), `PF1Class` (nom, archétypes, niveau, sorts restants),
 `PreparedSpell` (nom, niveau, lancé), `Condition` (nom, nature, durée,
 description, guéri), `StressBox` et `Consequence` en Fate, `DerivedValue`
-(nom, sources). Chaque information est nommée, validée, et ne peut pas
+(nom, portée, sources). Chaque information est nommée, validée, et ne peut pas
 se désynchroniser des autres.
 
 `DnDClass` et `PF1Class` héritent d'une base commune, `CharacterClass` (nom,
@@ -86,8 +86,13 @@ En revanche, sont stockés :
 
 Pour que le lecteur du JSON sache quelles valeurs existent sans être
 stockées, chaque bloc spécifique les liste dans un champ fixe
-`derived_values` : une liste de `DerivedValue` (nom, sources ou formule),
-qui sert aussi de cahier des charges au calculateur extérieur. Comme
+`derived_values` : une liste de `DerivedValue` (nom, portée, sources ou
+formule). La portée (`applies_to`) dit si la valeur est unique pour le
+personnage (`character`, par exemple les PV maximum) ou si la formule
+s'applique à **chaque attribut d'une catégorie** (`Main`, `Secondary`, `Talent` ou `State` ; par exemple `Main` pour les modificateurs
+de caractéristique en D&D, les jets de sauvegarde en Daredevils) ou à
+**chaque compétence** (`skill`, par exemple le BCS en Daredevils, le niveau
+d'apprentissage en SagaS, l'expertise en OpenQuest). La liste sert aussi de cahier des charges au calculateur extérieur. Comme
 `skill_value_meaning`, il a une valeur par défaut, apparaît dans chaque JSON
 et toute autre valeur est refusée. Un `Literal` ne pouvant pas contenir de
 liste, c'est le validateur `fixed(...)` qui reproduit ce comportement. Fate
@@ -159,15 +164,12 @@ change, à niveau d'apprentissage constant. Contrairement à PF1, où le total
 dépend de bonus absents de la fiche (dons, objets…), rien ne se perd. Dans
 le modèle de fiche, toutes les caractéristiques valent 5 (Vitesse 8) : le
 niveau est donc la caractéristique plus le niveau d'apprentissage initial
-(Esquive 5, Acrobaties −10, Course 8…). L'attribut associé à chaque
-compétence de la liste est fixé par les règles, il n'est donc pas stocké
-dans le personnage.
-Une compétence créée par le joueur et l'arbitre (`New`) est rattachée à la
-caractéristique qu'ils choisissent : c'est une donnée du personnage, portée
-par `Skill.attribute` (absent du JSON quand il vaut `None`). `Character`
-vérifie qu'une compétence `New` a bien un `attribute` parmi les 8
-caractéristiques principales et les 4 secondaires, et qu'aucune compétence
-de la liste n'en déclare.
+(Esquive 5, Acrobaties −10, Course 8…). La caractéristique associée figure
+dans `Skill.base` (par exemple `"base": "Agility"`) : fixée par les règles
+pour les compétences de la liste, elle est remplie dans le modèle de fiche,
+et une compétence créée par le joueur et l'arbitre (`New`) doit déclarer
+celle qu'ils choisissent. `Character` vérifie que `base` désigne une seule
+caractéristique, parmi les 8 principales et les 4 secondaires.
 
 En Daredevils, la `value` d'une compétence est son **score** (0 ou plus, sans maximum) : la
 chance de base de réussite (BCS = score / 5, arrondi vers le bas) se calcule.
@@ -199,17 +201,24 @@ chaque aventure) restants vont dans `luck_points`, `None` voulant dire que
 la règle n'est pas utilisée. Le livre se contredit sur le total de
 résistance aux dégâts (DRT) : le §1.3.2 additionne Santé, Force et Volonté,
 le glossaire donne Santé + Force / 2 + Volonté / 2. C'est le glossaire qui
-est retenu, car tous les exemples chiffrés le suivent. Comme en SagaS, une
-compétence `New` ajoutée par l'arbitre déclare son attribut gouvernant
-(`Skill.attribute`) et, propre à Daredevils, son **Talent gouvernant**
-(`Skill.talent`), qui sert à l'apprentissage par la pratique ; `Character`
-le vérifie, ainsi que les scores (jamais négatifs) et les noms de
+est retenu, car tous les exemples chiffrés le suivent. La formule du score
+initial figure dans `Skill.base` (par exemple `"Deftness + Wit +
+Natural"`) : d'après les règles, son premier attribut est l'**attribut
+gouvernant** et son premier Talent le **Talent gouvernant**, qui sert à
+l'apprentissage par la pratique. Elle est remplie dans le modèle de fiche
+(pour Pathology, le livre donne Wit + Wit + Scientific dans le résumé et
+Wit + Deftness + Scientific dans la description : la description est
+retenue) et obligatoire pour une compétence `New` ajoutée par l'arbitre ;
+`Character` vérifie qu'elle commence par un attribut et contient un Talent,
+ainsi que les scores (jamais négatifs) et les noms de
 `freely_improvable_skills`. Les finances, diplômes, grade, casier, licences
 et contacts se décrivent dans `background` ; la Réputation n'est pas
 modélisée, ses règles ne figurant pas dans le livre. Sauf mention contraire, Daredevils
 arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
 
 En OpenQuest 3, la `value` d'une compétence est son **pourcentage total**
+(sa formule de base, par exemple `"Dexterity + 10"`, figure dans
+`Skill.base`)
 (base + points de création + croissance), la valeur jouée ; la croissance
 s'ajoute au total. Les extraits du SRD ne disent pas si la base (somme de
 caractéristiques) est recalculée quand une caractéristique augmente ; le
@@ -291,7 +300,24 @@ spécifique : épuisement et `ability_reduction` en D&D, affaiblissement,
 diminution et niveaux négatifs en PF1, conséquences en Fate,
 `attribute_loss` en Daredevils.
 
-## Les catégories : deux axes indépendants
+## Les catégories
+
+`AttributeCategory` dit **de quelle nature** est une valeur chiffrée, ce qui
+rend le JSON lisible et précise la portée des valeurs dérivées :
+
+- `Main` : les caractéristiques (Force, DEX, Wit…) ;
+- `Secondary` : les autres valeurs durables, le plus souvent fondées sur
+  les principales (Initiative SagaS, Off-hand Dexterity, PV maximum tirés
+  aux dés en D&D et PF1, Move en Cthulhu) ;
+- `Talent` : les aptitudes (Talents de Daredevils) ;
+- `State` : les valeurs actuelles qui changent en jeu (PV, Santé, blessures,
+  dégâts).
+
+La catégorie est fixée par les règles et répétée dans chaque personnage :
+c'est le prix de la lisibilité. Elle est obligatoire, pour qu'aucun attribut
+ne soit classé par défaut sans qu'on l'ait décidé.
+
+Pour les compétences et les capacités, deux axes indépendants :
 
 - `SkillCategory` dit **d'où vient** une entrée :
   - `Base` : elle fait partie de la liste officielle du système ;

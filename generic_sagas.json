@@ -5,50 +5,62 @@
     "derived_values": [
       {
         "name": "Learning Levels",
+        "applies_to": "skill",
         "computed_from": "skill level - associated attribute"
       },
       {
         "name": "Protection",
+        "applies_to": "character",
         "computed_from": "Armor + Abilities (super powers, outside the base rules); 0 by default"
       },
       {
         "name": "MaxImpactBonus",
+        "applies_to": "character",
         "computed_from": "2*Protection + Physical Shock Threshold"
       },
       {
         "name": "Physical Hit Points",
+        "applies_to": "character",
         "computed_from": "2*(Strength + Will + Endurance)"
       },
       {
         "name": "Psychical Hit Points",
+        "applies_to": "character",
         "computed_from": "2*(Presence + Will + Instinct)"
       },
       {
         "name": "Physical Shock Threshold",
+        "applies_to": "character",
         "computed_from": "10 + UT Strength bonus"
       },
       {
         "name": "Psychical Shock Threshold",
+        "applies_to": "character",
         "computed_from": "10 + UT Presence bonus"
       },
       {
         "name": "Reflex Defense",
+        "applies_to": "character",
         "computed_from": "2 + Dodge skill level / 2, rounded down"
       },
       {
         "name": "Initiative Creation Bonus",
+        "applies_to": "character",
         "computed_from": "Initiative - (Agility + Wit) / 2, rounded down"
       },
       {
         "name": "Close Combat Creation Bonus",
+        "applies_to": "character",
         "computed_from": "Close Combat - (Strength + 2*Agility + Instinct + Will) / 5, rounded down"
       },
       {
         "name": "Ranged Combat Creation Bonus",
+        "applies_to": "character",
         "computed_from": "Ranged Combat - (3*Dexterity + 2*Instinct) / 5, rounded down"
       },
       {
         "name": "Speed Creation Bonus",
+        "applies_to": "character",
         "computed_from": "Speed - species base (6 for humans) - (Endurance + Agility) / 4, rounded down"
       }
     ],
@@ -63,66 +75,82 @@
   "attributes": [
     {
       "name": "Strength",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Agility",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Endurance",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Dexterity",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Wit",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Will",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Presence",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Instinct",
+      "category": "Main",
       "value": 5
     },
     {
       "name": "Initiative",
+      "category": "Secondary",
       "value": 5
     },
     {
       "name": "Close Combat",
+      "category": "Secondary",
       "value": 5
     },
     {
       "name": "Ranged Combat",
+      "category": "Secondary",
       "value": 5
     },
     {
       "name": "Speed",
+      "category": "Secondary",
       "value": 8
     },
     {
       "name": "Physical Wounds",
+      "category": "State",
       "value": 0
     },
     {
       "name": "Psychical Wounds",
+      "category": "State",
       "value": 0
     },
     {
       "name": "Physical Stun",
+      "category": "State",
       "value": 0
     },
     {
       "name": "Psychical Stun",
+      "category": "State",
       "value": 0
     }
   ],
@@ -130,567 +158,680 @@
     {
       "name": "Arm Wrestling",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Strength"
     },
     {
       "name": "Weight Lifting",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Strength"
     },
     {
       "name": "Weight Throwing",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Strength"
     },
     {
       "name": "Climb",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Agility"
     },
     {
       "name": "Acrobatics",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Agility"
     },
     {
       "name": "Stealth",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Agility"
     },
     {
       "name": "Dodge",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Agility"
     },
     {
       "name": "Dance",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Agility"
     },
     {
       "name": "Lockpicking",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Sleight of Hand",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Dexterity"
     },
     {
       "name": "Driving Car",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Motorcycle Driving",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Airplane Piloting",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Dexterity"
     },
     {
       "name": "Helicopter Piloting",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Dexterity"
     },
     {
       "name": "Driving Aquatic Machine",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Driving Heavy Vehicle",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Pilot Spacecraft",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Other Driving",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Other Piloting",
       "category": "Generic",
-      "value": -5
+      "value": -5,
+      "base": "Dexterity"
     },
     {
       "name": "Battle Armor",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Games of Accuracy",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Dexterity"
     },
     {
       "name": "Physical Resistance",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Endurance"
     },
     {
       "name": "General Culture",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Native Language",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Wit"
     },
     {
       "name": "Investigation",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Wit"
     },
     {
       "name": "Computer Science",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Security Systems",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Explosives",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Electricity",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Electronics",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Mechanical",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Physics",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Chemistry",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Astronomy",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Zoology",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Botanical",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Biology",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Geology",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Archaeology",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "History",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Paleontology",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Law",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Medicine",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Psychiatry",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Occultism",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Handcrafts",
       "category": "Generic",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Other Knowledges",
       "category": "Generic",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Foreign Languages",
       "category": "Generic",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Other Sciences",
       "category": "Generic",
-      "value": -10
+      "value": -10,
+      "base": "Wit"
     },
     {
       "name": "Other Techniques",
       "category": "Generic",
-      "value": -5
+      "value": -5,
+      "base": "Wit"
     },
     {
       "name": "Mind Games",
       "category": "Generic",
-      "value": 0
+      "value": 0,
+      "base": "Wit"
     },
     {
       "name": "Mental Resistance",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Will"
     },
     {
       "name": "Persuasion",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Intimidation",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Interrogation",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Command",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Disguise",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Presence"
     },
     {
       "name": "Bluff",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Charm",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Eloquence",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Presence"
     },
     {
       "name": "Perception",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Instinct"
     },
     {
       "name": "Psychology",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Instinct"
     },
     {
       "name": "Pedagogy",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Instinct"
     },
     {
       "name": "First Aid",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Instinct"
     },
     {
       "name": "Animal Handling",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Instinct"
     },
     {
       "name": "Tracking",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Instinct"
     },
     {
       "name": "Survival",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Instinct"
     },
     {
       "name": "Horse Riding",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Instinct"
     },
     {
       "name": "Painting",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Music",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Singing",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Writing",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Sculpture",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Dramatic Art",
       "category": "Base",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Other Arts",
       "category": "Generic",
-      "value": -10
+      "value": -10,
+      "base": "Instinct"
     },
     {
       "name": "Brawling",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Axe/Mace",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Dagger",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Sword",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "2-Handed Sword",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Axe/Mace with 2 hands",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Flail",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Spear",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Polearm",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Shield",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Lance",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Close Combat"
     },
     {
       "name": "Close Combat with 2 weapons",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Close Combat"
     },
     {
       "name": "Draw Weapon on Contact",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Close Combat"
     },
     {
       "name": "Martial Arts",
       "category": "Generic",
-      "value": -10
+      "value": -10,
+      "base": "Close Combat"
     },
     {
       "name": "Bow",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Ranged Combat"
     },
     {
       "name": "Crossbow",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Throwing Dagger",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Ranged Combat"
     },
     {
       "name": "Throwing Axe",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Ranged Combat"
     },
     {
       "name": "Sling",
       "category": "Base",
-      "value": 0
+      "value": 0,
+      "base": "Ranged Combat"
     },
     {
       "name": "Throw",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Javelin",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Gun",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Rifle",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Automatic Weapon",
       "category": "Base",
-      "value": 5
+      "value": 5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Draw Weapon",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Combat with 2 ranged Weapons",
       "category": "Base",
-      "value": -5
+      "value": -5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Heavy Weapons",
       "category": "Generic",
-      "value": -5
+      "value": -5,
+      "base": "Ranged Combat"
     },
     {
       "name": "Run",
       "category": "Base",
-      "value": 8
+      "value": 8,
+      "base": "Speed"
     },
     {
       "name": "Jump",
       "category": "Base",
-      "value": 8
+      "value": 8,
+      "base": "Speed"
     },
     {
       "name": "Swimming",
       "category": "Base",
-      "value": 3
+      "value": 3,
+      "base": "Speed"
     },
     {
       "name": "Cycling",
       "category": "Base",
-      "value": 8
+      "value": 8,
+      "base": "Speed"
     },
     {
       "name": "Skiing",
       "category": "Base",
-      "value": -7
+      "value": -7,
+      "base": "Speed"
     },
     {
       "name": "Tennis",
       "category": "Base",
-      "value": -7
+      "value": -7,
+      "base": "Speed"
     },
     {
       "name": "Hang-Glider",
       "category": "Base",
-      "value": -2
+      "value": -2,
+      "base": "Speed"
     },
     {
       "name": "Sail",
       "category": "Base",
-      "value": -2
+      "value": -2,
+      "base": "Speed"
     },
     {
       "name": "Skydiving",
       "category": "Base",
-      "value": 3
+      "value": 3,
+      "base": "Speed"
     },
     {
       "name": "Diving",
       "category": "Base",
-      "value": 3
+      "value": 3,
+      "base": "Speed"
     },
     {
       "name": "Other Sports",
       "category": "Generic",
-      "value": 8
+      "value": 8,
+      "base": "Speed"
     }
   ],
   "abilities": [],
