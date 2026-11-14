@@ -40,8 +40,7 @@ possible.
 
 Exception : les compteurs de progression ou de gestion (niveaux de classe et
 XP en D&D et PF1, points de création non utilisés en SagaS) vont dans la couche
-spécifique. Ce ne sont pas des caractéristiques utilisées pour les jets, et
-le bloc spécifique permet de les valider (par exemple `ge=0`). Les points de
+spécifique. Ce ne sont pas des caractéristiques utilisées pour les jets. Les points de
 création SagaS ne contredisent pas le but de description : ce sont des points
 mis de côté pour plus tard, donc un état du personnage.
 
@@ -54,8 +53,7 @@ description, guéri), `StressBox` et `Consequence` en Fate, `DerivedValue`
 se désynchroniser des autres.
 
 `DnDClass` et `PF1Class` héritent d'une base commune, `CharacterClass` (nom,
-niveau 1–20), sur laquelle porte aussi le contrôle d'unicité des noms de
-classe. Chaque système ajoute ses propres champs : une sous-classe unique en
+niveau). Chaque système ajoute ses propres champs : une sous-classe unique en
 D&D, des archétypes cumulables et des sorts par classe en PF1. Une classe
 unique aux champs facultatifs aurait accepté, par exemple, des sorts préparés
 par classe en D&D, où les emplacements sont partagés. Un futur système à
@@ -167,9 +165,8 @@ niveau est donc la caractéristique plus le niveau d'apprentissage initial
 (Esquive 5, Acrobaties −10, Course 8…). La caractéristique associée figure
 dans `Skill.base` (par exemple `"base": "Agility"`) : fixée par les règles
 pour les compétences de la liste, elle est remplie dans le modèle de fiche,
-et une compétence créée par le joueur et l'arbitre (`New`) doit déclarer
-celle qu'ils choisissent. `Character` vérifie que `base` désigne une seule
-caractéristique, parmi les 8 principales et les 4 secondaires.
+et une compétence créée par le joueur et l'arbitre (`New`) y indique celle
+qu'ils choisissent, parmi les 8 principales et les 4 secondaires.
 
 En Daredevils, la `value` d'une compétence est son **score** (0 ou plus, sans maximum) : la
 chance de base de réussite (BCS = score / 5, arrondi vers le bas) se calcule.
@@ -208,10 +205,8 @@ gouvernant** et son premier Talent le **Talent gouvernant**, qui sert à
 l'apprentissage par la pratique. Elle est remplie dans le modèle de fiche
 (pour Pathology, le livre donne Wit + Wit + Scientific dans le résumé et
 Wit + Deftness + Scientific dans la description : la description est
-retenue) et obligatoire pour une compétence `New` ajoutée par l'arbitre ;
-`Character` vérifie qu'elle commence par un attribut et contient un Talent,
-ainsi que les scores (jamais négatifs) et les noms de
-`freely_improvable_skills`. Les finances, diplômes, grade, casier, licences
+retenue), et une compétence `New` ajoutée par l'arbitre y indique la
+sienne. Les finances, diplômes, grade, casier, licences
 et contacts se décrivent dans `background` ; la Réputation n'est pas
 modélisée, ses règles ne figurant pas dans le livre. Sauf mention contraire, Daredevils
 arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
@@ -225,8 +220,7 @@ caractéristiques) est recalculée quand une caractéristique augmente ; le
 texte sur la croissance des caractéristiques (« overcome the innate
 weaknesses ») et la filiation RuneQuest le laissent penser, ce qui reste à
 confirmer. Dans ce cas, la part acquise serait dérivée (total − base).
-`Character` vérifie
-qu'il reste entre 0 et 100, la limite des règles. Les maximums de PV
+Les maximums de PV
 ((TAI + CON) / 2, arrondi au-dessus) et de PM (POU), le modificateur de
 dégâts, le mouvement et le niveau d'expertise se calculent ; seuls les PV
 et PM actuels sont stockés. Le bloc spécifique porte le concept, les points
@@ -234,7 +228,7 @@ de fortune et de croissance non dépensés, les motivations (`Motive` : texte,
 de saga ou de quête, mise en jeu — l'astérisque —, accomplie), la religion,
 le rang et le statut de lanceur spécialiste en texte libre, et les sorts de
 magie divine déjà lancés, qui restent dépensés jusqu'à leur récupération
-(`divine_spells_cast`, vérifiés contre les `Ability` de catégorie `Spell`).
+(`divine_spells_cast`, des noms d'`Ability` de catégorie `Spell`).
 Les sorts sont des `Ability` `Spell` dont la `value` est la magnitude. Une
 créature non humaine décrit son espèce dans `description`, ses traits et
 armes naturelles dans `abilities`.
@@ -272,9 +266,8 @@ Ce qui dure jusqu'au prochain repos est stocké, toujours sous forme de
   lancer **aujourd'hui**, et `spell_slots_remaining` **combien de fois**.
   `prepared_spells` vide veut dire que tous les sorts connus sont
   disponibles : on ne le remplit que pour les classes qui connaissent plus de
-  sorts qu'elles n'en préparent (magicien). `Character` vérifie que chaque
-  nom de `prepared_spells` correspond à une `Ability` de catégorie `Spell`,
-  sans tenir compte de la casse ;
+  sorts qu'elles n'en préparent (magicien). Chaque nom de `prepared_spells`
+  désigne une `Ability` de catégorie `Spell` ;
 - ressources de classe : `resources_remaining`, un dictionnaire aux noms
   libres (`{"Ki": 3}`) plutôt qu'un champ par ressource. Les sorts lancés
   une fois par repos sans emplacement (sorts raciaux, de dons, *Mystic
@@ -355,8 +348,7 @@ champs.
 
 ```text
 strict_model.py           StrictModel, la classe de base commune
-models.py                 le schéma : Character, ses sous-modèles et les contrôles
-                          entre les deux couches
+models.py                 le schéma : Character et ses sous-modèles
 systems/
 ├── specific_values.py    les blocs SpecificValuesX + l'union SpecificValues
 └── <jeu>.py              un personnage générique par système (generic_<jeu>)
@@ -373,6 +365,19 @@ strict_model.py  ──►  specific_values.py  ──►  models.py  ──► 
 `specific_values.py` ne dépend que de Pydantic et de `strict_model.py`,
 jamais de `Character`. C'est pour ça que les blocs spécifiques y sont, et pas
 dans `models.py` ni dans chaque `<jeu>.py`.
+
+## Ce que le modèle vérifie
+
+Le modèle ne vérifie que la **structure** : les types, les enums, les champs
+obligatoires, le refus des champs inconnus et les valeurs fixées par le
+système (`skill_value_meaning`, `derived_values`). Il ne vérifie jamais les
+**règles du jeu** : un niveau au-delà de 20, une compétence au-dessus de 100,
+une case de stress en plus, un nombre négatif de points ou un sort préparé
+qui ne figure pas parmi les capacités sont acceptés. Un outil de description
+doit pouvoir décrire ce qui se passe à la table, exceptions et règles maison
+comprises ; et vérifier une partie seulement des règles, sans les formules,
+serait arbitraire. Les vérifications de règles et de formules reviennent au
+calculateur extérieur, sous forme d'avertissements.
 
 ## Champs inconnus refusés
 
@@ -391,8 +396,7 @@ ignoré sans prévenir.
    autre langage, formulaire, LLM). Il contient aussi, comme valeurs fixes,
    le sens de `Skill.value` (`skill_value_meaning`) et la liste des valeurs
    dérivées (`derived_values`) de chaque système, mais pas les listes de
-   compétences, ni les contrôles faits par `Character` (sorts préparés en
-   D&D, attributs des compétences nouvelles en SagaS).
+   compétences.
 3. **Une vérification** : chaque modèle exporté est relu avec
    `Character.model_validate_json` et comparé à l'original.
 

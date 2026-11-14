@@ -206,8 +206,6 @@
           "type": "string"
         },
         "level": {
-          "maximum": 20,
-          "minimum": 1,
           "title": "Level",
           "type": "integer"
         },
@@ -236,7 +234,6 @@
         },
         "quantity": {
           "default": 1,
-          "minimum": 1,
           "title": "Quantity",
           "type": "integer"
         },
@@ -327,8 +324,6 @@
           "type": "string"
         },
         "level": {
-          "maximum": 20,
-          "minimum": 1,
           "title": "Level",
           "type": "integer"
         },
@@ -341,7 +336,6 @@
         },
         "spells_remaining": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "title": "Spells Remaining",
@@ -370,8 +364,6 @@
           "type": "string"
         },
         "level": {
-          "maximum": 9,
-          "minimum": 0,
           "title": "Level",
           "type": "integer"
         },
@@ -625,7 +617,6 @@
         },
         "attribute_loss": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "propertyNames": {
@@ -643,8 +634,6 @@
         },
         "attribute_progress": {
           "additionalProperties": {
-            "exclusiveMaximum": 1,
-            "minimum": 0,
             "type": "number"
           },
           "propertyNames": {
@@ -662,7 +651,6 @@
         },
         "critical_damage": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "propertyNames": {
@@ -687,7 +675,6 @@
         "luck_points": {
           "anyOf": [
             {
-              "minimum": 0,
               "type": "integer"
             },
             {
@@ -714,7 +701,6 @@
         "weight_kg": {
           "anyOf": [
             {
-              "minimum": 0,
               "type": "integer"
             },
             {
@@ -859,7 +845,6 @@
           "items": {
             "$ref": "#/$defs/DnDClass"
           },
-          "minItems": 1,
           "title": "Classes",
           "type": "array"
         },
@@ -869,7 +854,6 @@
         },
         "experience_points": {
           "default": 0,
-          "minimum": 0,
           "title": "Experience Points",
           "type": "integer"
         },
@@ -917,14 +901,11 @@
         },
         "exhaustion": {
           "default": 0,
-          "maximum": 6,
-          "minimum": 0,
           "title": "Exhaustion",
           "type": "integer"
         },
         "ability_reduction": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "propertyNames": {
@@ -948,7 +929,6 @@
         "hit_dice_remaining": {
           "anyOf": [
             {
-              "minimum": 0,
               "type": "integer"
             },
             {
@@ -960,7 +940,6 @@
         },
         "spell_slots_remaining": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "title": "Spell Slots Remaining",
@@ -969,7 +948,6 @@
         "pact_slots_remaining": {
           "anyOf": [
             {
-              "minimum": 0,
               "type": "integer"
             },
             {
@@ -988,7 +966,6 @@
         },
         "resources_remaining": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "title": "Resources Remaining",
@@ -1030,7 +1007,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 3,
           "title": "Aspects",
           "type": "array"
         },
@@ -1053,7 +1029,6 @@
           "additionalProperties": {
             "$ref": "#/$defs/StressBox"
           },
-          "maxProperties": 4,
           "title": "Physicalstress",
           "type": "object"
         },
@@ -1061,7 +1036,6 @@
           "additionalProperties": {
             "$ref": "#/$defs/StressBox"
           },
-          "maxProperties": 4,
           "title": "Mentalstress",
           "type": "object"
         },
@@ -1069,7 +1043,6 @@
           "additionalProperties": {
             "$ref": "#/$defs/Consequence"
           },
-          "maxProperties": 6,
           "title": "Consequences",
           "type": "object"
         }
@@ -1171,13 +1144,11 @@
         },
         "fortune_points": {
           "default": 2,
-          "minimum": 0,
           "title": "Fortune Points",
           "type": "integer"
         },
         "growth_points": {
           "default": 0,
-          "minimum": 0,
           "title": "Growth Points",
           "type": "integer"
         },
@@ -1309,7 +1280,6 @@
           "items": {
             "$ref": "#/$defs/PF1Class"
           },
-          "minItems": 1,
           "title": "Classes",
           "type": "array"
         },
@@ -1324,7 +1294,6 @@
         },
         "experience_points": {
           "default": 0,
-          "minimum": 0,
           "title": "Experience Points",
           "type": "integer"
         },
@@ -1372,7 +1341,6 @@
         },
         "ability_damage": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "propertyNames": {
@@ -1390,7 +1358,6 @@
         },
         "ability_drain": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "propertyNames": {
@@ -1408,14 +1375,12 @@
         },
         "negative_levels": {
           "default": 0,
-          "minimum": 0,
           "title": "Negative Levels",
           "type": "integer"
         },
         "hero_points": {
           "anyOf": [
             {
-              "minimum": 0,
               "type": "integer"
             },
             {
@@ -1427,7 +1392,6 @@
         },
         "resources_remaining": {
           "additionalProperties": {
-            "minimum": 0,
             "type": "integer"
           },
           "title": "Resources Remaining",
@@ -1528,7 +1492,6 @@
         },
         "unspent_creation_points": {
           "default": 0,
-          "minimum": 0,
           "title": "Unspent Creation Points",
           "type": "integer"
         }

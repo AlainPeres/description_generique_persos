@@ -21,11 +21,7 @@ system's character data lives in its own module under `systems/`:
 strict_model.py               StrictModel: common base class, rejects unknown fields
 attribute_category.py         AttributeCategory, shared by models.py and systems/specific_values.py
 models.py                     Character, Attribute, Skill, Ability, EquipmentItem, Condition
-                               imports the SpecificValues union; Character checks
-                               what spans both layers (D&D prepared spells,
-                               SagaS, Daredevils and OpenQuest skill bases, Daredevils
-                               skill scores and freely improvable skills, OpenQuest
-                               skill percentages and cast divine spells)
+                               imports the SpecificValues union
 systems/
 ├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS / Daredevils / OpenQuest + SpecificValues union
 ├── norules.py                generic_norules
@@ -109,6 +105,13 @@ HP) or whether the formula applies to each attribute of a category (`Main`, `Sec
 ability modifiers, Daredevils saving throws) or to each skill (`skill`, e.g.
 Daredevils BCS, SagaS learning levels, OpenQuest expertise).
 
+The model checks the **structure** only: types, enums, required fields,
+unknown fields rejected, and the values fixed by the system
+(`skill_value_meaning`, `derived_values`). It never checks the rules of the
+game (a level above 20, a skill above 100, a cross-reference to a spell the
+character does not know…): a GM may allow anything, and rule and formula
+checks belong to the external calculator, as warnings.
+
 The model describes a character **between two scenes**, not in mid-combat:
 death saves, concentration, one-round conditions and temporary HP are not
 stored. What lasts until the next rest is stored as *remaining* values
@@ -164,20 +167,20 @@ BCS = score / 5, rounded down` for Daredevils, `percentage (0-100)` for OpenQues
 in each JSON so the file explains itself, and any other value is rejected.
 
 `DnDClass` and `PF1Class` inherit from a common `CharacterClass` (name,
-level 1–20), which also carries the unique-class-name check; each adds its
+level); each adds its
 own fields (one subclass in D&D; stackable archetypes and per-class spells in
 PF1). A future class-based system can reuse it.
 
 | System | Model | Specific fields |
 | --- | --- | --- |
 | No rules | `SpecificValuesNoRules` | `tags` (free-form descriptors) |
-| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level 1–20; one entry per class when multiclassing, no duplicates; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `saving_throw_proficiencies`; state between rests: `exhaustion` (0–6), `ability_reduction` (points lost per ability until a rest or a restoration; current score = score − reduction), `inspiration`, `hit_dice_remaining`, `spell_slots_remaining` (shared by all classes, level 1–9), `pact_slots_remaining`, `prepared_spells` (names of `Spell` abilities, checked by `Character`; empty = all known spells available), `resources_remaining` |
-| Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level 1–20, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters; no duplicates), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
+| D&D 5e | `SpecificValuesDnD` | `classes` (list of `DnDClass`: name, subclass, level; one entry per class when multiclassing; total level is their sum and is not stored), `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `saving_throw_proficiencies`; state between rests: `exhaustion`, `ability_reduction` (points lost per ability until a rest or a restoration; current score = score − reduction), `inspiration`, `hit_dice_remaining`, `spell_slots_remaining` (shared by all classes, keyed by spell level), `pact_slots_remaining`, `prepared_spells` (names of `Spell` abilities; empty = all known spells available), `resources_remaining` |
+| Pathfinder 1 | `SpecificValuesPF1` | `classes` (list of `PF1Class`: name, archetypes, level, per-class `spells_remaining` for spontaneous casters and `prepared_spells` (`PreparedSpell`: name, level, cast) for prepared casters), `favored_class`, `race`, `experience_points`, `alignment`, `deity`, `size`, `speed`, `languages`, `additional_class_skills` (granted by traits), `ability_damage` / `ability_drain` (per ability), `negative_levels`, `hero_points` (optional rule), `resources_remaining` |
 | Call of Cthulhu 6 | `SpecificValuesCthulhu` | no specific field besides `derived_values`: mental disorders are `Condition`s of kind `Mental` (duration temporary / indefinite / permanent); other data lives in generic layer, skill improvement checks use `Skill.checked` |
-| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; up to 6 slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
-| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; each skill's `base` is its one associated attribute (one of the 8 main or 4 secondary ones, checked by `Character`), filled in the template and required for a `New` skill. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are always computed from the main ones plus the creation points bought for them; their final values are stored, so the JSON reads as played, and the creation bonuses are derived from them; a total must be recomputed when a main attribute changes; social class goes in `occupation`, species in `description` |
-| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point, 0 ≤ x < 1), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills, checked by `Character`), `critical_damage` (per hit location; it disables the body part until healed), `luck_points` (optional rule; `None` = not used), `hero_motivation`, `hero_method`, `hero_code` (role-play guides of §1.9, no game effect). Each skill's `base` is its initial-score formula, e.g. `Deftness + Wit + Natural`: it starts with the governing attribute and holds the governing talent (checked by `Character`), is filled in the template and required for a `New` skill; skill scores are 0 or more, with no maximum. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Reputation is not modeled (its rules are not in the rulebook) |
-| OpenQuest 3 | `SpecificValuesOpenQuest` | `concept` (one sentence), `fortune_points` (2 at start), `growth_points` (earned, not yet spent), `motives` (`Motive`: text, kind saga / quest, brought into play, completed), `religion`, `religious_rank`, `specialist_caster` (free text), `divine_spells_cast` (names of `Spell` abilities, checked by `Character`). Skill value is the total percentage, 100 at most; a non-human's species goes in `description`, its traits and natural weapons in `abilities`; each skill's `base` gives its base formula, e.g. `Dexterity + 10` (characteristic names checked by `Character`) |
+| FATE | `SpecificValuesFate` | `HighConcept`, `Trouble`, `Aspects`, `Extras`, `FatePoints`, `Refresh`, `PhysicalStress` / `MentalStress` (`StressBox`: available, checked), `Consequences` (`Consequence`: available, value, text; slots: Mild 2, Moderate 4, Severe 6, Extreme 8, plus the extra mild physical / mental slots) |
+| SagaS | `SpecificValuesSagas` | `unspent_creation_points` (set aside for later); serious injuries are `Condition`s of kind `Physical`, or `Mental` for psychical ones; each skill's `base` is its one associated attribute (one of the 8 main or 4 secondary ones), filled in the template. Secondary attributes (Initiative, Close Combat, Ranged Combat, Speed) are always computed from the main ones plus the creation points bought for them; their final values are stored, so the JSON reads as played, and the creation bonuses are derived from them; a total must be recomputed when a main attribute changes; social class goes in `occupation`, species in `description` |
+| Daredevils | `SpecificValuesDaredevils` | `attribute_loss` (points lost per attribute; current = permanent − loss), `attribute_progress` (optional rule 1.8.5b: fraction toward the next attribute point), `favored_hand`, `height`, `weight_kg`, `looks`, `freely_improvable_skills` (names of the character's skills), `critical_damage` (per hit location; it disables the body part until healed), `luck_points` (optional rule; `None` = not used), `hero_motivation`, `hero_method`, `hero_code` (role-play guides of §1.9, no game effect). Each skill's `base` is its initial-score formula, e.g. `Deftness + Wit + Natural`: it starts with the governing attribute and holds the governing talent, and is filled in the template. Finances, degrees, rank, criminal record, licenses and contacts go in `background`; Reputation is not modeled (its rules are not in the rulebook) |
+| OpenQuest 3 | `SpecificValuesOpenQuest` | `concept` (one sentence), `fortune_points` (2 at start), `growth_points` (earned, not yet spent), `motives` (`Motive`: text, kind saga / quest, brought into play, completed), `religion`, `religious_rank`, `specialist_caster` (free text), `divine_spells_cast` (names of `Spell` abilities). Skill value is the total percentage; a non-human's species goes in `description`, its traits and natural weapons in `abilities`; each skill's `base` gives its base formula, e.g. `Dexterity + 10` |
 
 ## Generic templates
 

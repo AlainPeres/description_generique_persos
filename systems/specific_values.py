@@ -12,7 +12,7 @@ here (with a `system: Literal[...]` discriminator field) and add it
 to the SpecificValues union at the bottom of this file.
 """
 
-from pydantic import AfterValidator, Field, field_validator
+from pydantic import AfterValidator, Field
 from typing import Annotated, Literal
 
 from attribute_category import AttributeCategory
@@ -25,9 +25,12 @@ from strict_model import StrictModel
 #   meaning of Skill.value is a fixed convention per system, written in each
 #   JSON so the file explains itself; any other value is rejected;
 # - only what remains is stored: maximums (slots per level, uses per day)
-#   are derived. These two types carry the matching bounds.
-SpellLevel = Annotated[int, Field(ge=1, le=9)]
-Remaining = Annotated[int, Field(ge=0)]
+#   are derived. These two aliases only name the meaning of the numbers;
+# - the model checks the structure only (types, enums, required and unknown
+#   fields), never the rules of the game: a GM may allow anything, and rule
+#   checks belong to the external calculator.
+SpellLevel = int
+Remaining = int
 
 
 # ---------------------------------------------------------------------------
@@ -60,15 +63,7 @@ def fixed[T](expected: T) -> AfterValidator:
 # ---------------------------------------------------------------------------
 class CharacterClass(StrictModel):
     name: str                 # e.g. "Fighter"
-    level: int = Field(ge=1, le=20)
-
-# A class taken again is a higher level, not a new entry. Names are compared
-# without case or surrounding spaces ("Fighter" = " fighter").
-def check_unique_class_names[C: CharacterClass](classes: list[C]) -> list[C]:
-    names = [c.name.strip().casefold() for c in classes]
-    if len(names) != len(set(names)):
-        raise ValueError("each class must appear only once; raise its level instead")
-    return classes
+    level: int                # a class taken again is a higher level, not a new entry
 
 # ---------------------------------------------------------------------------
 # System-specific block: No Rules
@@ -113,9 +108,9 @@ class SpecificValuesDnD(StrictModel):
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(DND_DERIVED)] = DND_DERIVED
     # One entry per class (several when multiclassing); the total level is
     # the sum of the class levels, so it is not stored
-    classes: list[DnDClass] = Field(min_length=1)
+    classes: list[DnDClass]
     race: str                 # or species
-    experience_points: int = Field(default=0, ge=0)
+    experience_points: int = 0
     alignment: str            # e.g. "Lawful Good"
     deity: str = ""           # empty = none; e.g. "Tyr", "Pelor" (depends on the setting)
     size: str | None = None   # e.g. "Medium"
@@ -124,19 +119,19 @@ class SpecificValuesDnD(StrictModel):
     # Saves are stored as proficiencies only; their bonus is derived
     saving_throw_proficiencies: list[str] = Field(default_factory=list)  # e.g. ["Strength", "Constitution"]
     # State between two rests
-    exhaustion: int = Field(default=0, ge=0, le=6)
+    exhaustion: int = 0
     # Points lost until a rest or a restoration (Shadow's Strength Drain,
     # Feeblemind...); scores in attributes stay permanent. e.g. {"Strength": 3}
     ability_reduction: dict[DnDAbility, Remaining] = Field(default_factory=dict)
     inspiration: bool = False
-    hit_dice_remaining: int | None = Field(default=None, ge=0)     # None = all available
+    hit_dice_remaining: int | None = None     # None = all available
     # Slots are shared by all classes; pact magic (warlock) is separate.
     # A missing level means all its slots are available, so a character
     # after a long rest has {}; a spent level is written as 0.
     # e.g. Wizard 5 after two Shields and two Fireballs: {1: 2, 3: 0}
     spell_slots_remaining: dict[SpellLevel, Remaining] = Field(default_factory=dict)
-    pact_slots_remaining: int | None = Field(default=None, ge=0)   # None = no warlock levels
-    # Names of Spell abilities (checked by Character). Empty = every Spell
+    pact_slots_remaining: int | None = None   # None = no warlock levels
+    # Names of Spell abilities. Empty = every Spell
     # ability is available: only fill it for classes that know more spells
     # than they prepare, such as the wizard. Unlike PF1, casting a prepared
     # spell spends a slot, not the spell: every prepared spell stays
@@ -145,11 +140,6 @@ class SpecificValuesDnD(StrictModel):
     # Class resources, and spells cast once per rest without a slot (racial,
     # feat, Mystic Arcanum...), e.g. {"Ki": 3, "Hellish Rebuke (Infernal Legacy)": 1}
     resources_remaining: dict[str, Remaining] = Field(default_factory=dict)
-
-    @field_validator("classes")
-    @classmethod
-    def no_duplicate_class(cls, classes: list[DnDClass]) -> list[DnDClass]:
-        return check_unique_class_names(classes)
 
 
 
@@ -183,7 +173,7 @@ PF1_DERIVED: tuple[DerivedValue, ...] = (
 # One entry per prepared slot: the same spell prepared twice appears twice
 class PreparedSpell(StrictModel):
     name: str
-    level: int = Field(ge=0, le=9)   # 0 = orison / cantrip
+    level: int                # 0 = orison / cantrip
     cast: bool = False        # already used since it was prepared
 
 class PF1Class(CharacterClass):
@@ -198,10 +188,10 @@ class SpecificValuesPF1(StrictModel):
     skill_value_meaning: Literal["ranks"] = "ranks"
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(PF1_DERIVED)] = PF1_DERIVED
     # One entry per class; the total level is their sum, so it is not stored
-    classes: list[PF1Class] = Field(min_length=1)
+    classes: list[PF1Class]
     favored_class: str = ""   # name of one of the classes
     race: str
-    experience_points: int = Field(default=0, ge=0)
+    experience_points: int = 0
     alignment: str            # e.g. "Chaotic Neutral"
     deity: str = ""           # empty = none; e.g. "Iomedae", "Desna"
     size: str | None = None   # e.g. "Medium"
@@ -212,14 +202,9 @@ class SpecificValuesPF1(StrictModel):
     # Lasting states, e.g. {"Strength": 2}; same six abilities as D&D
     ability_damage: dict[DnDAbility, Remaining] = Field(default_factory=dict)
     ability_drain: dict[DnDAbility, Remaining] = Field(default_factory=dict)
-    negative_levels: int = Field(default=0, ge=0)
-    hero_points: int | None = Field(default=None, ge=0)   # None = optional rule not used
+    negative_levels: int = 0
+    hero_points: int | None = None   # None = optional rule not used
     resources_remaining: dict[str, Remaining] = Field(default_factory=dict)  # e.g. {"Rage rounds": 5}
-
-    @field_validator("classes")
-    @classmethod
-    def no_duplicate_class(cls, classes: list[PF1Class]) -> list[PF1Class]:
-        return check_unique_class_names(classes)
 
 
 # ---------------------------------------------------------------------------
@@ -265,27 +250,19 @@ class SpecificValuesFate(StrictModel):
     skill_value_meaning: Literal["rating on the Fate ladder"] = "rating on the Fate ladder"
     HighConcept: str          # main aspect: who the character is
     Trouble: str              # aspect that gets the character into trouble
-    Aspects: list[str] = Field(default_factory=list, max_length=3)  # the other aspects
+    Aspects: list[str] = Field(default_factory=list)  # the other aspects
     Extras: list[str] = Field(default_factory=list)   # gear, allies, powers given as aspects
     FatePoints: int           # current points
     Refresh: int              # points restored at the start of a session
     # Stress tracks, keyed by box name ("Box 1" to "Box 4")
-    PhysicalStress: dict[str, StressBox] = Field(default_factory=dict, max_length=4)
-    MentalStress: dict[str, StressBox] = Field(default_factory=dict, max_length=4)
+    PhysicalStress: dict[str, StressBox] = Field(default_factory=dict)
+    MentalStress: dict[str, StressBox] = Field(default_factory=dict)
     # Keyed by slot name ("Mild", "Moderate", "Severe", "Extreme", "Mild Physical"...)
-    Consequences: dict[str, Consequence] = Field(default_factory=dict, max_length=6)
+    Consequences: dict[str, Consequence] = Field(default_factory=dict)
 
 # ---------------------------------------------------------------------------
 # System-specific block: SagaS
 # ---------------------------------------------------------------------------
-# Attributes a skill can be based on: the 8 main and the 4 secondary ones.
-# Used by Character to check the attribute of skills created by the player.
-SAGAS_SKILL_ATTRIBUTES: tuple[str, ...] = (
-    "Strength", "Agility", "Endurance", "Dexterity",
-    "Wit", "Will", "Presence", "Instinct",
-    "Initiative", "Close Combat", "Ranged Combat", "Speed",
-)
-
 SAGAS_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Learning Levels", applies_to="skill", computed_from="skill level - associated attribute"),
     DerivedValue(name="Protection",
@@ -317,7 +294,7 @@ class SpecificValuesSagas(StrictModel):
         "skill level (associated attribute + learning level)"
     )
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(SAGAS_DERIVED)] = SAGAS_DERIVED
-    unspent_creation_points: int = Field(default=0, ge=0)  # set aside for later
+    unspent_creation_points: int = 0  # set aside for later
     # Current wounds and stun are attributes; serious injuries are
     # Character.conditions, kind Physical, or kind Mental for psychical ones
 
@@ -325,12 +302,7 @@ class SpecificValuesSagas(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: Daredevils (FGU)
 # ---------------------------------------------------------------------------
-# Used by Character to check the attribute and talent of skills added by the
-# GM, and as the keys of the attribute dictionaries below
-DAREDEVILS_ATTRIBUTES: tuple[str, ...] = ("Wit", "Will", "Strength", "Deftness", "Speed", "Health")
-DAREDEVILS_TALENTS: tuple[str, ...] = (
-    "Charismatic", "Combative", "Communicative", "Esthetic", "Mechanical", "Natural", "Scientific",
-)
+# Keys of the attribute dictionaries below
 DaredevilsAttribute = Literal["Wit", "Will", "Strength", "Deftness", "Speed", "Health"]
 # Critical Hit Location Table (men)
 DaredevilsLocation = Literal[
@@ -377,20 +349,19 @@ class SpecificValuesDaredevils(StrictModel):
     # Optional rule 1.8.5b: +0.5 to the governing attribute per BCS point
     # gained (the text says .05, its example gives 0.5); fractions toward the
     # next full point, e.g. {"Deftness": 0.5}
-    attribute_progress: dict[DaredevilsAttribute, Annotated[float, Field(ge=0, lt=1)]] = Field(
-        default_factory=dict)
+    attribute_progress: dict[DaredevilsAttribute, float] = Field(default_factory=dict)
     # Critical damage per location: not added to the damage total, it
     # disables the body part until healed, e.g. {"Upper left arm": 4}
     critical_damage: dict[DaredevilsLocation, Remaining] = Field(default_factory=dict)
     # Optional rule 3.1: points rolled before each adventure; None = not used
-    luck_points: int | None = Field(default=None, ge=0)
+    luck_points: int | None = None
     favored_hand: Literal["right", "left"] = "right"
     # Physical characteristics
     height: str = ""                     # e.g. "5'4\""
-    weight_kg: int | None = Field(default=None, ge=0)
+    weight_kg: int | None = None
     looks: Literal["Ugly", "Homely", "Mediocre", "Average",
                    "Good Looking", "Comely", "Handsome"] = "Average"
-    # Advanced rule: names of the designated skills (checked by Character)
+    # Advanced rule: names of the designated skills
     freely_improvable_skills: list[str] = Field(default_factory=list)
     # The hero (§1.9), role-play guides with no game effect; finances,
     # degrees, rank, record, licenses and contacts go in Character.background
@@ -402,11 +373,6 @@ class SpecificValuesDaredevils(StrictModel):
 # ---------------------------------------------------------------------------
 # System-specific block: OpenQuest 3
 # ---------------------------------------------------------------------------
-# Used by Character to check the names in skill base formulas
-OPENQUEST_CHARACTERISTICS: tuple[str, ...] = (
-    "Strength", "Constitution", "Dexterity", "Size", "Intelligence", "Power", "Charisma",
-)
-
 OPENQUEST_DERIVED: tuple[DerivedValue, ...] = (
     DerivedValue(name="Damage Modifier", computed_from="STR + SIZ, Damage Modifier table"),
     DerivedValue(name="Maximum Hit Points", computed_from="(SIZ + CON) / 2, rounded up"),
@@ -432,8 +398,8 @@ class SpecificValuesOpenQuest(StrictModel):
     skill_value_meaning: Literal["percentage (0-100)"] = "percentage (0-100)"
     derived_values: Annotated[tuple[DerivedValue, ...], fixed(OPENQUEST_DERIVED)] = OPENQUEST_DERIVED
     concept: str = ""                    # one sentence summing up the character
-    fortune_points: int = Field(default=2, ge=0)
-    growth_points: int = Field(default=0, ge=0)   # earned, not yet spent
+    fortune_points: int = 2
+    growth_points: int = 0   # earned, not yet spent
     motives: list[Motive] = Field(default_factory=list)
     # Magical standing, free text: religion and rank (lay member, initiate,
     # priest...), specialist caster (Shaman, Wise, Priest, Adept)
@@ -441,7 +407,7 @@ class SpecificValuesOpenQuest(StrictModel):
     religious_rank: str = ""
     specialist_caster: str = ""
     # Names of Divine Magic Spell abilities already cast, which stay spent
-    # until regained (checked by Character)
+    # until regained
     divine_spells_cast: list[str] = Field(default_factory=list)
 
 
