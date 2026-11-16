@@ -70,6 +70,12 @@ figurent pas sur la fiche. Les stocker créerait un risque d'incohérence quand
 la valeur source change. Ils sont calculés **à l'extérieur du modèle**, par
 les outils qui lisent le personnage.
 
+Quand deux valeurs se déduisent l'une de l'autre (en SagaS, un niveau de
+compétence et son niveau d'apprentissage, connaissant la caractéristique
+associée), c'est la **valeur finale**, celle qui est jouée et écrite sur la
+fiche, qui est stockée, et l'autre est dérivée : le JSON décrit le
+personnage et doit pouvoir être lu facilement par un humain.
+
 En revanche, sont stockés :
 
 - les valeurs *actuelles* (`Current Sanity`, `Current Hit Points`, blessures
@@ -180,8 +186,7 @@ de création du livre, les points d'attribut sont répartis après le calcul
 des compétences sans les changer, et la blessure grave ajoute un malus de
 BCS séparé de la baisse de Dextérité et de Vitesse. Le score stocké n'a donc
 pas de part dérivée. Dans le modèle de fiche, les 87 compétences sont à 0
-(non acquises). Les attributs sont
-stockés à leur valeur **permanente** ; les points perdus (blessures,
+(non acquises). Les attributs sont stockés à leur valeur **permanente** ; les points perdus (blessures,
 maladie) vont dans `attribute_loss`, et la valeur actuelle se calcule, comme
 l'affaiblissement en PF1. Les Talents (règle avancée) sont des attributs
 comme les autres, à 0 dans le modèle de fiche. La dextérité de la main non
@@ -212,10 +217,9 @@ modélisée, ses règles ne figurant pas dans le livre. Sauf mention contraire, 
 arrondit au plus proche (3,5 donne 4), contrairement à SagaS.
 
 En OpenQuest 3, la `value` d'une compétence est son **pourcentage total**
-(sa formule de base, par exemple `"Dexterity + 10"`, figure dans
-`Skill.base`)
 (base + points de création + croissance), la valeur jouée ; la croissance
-s'ajoute au total. Les extraits du SRD ne disent pas si la base (somme de
+s'ajoute au total, et la formule de la base (par exemple `"Dexterity + 10"`)
+figure dans `Skill.base`. Les extraits du SRD ne disent pas si la base (somme de
 caractéristiques) est recalculée quand une caractéristique augmente ; le
 texte sur la croissance des caractéristiques (« overcome the innate
 weaknesses ») et la filiation RuneQuest le laissent penser, ce qui reste à
@@ -237,6 +241,15 @@ Les coches d'amélioration de compétence (Cthulhu et autres jeux BRP) sont
 portées par la compétence elle-même : `Skill.checked`. `None` veut dire que
 le système n'a pas de coches (le champ n'apparaît alors pas dans le JSON),
 `False`/`True` qu'elle est décochée ou cochée.
+
+`Skill.base`, facultatif lui aussi, donne la formule de la compétence en
+fonction des attributs, écrite pour être lue par un humain : `Agility` en
+SagaS, `Deftness + Wit + Natural` en Daredevils (score initial ; le premier
+attribut et le premier Talent gouvernent), `Dexterity + 10` en OpenQuest.
+Les modèles de fiche le remplissent pour chaque compétence de la liste, et
+une compétence `New` indique le sien. C'est une information répétée dans
+chaque personnage, comme la catégorie des attributs : le prix de la
+lisibilité.
 
 ## Décrire le personnage entre deux scènes
 
@@ -326,8 +339,7 @@ Une `Ability` porte donc les deux : `category` pour son type, `origin` pour sa
 provenance. `origin` vaut `Base` par défaut (capacité des règles officielles)
 ou `New` (ajoutée par le joueur ou le MJ : sort maison, prouesse inventée,
 super-pouvoir hors règles…) ; `Generic` et `Specialization` n'ont pas de sens
-pour une capacité. Ce champ est purement descriptif : aucun validateur ne le
-lit. **Un sort n'est pas un modèle à part** : c'est une `Ability` avec
+pour une capacité. Ce champ est purement descriptif. **Un sort n'est pas un modèle à part** : c'est une `Ability` avec
 `category=Spell`, et son effet va dans `description`.
 
 ## Comment Pydantic sait de quel système il s'agit
@@ -385,8 +397,9 @@ donc à décrire ses règles et son personnage générique.
 ## Ce que le modèle vérifie
 
 Le modèle ne vérifie que la **structure** : les types, les enums, les champs
-obligatoires, le refus des champs inconnus et les valeurs fixées par le
-système (`skill_value_meaning`, `derived_values`). Il ne vérifie jamais les
+obligatoires, le refus des champs inconnus, les valeurs fixées par le
+système (`skill_value_meaning`, `derived_values`), et qu'un personnage est
+bien un `XxxCharacter` d'un système, jamais une `CharacterBase` seule. Il ne vérifie jamais les
 **règles du jeu** : un niveau au-delà de 20, une compétence au-dessus de 100,
 une case de stress en plus, un nombre négatif de points ou un sort préparé
 qui ne figure pas parmi les capacités sont acceptés. Un outil de description

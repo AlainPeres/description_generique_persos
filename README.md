@@ -80,11 +80,16 @@ CharacterBase
 **Only what cannot be computed from other values is stored.** Modifiers,
 proficiency bonus, BAB, saves, Armor Class in D&D and PF1 (computed from
 class, race, armor, shield, items and active spells), Idea / Luck / Know,
-damage bonus, total level, Sanity / HP / MP maximums in Cthulhu, skill
-levels, Protection, MaxImpactBonus, hit points, shock thresholds and Reflex
-Defense in SagaS… are left out: storing them would risk inconsistencies when
-the source value changes. They are computed **outside the model**, by the
-tools that read the character.
+damage bonus, total level, Sanity / HP / MP maximums in Cthulhu, learning
+levels, creation bonuses, Protection, MaxImpactBonus, hit points, shock
+thresholds and Reflex Defense in SagaS… are left out: storing them would
+risk inconsistencies when the source value changes. They are computed
+**outside the model**, by the tools that read the character.
+
+When two values can be deduced from each other (a SagaS skill level and its
+learning level, given the associated attribute), the **final value**, the one
+played and written on the sheet, is stored and the other is derived: the
+JSON describes the character and must be easy for a human to read.
 
 Stored instead:
 
@@ -109,8 +114,9 @@ ability modifiers, Daredevils saving throws) or to each skill (`skill`, e.g.
 Daredevils BCS, SagaS learning levels, OpenQuest expertise).
 
 The model checks the **structure** only: types, enums, required fields,
-unknown fields rejected, and the values fixed by the system
-(`skill_value_meaning`, `derived_values`). It never checks the rules of the
+unknown fields rejected, the values fixed by the system
+(`skill_value_meaning`, `derived_values`), and that a character is an
+`XxxCharacter` of a system, never a bare `CharacterBase`. It never checks the rules of the
 game (a level above 20, a skill above 100, a cross-reference to a spell the
 character does not know…): a GM may allow anything, and rule and formula
 checks belong to the external calculator, as warnings.
@@ -134,8 +140,7 @@ stored. What lasts until the next rest is stored as *remaining* values
 formula over the attributes, written to be read by a human: `Agility` in
 SagaS, `Deftness + Wit + Natural` in Daredevils (initial score; the first
 attribute and the first talent govern), `Dexterity + 10` in OpenQuest. The
-templates fill it for every listed skill; each system checks the names it
-uses.
+templates fill it for every listed skill; a `New` skill gives its own.
 
 Two orthogonal axes:
 
@@ -151,7 +156,7 @@ and `origin: SkillCategory` (default `Base`) for its provenance: `Base` for
 an ability from the official rules, `New` for one added by the player or the
 GM (house spell, custom stunt, super power outside the base rules…);
 `Generic` and `Specialization` make no sense for an ability. `origin` is
-descriptive only: no validator reads it. Spells are no
+descriptive only. Spells are no
 longer a separate model — a spell is an `Ability` with `category=Spell`, its
 effect going in `description`.
 
