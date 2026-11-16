@@ -1,9 +1,9 @@
 """
 Common base class for every model of the project.
 
-Lives in its own module, depending only on pydantic, so that both
-models.py and systems/specific_values.py can import it without creating
-a circular import.
+Lives in its own module, depending only on pydantic, so that models.py and
+every systems/<game>.py module can import it without creating a circular
+import.
 """
 
 from pydantic import BaseModel, ConfigDict

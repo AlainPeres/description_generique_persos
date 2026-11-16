@@ -1,6 +1,6 @@
 {
+  "system": "pf1",
   "specific_values": {
-    "system": "pf1",
     "skill_value_meaning": "ranks",
     "derived_values": [
       {

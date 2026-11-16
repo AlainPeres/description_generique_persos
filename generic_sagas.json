@@ -1,6 +1,6 @@
 {
+  "system": "sagas",
   "specific_values": {
-    "system": "sagas",
     "skill_value_meaning": "skill level (associated attribute + learning level)",
     "derived_values": [
       {

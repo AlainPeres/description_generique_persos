@@ -1,21 +1,98 @@
 """
-Generic Pathfinder 1st edition character template.
+Pathfinder 1st edition: system-specific block and derived values, the PF1Character
+class, and the generic character template.
 
 Default values ("to be specified", ability scores of 10, no ranks) are meant
 to be replaced when describing an actual character.
 """
 
-from models import Character, Attribute, AttributeCategory, Skill, SkillCategory, Ability, AbilityCategory
-from systems.specific_values import SpecificValuesPF1, PF1Class
+from pydantic import Field
+from typing import Annotated, Literal
 
-generic_pf1 = Character(
+from models import CharacterBase, Attribute, AttributeCategory, Skill, SkillCategory, Ability, AbilityCategory
+from strict_model import StrictModel
+from systems.common import SpellLevel, Remaining, DerivedValue, fixed, CharacterClass, DnDAbility
+
+
+# ---------------------------------------------------------------------------
+# System-specific block: Pathfinder 1st edition
+# ---------------------------------------------------------------------------
+PF1_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Total Level", computed_from="sum of class levels"),
+    DerivedValue(name="Ability Modifiers", applies_to=AttributeCategory.MAIN,
+                 computed_from="(score - drain - 10) // 2, minus 1 per 2 points of ability damage"),
+    DerivedValue(name="Base Attack Bonus", computed_from="sum of class progressions"),
+    DerivedValue(name="Saving Throws",
+                 computed_from="sum of class base saves + ability modifier + other bonuses - negative levels"),
+    DerivedValue(name="Skill Totals", applies_to="skill",
+                 computed_from="ranks + ability modifier + 3 if class skill with at least 1 rank"
+                               " + other bonuses - armor check penalty"),
+    DerivedValue(name="Armor Class",
+                 computed_from="10 + armor, shield, Dexterity (capped by armor), size, natural armor,"
+                               " deflection, dodge and other bonuses"),
+    DerivedValue(name="Touch Armor Class", computed_from="Armor Class without armor, shield and natural armor"),
+    DerivedValue(name="Flat-Footed Armor Class", computed_from="Armor Class without Dexterity and dodge bonuses"),
+    DerivedValue(name="Combat Maneuver Bonus", computed_from="BAB + Strength modifier + special size modifier"),
+    DerivedValue(name="Combat Maneuver Defense",
+                 computed_from="10 + BAB + Strength and Dexterity modifiers + special size modifier"),
+    DerivedValue(name="Initiative", computed_from="Dexterity modifier + other bonuses"),
+    DerivedValue(name="Spell Save DC", computed_from="10 + spell level + casting ability modifier"),
+    DerivedValue(name="Spells per Day (maximum)",
+                 computed_from="class level table + bonus spells from the casting ability"),
+)
+
+# One entry per prepared slot: the same spell prepared twice appears twice
+class PreparedSpell(StrictModel):
+    name: str
+    level: int                # 0 = orison / cantrip
+    cast: bool = False        # already used since it was prepared
+
+class PF1Class(CharacterClass):
+    archetypes: list[str] = Field(default_factory=list)  # PF1 allows several per class
+    # Each class has its own spells per day. Spontaneous casters: a missing
+    # level means all its spells per day are available, a spent level is 0.
+    spells_remaining: dict[SpellLevel, Remaining] = Field(default_factory=dict)
+    prepared_spells: list[PreparedSpell] = Field(default_factory=list)          # prepared casters
+
+class SpecificValuesPF1(StrictModel):
+    skill_value_meaning: Literal["ranks"] = "ranks"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(PF1_DERIVED)] = PF1_DERIVED
+    # One entry per class; the total level is their sum, so it is not stored
+    classes: list[PF1Class]
+    favored_class: str = ""   # name of one of the classes
+    race: str
+    experience_points: int = 0
+    alignment: str            # e.g. "Chaotic Neutral"
+    deity: str = ""           # empty = none; e.g. "Iomedae", "Desna"
+    size: str | None = None   # e.g. "Medium"
+    speed: dict[str, int] = Field(default_factory=dict)   # in feet, per mode: {"land": 30, "swim": 15}
+    languages: list[str] = Field(default_factory=list)
+    # Class skills granted by traits; those from the class lists are derived
+    additional_class_skills: list[str] = Field(default_factory=list)
+    # Lasting states, e.g. {"Strength": 2}; same six abilities as D&D
+    ability_damage: dict[DnDAbility, Remaining] = Field(default_factory=dict)
+    ability_drain: dict[DnDAbility, Remaining] = Field(default_factory=dict)
+    negative_levels: int = 0
+    hero_points: int | None = None   # None = optional rule not used
+    resources_remaining: dict[str, Remaining] = Field(default_factory=dict)  # e.g. {"Rage rounds": 5}
+
+
+class PF1Character(CharacterBase):
+    system: Literal["pf1"]
+    specific_values: SpecificValuesPF1
+
+
+# ---------------------------------------------------------------------------
+# Generic template
+# ---------------------------------------------------------------------------
+generic_pf1 = PF1Character(
+    system="pf1",
     name="Generic Pathfinder 1 Character",
     description="to be specified",
     age="to be specified",
     background="to be specified",
     additional_information="to be specified",
     specific_values=SpecificValuesPF1(
-        system="pf1",
         classes=[PF1Class(name="to be specified", level=1)],
         race="to be specified",
         alignment="to be specified",

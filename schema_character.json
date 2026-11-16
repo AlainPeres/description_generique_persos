@@ -163,6 +163,188 @@
       "title": "Consequence",
       "type": "object"
     },
+    "CthulhuCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "cthulhu6",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesCthulhu"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "CthulhuCharacter",
+      "type": "object"
+    },
+    "DaredevilsCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "daredevils",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesDaredevils"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "DaredevilsCharacter",
+      "type": "object"
+    },
     "DerivedValue": {
       "additionalProperties": false,
       "properties": {
@@ -196,6 +378,97 @@
         "computed_from"
       ],
       "title": "DerivedValue",
+      "type": "object"
+    },
+    "DnDCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "dnd5e",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesDnD"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "DnDCharacter",
       "type": "object"
     },
     "DnDClass": {
@@ -272,6 +545,97 @@
       "title": "EquipmentItem",
       "type": "object"
     },
+    "FateCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "fate",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesFate"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "FateCharacter",
+      "type": "object"
+    },
     "ItemCategory": {
       "enum": [
         "weapon",
@@ -314,6 +678,279 @@
         "kind"
       ],
       "title": "Motive",
+      "type": "object"
+    },
+    "NoRulesCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "norules",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesNoRules"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "NoRulesCharacter",
+      "type": "object"
+    },
+    "OpenQuestCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "openquest3",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesOpenQuest"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "OpenQuestCharacter",
+      "type": "object"
+    },
+    "PF1Character": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "pf1",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesPF1"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "PF1Character",
       "type": "object"
     },
     "PF1Class": {
@@ -380,6 +1017,97 @@
       "title": "PreparedSpell",
       "type": "object"
     },
+    "SagasCharacter": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "const": "sagas",
+          "title": "System",
+          "type": "string"
+        },
+        "specific_values": {
+          "$ref": "#/$defs/SpecificValuesSagas"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "age": {
+          "default": "",
+          "title": "Age",
+          "type": "string"
+        },
+        "occupation": {
+          "default": "",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "background": {
+          "default": "",
+          "title": "Background",
+          "type": "string"
+        },
+        "additional_information": {
+          "default": "",
+          "title": "Additional Information",
+          "type": "string"
+        },
+        "attributes": {
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          },
+          "title": "Attributes",
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/Skill"
+          },
+          "title": "Skills",
+          "type": "array"
+        },
+        "abilities": {
+          "items": {
+            "$ref": "#/$defs/Ability"
+          },
+          "title": "Abilities",
+          "type": "array"
+        },
+        "equipment": {
+          "items": {
+            "$ref": "#/$defs/EquipmentItem"
+          },
+          "title": "Equipment",
+          "type": "array"
+        },
+        "possessions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Possessions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "system",
+        "specific_values"
+      ],
+      "title": "SagasCharacter",
+      "type": "object"
+    },
     "Skill": {
       "additionalProperties": false,
       "properties": {
@@ -440,11 +1168,6 @@
     "SpecificValuesCthulhu": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "cthulhu6",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "percentage",
           "default": "percentage",
@@ -496,20 +1219,12 @@
           "type": "array"
         }
       },
-      "required": [
-        "system"
-      ],
       "title": "SpecificValuesCthulhu",
       "type": "object"
     },
     "SpecificValuesDaredevils": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "daredevils",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "score (0 or more); BCS = score / 5, rounded down",
           "default": "score (0 or more); BCS = score / 5, rounded down",
@@ -747,20 +1462,12 @@
           "type": "string"
         }
       },
-      "required": [
-        "system"
-      ],
       "title": "SpecificValuesDaredevils",
       "type": "object"
     },
     "SpecificValuesDnD": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "dnd5e",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "proficiency level: 0 none, 1 proficient, 2 expertise",
           "default": "proficiency level: 0 none, 1 proficient, 2 expertise",
@@ -973,7 +1680,6 @@
         }
       },
       "required": [
-        "system",
         "classes",
         "race",
         "alignment"
@@ -984,11 +1690,6 @@
     "SpecificValuesFate": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "fate",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "rating on the Fate ladder",
           "default": "rating on the Fate ladder",
@@ -1048,7 +1749,6 @@
         }
       },
       "required": [
-        "system",
         "HighConcept",
         "Trouble",
         "FatePoints",
@@ -1060,11 +1760,6 @@
     "SpecificValuesNoRules": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "norules",
-          "title": "System",
-          "type": "string"
-        },
         "tags": {
           "items": {
             "type": "string"
@@ -1073,20 +1768,12 @@
           "type": "array"
         }
       },
-      "required": [
-        "system"
-      ],
       "title": "SpecificValuesNoRules",
       "type": "object"
     },
     "SpecificValuesOpenQuest": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "openquest3",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "percentage (0-100)",
           "default": "percentage (0-100)",
@@ -1182,20 +1869,12 @@
           "type": "array"
         }
       },
-      "required": [
-        "system"
-      ],
       "title": "SpecificValuesOpenQuest",
       "type": "object"
     },
     "SpecificValuesPF1": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "pf1",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "ranks",
           "default": "ranks",
@@ -1399,7 +2078,6 @@
         }
       },
       "required": [
-        "system",
         "classes",
         "race",
         "alignment"
@@ -1410,11 +2088,6 @@
     "SpecificValuesSagas": {
       "additionalProperties": false,
       "properties": {
-        "system": {
-          "const": "sagas",
-          "title": "System",
-          "type": "string"
-        },
         "skill_value_meaning": {
           "const": "skill level (associated attribute + learning level)",
           "default": "skill level (associated attribute + learning level)",
@@ -1496,9 +2169,6 @@
           "type": "integer"
         }
       },
-      "required": [
-        "system"
-      ],
       "title": "SpecificValuesSagas",
       "type": "object"
     },
@@ -1520,131 +2190,43 @@
       "type": "object"
     }
   },
-  "additionalProperties": false,
-  "properties": {
-    "specific_values": {
-      "anyOf": [
-        {
-          "discriminator": {
-            "mapping": {
-              "cthulhu6": "#/$defs/SpecificValuesCthulhu",
-              "daredevils": "#/$defs/SpecificValuesDaredevils",
-              "dnd5e": "#/$defs/SpecificValuesDnD",
-              "fate": "#/$defs/SpecificValuesFate",
-              "norules": "#/$defs/SpecificValuesNoRules",
-              "openquest3": "#/$defs/SpecificValuesOpenQuest",
-              "pf1": "#/$defs/SpecificValuesPF1",
-              "sagas": "#/$defs/SpecificValuesSagas"
-            },
-            "propertyName": "system"
-          },
-          "oneOf": [
-            {
-              "$ref": "#/$defs/SpecificValuesDnD"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesPF1"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesCthulhu"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesFate"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesSagas"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesDaredevils"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesOpenQuest"
-            },
-            {
-              "$ref": "#/$defs/SpecificValuesNoRules"
-            }
-          ]
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Specific Values"
+  "discriminator": {
+    "mapping": {
+      "cthulhu6": "#/$defs/CthulhuCharacter",
+      "daredevils": "#/$defs/DaredevilsCharacter",
+      "dnd5e": "#/$defs/DnDCharacter",
+      "fate": "#/$defs/FateCharacter",
+      "norules": "#/$defs/NoRulesCharacter",
+      "openquest3": "#/$defs/OpenQuestCharacter",
+      "pf1": "#/$defs/PF1Character",
+      "sagas": "#/$defs/SagasCharacter"
     },
-    "name": {
-      "default": "",
-      "title": "Name",
-      "type": "string"
-    },
-    "description": {
-      "default": "",
-      "title": "Description",
-      "type": "string"
-    },
-    "age": {
-      "default": "",
-      "title": "Age",
-      "type": "string"
-    },
-    "occupation": {
-      "default": "",
-      "title": "Occupation",
-      "type": "string"
-    },
-    "background": {
-      "default": "",
-      "title": "Background",
-      "type": "string"
-    },
-    "additional_information": {
-      "default": "",
-      "title": "Additional Information",
-      "type": "string"
-    },
-    "attributes": {
-      "items": {
-        "$ref": "#/$defs/Attribute"
-      },
-      "title": "Attributes",
-      "type": "array"
-    },
-    "skills": {
-      "items": {
-        "$ref": "#/$defs/Skill"
-      },
-      "title": "Skills",
-      "type": "array"
-    },
-    "abilities": {
-      "items": {
-        "$ref": "#/$defs/Ability"
-      },
-      "title": "Abilities",
-      "type": "array"
-    },
-    "equipment": {
-      "items": {
-        "$ref": "#/$defs/EquipmentItem"
-      },
-      "title": "Equipment",
-      "type": "array"
-    },
-    "possessions": {
-      "items": {
-        "type": "string"
-      },
-      "title": "Possessions",
-      "type": "array"
-    },
-    "conditions": {
-      "items": {
-        "$ref": "#/$defs/Condition"
-      },
-      "title": "Conditions",
-      "type": "array"
-    }
+    "propertyName": "system"
   },
-  "title": "Character",
-  "type": "object"
+  "oneOf": [
+    {
+      "$ref": "#/$defs/DnDCharacter"
+    },
+    {
+      "$ref": "#/$defs/PF1Character"
+    },
+    {
+      "$ref": "#/$defs/CthulhuCharacter"
+    },
+    {
+      "$ref": "#/$defs/FateCharacter"
+    },
+    {
+      "$ref": "#/$defs/SagasCharacter"
+    },
+    {
+      "$ref": "#/$defs/DaredevilsCharacter"
+    },
+    {
+      "$ref": "#/$defs/OpenQuestCharacter"
+    },
+    {
+      "$ref": "#/$defs/NoRulesCharacter"
+    }
+  ]
 }

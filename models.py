@@ -2,31 +2,23 @@
 RPG character schema (multi-system) with Pydantic.
 
 Architecture:
-- A common base (Character) with two complementary layers:
+- A common base (CharacterBase) with two complementary layers:
   1. Generic layer: attributes, skills, abilities, equipment, conditions
      (system-agnostic, usable across all RPGs; spells are an Ability with
      category=SPELL)
-  2. Optional system-specific block (specific_values: SpecificValuesDnD | SpecificValuesCthulhu | ...)
-     for systems whose structure cannot be expressed as name+value pairs
-     (e.g. FATE Aspects, Stress, Extras)
-- All Character fields are optional (default to empty / None)
+  2. System-specific block (specific_values) for what cannot be expressed
+     as name+value pairs (e.g. FATE Aspects, Stress, Extras)
+- Each system derives its own XxxCharacter in systems/<game>.py, with its
+  `system` value and its block; this file knows no system
 - Only what cannot be computed from other values is stored (no derived
   values such as modifiers, bonuses or maximums computed from a formula)
-
-Only the schema lives here. Per-system character data lives in systems/.
 """
 
 from enum import Enum
-from pydantic import Field
+from pydantic import Field, model_validator
 from typing import Any, Literal
 
 from strict_model import StrictModel
-# Shared with systems/specific_values.py (DerivedValue.applies_to)
-from attribute_category import AttributeCategory
-
-# Union of every system-specific block, defined in systems/specific_values.py
-# so that adding a new system never requires touching this file.
-from systems.specific_values import SpecificValues
 
 
 # ---------------------------------------------------------------------------
@@ -88,7 +80,7 @@ class Ability(StrictModel):
 class Skill(StrictModel):
     name: str
     category: SkillCategory
-    # Its meaning is fixed per system, see specific_values.skill_value_meaning
+    # Its meaning is fixed per system, see skill_value_meaning in the system block
     # (proficiency level, ranks, percentage...)
     value: int
     # None = the system has no skill checks; False/True = unchecked/checked.
@@ -100,6 +92,16 @@ class Skill(StrictModel):
     # (OpenQuest base). Filled in the templates for listed skills. Left out
     # of the JSON when None.
     base: str | None = Field(default=None, exclude_if=lambda v: v is None)
+
+
+# Nature of a numeric stat, fixed by the rules
+class AttributeCategory(str, Enum):
+    MAIN = "Main"                     # characteristics: Strength, DEX, Wit...
+    SECONDARY = "Secondary"           # other lasting stats, usually based on the main
+                                      # ones: SagaS Initiative, maximum HP, Move...
+    TALENT = "Talent"                 # aptitudes: Daredevils Talents
+    STATE = "State"                   # current values that change in play: HP,
+                                      # Sanity, wounds, damage...
 
 
 # Any numeric stat: characteristics, current values (HP, Sanity...)...
@@ -130,11 +132,26 @@ class Condition(StrictModel):
 
 
 # ---------------------------------------------------------------------------
-# Common base
+# Common base: each systems/<game>.py module derives its own XxxCharacter,
+# which narrows `system` to a single-value Literal and `specific_values` to
+# its own block. characters.py gathers them in one union to read any JSON.
 # ---------------------------------------------------------------------------
-class Character(StrictModel):
-    # System-specific block; Pydantic picks its class from its `system` field
-    specific_values: SpecificValues | None = None
+class CharacterBase(StrictModel):
+    # The base is not a character of its own: only the XxxCharacter classes
+    # of the systems can be created (otherwise `system` could hold any value
+    # and the JSON could not be read back through AnyCharacter)
+    @model_validator(mode="before")
+    @classmethod
+    def only_system_classes(cls, data: Any) -> Any:
+        if cls is CharacterBase:
+            raise ValueError("CharacterBase is a base class; create an XxxCharacter of a system")
+        return data
+
+    # The rules system, written first in the JSON ("sagas", "dnd5e"...);
+    # it tells Pydantic which XxxCharacter class to use
+    system: str
+    # System-specific block, narrowed by each XxxCharacter class
+    specific_values: StrictModel | None = None
 
     # Narrative fields, free text
     name: str = ""

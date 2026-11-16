@@ -1,21 +1,57 @@
 """
-Generic Call of Cthulhu 6th edition character template.
+Call of Cthulhu 6th edition: system-specific block and derived values, the CthulhuCharacter
+class, and the generic character template.
 
 Default values ("to be specified", base skill percentages) are meant to be
 replaced when describing an actual investigator.
 """
 
-from models import Character, Attribute, AttributeCategory, Skill, SkillCategory
-from systems.specific_values import SpecificValuesCthulhu
+from typing import Annotated, Literal
 
-generic_cthulhu6 = Character(
+from models import CharacterBase, Attribute, AttributeCategory, Skill, SkillCategory
+from strict_model import StrictModel
+from systems.common import DerivedValue, fixed
+
+
+# ---------------------------------------------------------------------------
+# System-specific block: Call of Cthulhu
+# ---------------------------------------------------------------------------
+CTHULHU_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Idea", computed_from="Intelligence x 5"),
+    DerivedValue(name="Luck", computed_from="Power x 5"),
+    DerivedValue(name="Know", computed_from="Education x 5"),
+    DerivedValue(name="Damage Bonus", computed_from="Strength + Size, damage bonus table"),
+    DerivedValue(name="Maximum Sanity", computed_from="99 - Cthulhu Mythos"),
+    DerivedValue(name="Maximum Hit Points", computed_from="(Constitution + Size) / 2, rounded up"),
+    DerivedValue(name="Maximum Magic Points", computed_from="Power"),
+)
+
+class SpecificValuesCthulhu(StrictModel):
+    skill_value_meaning: Literal["percentage"] = "percentage"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(CTHULHU_DERIVED)] = CTHULHU_DERIVED
+    # Everything else lives in the generic layer: characteristics, current
+    # Sanity, skills and their improvement checks, and mental disorders
+    # (CharacterBase.conditions, kind Mental, duration temporary / indefinite /
+    # permanent)
+
+
+class CthulhuCharacter(CharacterBase):
+    system: Literal["cthulhu6"]
+    specific_values: SpecificValuesCthulhu
+
+
+# ---------------------------------------------------------------------------
+# Generic template
+# ---------------------------------------------------------------------------
+generic_cthulhu6 = CthulhuCharacter(
+    system="cthulhu6",
     name="Generic Cthulhu 6 Character",
     description="to be specified",
     age="to be specified",
     background="to be specified",
     occupation="to be specified",
     additional_information="to be specified",
-    specific_values=SpecificValuesCthulhu(system="cthulhu6"),
+    specific_values=SpecificValuesCthulhu(),
     attributes=[
         Attribute(name="Strength", category=AttributeCategory.MAIN, value=10),
         Attribute(name="Constitution", category=AttributeCategory.MAIN, value=10),

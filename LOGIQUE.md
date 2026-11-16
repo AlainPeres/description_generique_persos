@@ -4,7 +4,7 @@
 
 - Décrire **un personnage de jeu de rôle**, pour un grand nombre de systèmes
   (D&D 5e, Pathfinder 1, L'Appel de Cthulhu, Fate, SagaS, Daredevils, OpenQuest 3, sans règles…), avec **un seul modèle
-  Python** (`Character`, Pydantic v2), puis l'exporter et le relire en JSON.
+  Python** (une base commune, `CharacterBase`, dérivée pour chaque système, Pydantic v2), puis l'exporter et le relire en JSON.
 
 - Rendre plus simple **l'introduction d'un nouveau système**.
 
@@ -29,7 +29,7 @@ Un personnage se décompose en deux parties.
    | `possessions`                                                                      | biens qui ne sont pas de l'équipement transporté (maison, terres…), en texte libre |
    | `conditions`                                                                       | effets durables physiques, mentaux ou autres (`Condition`)                         |
 
-2. **Une couche spécifique** (`specific_values`), facultative. Elle contient ce
+2. **Une couche spécifique** (`specific_values`), propre à chaque système. Elle contient ce
    qui ne rentre pas dans « nom + valeur » : les classes (multiclasse,
    sous-classes ou archétypes) et la race en D&D et Pathfinder, les aspects
    et le stress en Fate, des tags libres en sans règles…
@@ -276,7 +276,7 @@ Ce qui dure jusqu'au prochain repos est stocké, toujours sous forme de
   (`ability_reduction`), inspiration et dés de vie en D&D ; affaiblissement,
   diminution, niveaux négatifs et points d'héroïsme en PF1.
 
-Les effets durables vont dans `Character.conditions`, une liste de
+Les effets durables vont dans `CharacterBase.conditions`, une liste de
 `Condition` commune à tous les systèmes : nom, nature (`kind`), durée
 facultative (`temporary`, `indefinite` ou `permanent`), description, et
 `cured`, conservé pour l'histoire du personnage. La nature vaut :
@@ -332,39 +332,55 @@ lit. **Un sort n'est pas un modèle à part** : c'est une `Ability` avec
 
 ## Comment Pydantic sait de quel système il s'agit
 
-Chaque bloc spécifique a un champ `system` à valeur fixe
-(`Literal["dnd5e"]`, `Literal["fate"]`…). `specific_values` est une **union
-discriminée** : en lisant un JSON, Pydantic regarde `system` et choisit
-directement la bonne classe.
+Le premier champ de chaque JSON est `system` (`"sagas"`, `"dnd5e"`…). Dans
+`models.py`, `CharacterBase` est une **base commune** qui ne connaît aucun
+système : `system` y est une simple chaîne. Chaque système dérive sa propre
+classe, qui fixe `system` à une seule valeur et donne le type exact de son
+bloc :
 
-Cette union, `SpecificValues`, est écrite en clair à la fin de
-`systems/specific_values.py`, à côté des classes qu'elle liste, et
-`models.py` se contente de l'importer. Ajouter un système ne demande donc
-**jamais** de modifier `models.py`. L'écrire en clair permet aussi à
-l'éditeur (Pylance, mypy) de connaître chaque classe et de compléter leurs
-champs.
+```python
+class SagasCharacter(CharacterBase):
+    system: Literal["sagas"]
+    specific_values: SpecificValuesSagas
+```
+
+`CharacterBase` ne peut pas être créée directement : seules les classes
+`XxxCharacter` des systèmes le peuvent. Sinon, `system` pourrait prendre
+n'importe quelle valeur, et le JSON ne pourrait pas être relu.
+
+`characters.py` réunit ces classes dans une **union discriminée**,
+`AnyCharacter` : en lisant un JSON, Pydantic regarde `system` et choisit
+directement la bonne classe. C'est le seul fichier qui connaît tous les
+systèmes ; ajouter un système ne demande **jamais** de modifier
+`models.py`. L'union est écrite en clair, et chaque classe connaît le type
+exact de son bloc : l'éditeur (Pylance, mypy) complète donc les champs
+spécifiques.
 
 ## Organisation des fichiers
 
 ```text
 strict_model.py           StrictModel, la classe de base commune
-models.py                 le schéma : Character et ses sous-modèles
+models.py                 CharacterBase (base commune) et ses sous-modèles
 systems/
-├── specific_values.py    les blocs SpecificValuesX + l'union SpecificValues
-└── <jeu>.py              un personnage générique par système (generic_<jeu>)
+├── common.py             ce que les systèmes partagent : DerivedValue, fixed(...),
+│                         CharacterClass, DnDAbility…
+└── <jeu>.py              tout ce qui est propre au système : son bloc SpecificValuesXxx,
+                          ses valeurs dérivées, sa classe XxxCharacter et son
+                          personnage générique (generic_<jeu>)
+characters.py             l'union AnyCharacter de toutes les classes XxxCharacter
 main.py                   exporte les JSON et vérifie la relecture
 ```
 
 Les dépendances vont dans un seul sens, ce qui évite les imports circulaires :
 
 ```text
-strict_model.py  ──►  specific_values.py  ──►  models.py  ──►  systems/<jeu>.py  ──►  main.py
-(pydantic seul)       (blocs spécifiques)       (Character)     (generic_<jeu>)        (export)
+strict_model.py  ──►  models.py  ──►  systems/<jeu>.py  ──►  characters.py  ──►  main.py
+(pydantic seul)       (CharacterBase) (règles + generic_<jeu>)  (AnyCharacter)    (export)
 ```
 
-`specific_values.py` ne dépend que de Pydantic et de `strict_model.py`,
-jamais de `Character`. C'est pour ça que les blocs spécifiques y sont, et pas
-dans `models.py` ni dans chaque `<jeu>.py`.
+`models.py` ne dépend d'aucun système : ce sont les systèmes qui importent
+`CharacterBase` pour en dériver leur classe. Un seul fichier par système suffit
+donc à décrire ses règles et son personnage générique.
 
 ## Ce que le modèle vérifie
 
@@ -391,19 +407,22 @@ ignoré sans prévenir.
 1. **Un modèle de fiche par système** (`generic_<jeu>.json`) : la structure
    complète, la liste officielle des compétences, et des valeurs par défaut à
    remplacer (`"to be specified"`).
-2. **`schema_character.json`** : le JSON Schema de `Character`. Il décrit la
+2. **`schema_character.json`** : le JSON Schema d'`AnyCharacter`, avec une
+   branche par système choisie par `system`. Il décrit la
    forme d'une fiche valide pour des outils extérieurs à Python (éditeur,
    autre langage, formulaire, LLM). Il contient aussi, comme valeurs fixes,
    le sens de `Skill.value` (`skill_value_meaning`) et la liste des valeurs
    dérivées (`derived_values`) de chaque système, mais pas les listes de
    compétences.
 3. **Une vérification** : chaque modèle exporté est relu avec
-   `Character.model_validate_json` et comparé à l'original.
+   `character_adapter.validate_json`, qui choisit la classe d'après
+   `system`, et comparé à l'original.
 
 ## Champs facultatifs et exclusion à l'export
 
-Tous les champs de `Character` ont une valeur par défaut (`""`, `None` ou
-`[]`). Un système ne remplit que ce qu'il utilise, et un JSON peut omettre
+Tous les champs génériques de `CharacterBase` ont une valeur par défaut (`""`,
+`None` ou `[]`) ; seuls `system` et le bloc spécifique sont propres à chaque
+classe XxxCharacter. Un système ne remplit que ce qu'il utilise, et un JSON peut omettre
 tout le reste.
 
 Pour qu'un champ inutile n'apparaisse pas dans le JSON exporté :
@@ -416,10 +435,13 @@ Un champ exclu reprend sa valeur par défaut quand on relit le JSON.
 
 ## Ajouter un système
 
-1. Dans `systems/specific_values.py`, créer `SpecificValuesXxx(StrictModel)` avec
-   `system: Literal["xxx"]` (et `skill_value_meaning` si le système a des
-   compétences, `derived_values` s'il a des valeurs dérivées), puis
-   l'ajouter à l'union `SpecificValues`.
-2. Créer `systems/xxx.py` avec un `generic_xxx = Character(...)`, en mettant
-   le maximum de données dans les listes génériques.
+1. Créer `systems/xxx.py` avec :
+   - `SpecificValuesXxx(StrictModel)`, et `skill_value_meaning` si le système
+     a des compétences, `derived_values` s'il a des valeurs dérivées (les
+     éléments partagés viennent de `systems/common.py`) ;
+   - `XxxCharacter(CharacterBase)`, avec `system: Literal["xxx"]` et
+     `specific_values: SpecificValuesXxx` ;
+   - `generic_xxx = XxxCharacter(system="xxx", ...)`, en mettant le maximum
+     de données dans les listes génériques.
+2. Ajouter `XxxCharacter` à l'union `AnyCharacter` de `characters.py`.
 3. Dans `main.py`, importer `generic_xxx` et l'ajouter à la liste `EXPORTS`.

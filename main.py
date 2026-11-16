@@ -12,7 +12,8 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 import json
 
-from models import Character
+from characters import character_adapter
+from models import CharacterBase
 from systems.dnd5e import generic_dnd5e
 from systems.pathfinder1 import generic_pf1
 from systems.cthulhu import generic_cthulhu6
@@ -39,7 +40,7 @@ def export_json(path: str, content: str) -> None:
 
 
 # Each generic template with its export path and the fields left out of its JSON
-EXPORTS: list[tuple[str, Character, set[str]]] = [
+EXPORTS: list[tuple[str, CharacterBase, set[str]]] = [
     ("generic_dnd5e.json", generic_dnd5e, set()),
     ("generic_pf1.json", generic_pf1, set()),
     ("generic_cthulhu6.json", generic_cthulhu6, set()),
@@ -53,16 +54,15 @@ EXPORTS: list[tuple[str, Character, set[str]]] = [
 
 if __name__ == "__main__":
     print_separator("JSON FILE EXPORT")
-    raws: list[tuple[Character, str]] = []
+    raws: list[tuple[CharacterBase, str]] = []
     for path, character, exclude in EXPORTS:
         raw = character.model_dump_json(indent=2, exclude=exclude)
         export_json(path, raw)
         raws.append((character, raw))
-    export_json("schema_character.json", json.dumps(Character.model_json_schema(), indent=2, ensure_ascii=False))
+    export_json("schema_character.json", json.dumps(character_adapter.json_schema(), indent=2, ensure_ascii=False))
 
     print_separator("VALIDATION: reload from raw JSON")
     for character, raw in raws:
-        reloaded = Character.model_validate_json(raw)
-        system = reloaded.specific_values.system if reloaded.specific_values else "no system"
+        reloaded = character_adapter.validate_json(raw)
         status = "OK" if reloaded == character else "MISMATCH"
-        print(f"  [{status}] {reloaded.name} ({system})")
+        print(f"  [{status}] {reloaded.name} ({reloaded.system})")

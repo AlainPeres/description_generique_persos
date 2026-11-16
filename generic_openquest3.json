@@ -1,6 +1,6 @@
 {
+  "system": "openquest3",
   "specific_values": {
-    "system": "openquest3",
     "skill_value_meaning": "percentage (0-100)",
     "derived_values": [
       {

@@ -1,22 +1,74 @@
 """
-Generic SagaS character template.
+SagaS: system-specific block and derived values, the SagasCharacter
+class, and the generic character template.
 
 Default values ("to be specified", characteristics of 5, skill levels for the
 initial learning levels) are meant to be replaced when describing an actual character. "Psychical"
 is the system's own term and is kept as is.
 """
 
-from models import Character, Attribute, AttributeCategory, Skill, SkillCategory
-from systems.specific_values import SpecificValuesSagas
+from typing import Annotated, Literal
 
-generic_sagas = Character(
+from models import CharacterBase, Attribute, AttributeCategory, Skill, SkillCategory
+from strict_model import StrictModel
+from systems.common import DerivedValue, fixed
+
+
+# ---------------------------------------------------------------------------
+# System-specific block: SagaS
+# ---------------------------------------------------------------------------
+SAGAS_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Learning Levels", applies_to="skill", computed_from="skill level - associated attribute"),
+    DerivedValue(name="Protection",
+                 computed_from="Armor + Abilities (super powers, outside the base rules); 0 by default"),
+    DerivedValue(name="MaxImpactBonus", computed_from="2*Protection + Physical Shock Threshold"),
+    DerivedValue(name="Physical Hit Points", computed_from="2*(Strength + Will + Endurance)"),
+    DerivedValue(name="Psychical Hit Points", computed_from="2*(Presence + Will + Instinct)"),
+    DerivedValue(name="Physical Shock Threshold", computed_from="10 + UT Strength bonus"),
+    DerivedValue(name="Psychical Shock Threshold", computed_from="10 + UT Presence bonus"),
+    DerivedValue(name="Reflex Defense", computed_from="2 + Dodge skill level / 2, rounded down"),
+    # The secondary characteristics are stored as final values; the creation
+    # points bought for each are deduced from them
+    DerivedValue(name="Initiative Creation Bonus",
+                 computed_from="Initiative - (Agility + Wit) / 2, rounded down"),
+    DerivedValue(name="Close Combat Creation Bonus",
+                 computed_from="Close Combat - (Strength + 2*Agility + Instinct + Will) / 5, rounded down"),
+    DerivedValue(name="Ranged Combat Creation Bonus",
+                 computed_from="Ranged Combat - (3*Dexterity + 2*Instinct) / 5, rounded down"),
+    DerivedValue(name="Speed Creation Bonus",
+                 computed_from="Speed - species base (6 for humans) - (Endurance + Agility) / 4, rounded down"),
+)
+
+class SpecificValuesSagas(StrictModel):
+    # The final skill level is stored, so the sheet reads as played; the
+    # learning level (bought with points) is derived. The attribute associated
+    # with each skill is fixed by the rules
+    skill_value_meaning: Literal["skill level (associated attribute + learning level)"] = (
+        "skill level (associated attribute + learning level)"
+    )
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(SAGAS_DERIVED)] = SAGAS_DERIVED
+    unspent_creation_points: int = 0  # set aside for later
+    # Current wounds and stun are attributes; serious injuries are
+    # CharacterBase.conditions, kind Physical, or kind Mental for psychical ones
+
+
+class SagasCharacter(CharacterBase):
+    system: Literal["sagas"]
+    specific_values: SpecificValuesSagas
+
+
+# ---------------------------------------------------------------------------
+# Generic template
+# ---------------------------------------------------------------------------
+generic_sagas = SagasCharacter(
+    system="sagas",
     name="Generic SagaS Character",
     description="to be specified",
     age="to be specified",
     background="to be specified",
     occupation="to be specified",
     additional_information="to be specified",   
-    specific_values=SpecificValuesSagas(system="sagas"),
+    specific_values=SpecificValuesSagas(),
     attributes=[
         # Characteristics
         Attribute(name="Strength", category=AttributeCategory.MAIN, value=5),

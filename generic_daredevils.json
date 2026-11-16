@@ -1,6 +1,6 @@
 {
+  "system": "daredevils",
   "specific_values": {
-    "system": "daredevils",
     "skill_value_meaning": "score (0 or more); BCS = score / 5, rounded down",
     "derived_values": [
       {

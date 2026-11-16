@@ -5,7 +5,7 @@ Multi-system RPG character modeling with **Pydantic v2**.
 ## Goals
 
 - Describe **an RPG character** for many systems (D&D 5e, Pathfinder 1,
-  Call of Cthulhu, Fate, SagaS, Daredevils, OpenQuest 3, no rules…) with **a single Python model** (`Character`), then
+  Call of Cthulhu, Fate, SagaS, Daredevils, OpenQuest 3, no rules…) with **a single Python model** (a common base, `CharacterBase`, derived once per system), then
   export it to JSON and read it back.
 - Make **adding a new system** simple.
 - Produce a JSON Schema to check that **a character JSON matches the model**.
@@ -14,35 +14,35 @@ Multi-system RPG character modeling with **Pydantic v2**.
 
 ## Layout
 
-`main.py` is a thin orchestrator: the schema lives in `models.py`, and each
-system's character data lives in its own module under `systems/`:
+`main.py` is a thin orchestrator. `models.py` holds the common base and
+knows no system; each system has its own module under `systems/`, with
+everything specific to its rules:
 
 ```text
 strict_model.py               StrictModel: common base class, rejects unknown fields
-attribute_category.py         AttributeCategory, shared by models.py and systems/specific_values.py
-models.py                     Character, Attribute, Skill, Ability, EquipmentItem, Condition
-                               imports the SpecificValues union
+models.py                     CharacterBase (common base), Attribute, Skill, Ability, EquipmentItem,
+                              Condition and their categories
 systems/
-├── specific_values.py        SpecificValuesNoRules / DnD / PF1 / Cthulhu / Fate / SagaS / Daredevils / OpenQuest + SpecificValues union
-├── norules.py                generic_norules
-├── dnd5e.py                  generic_dnd5e
-├── pathfinder1.py            generic_pf1
-├── cthulhu.py                generic_cthulhu6
-├── sagas.py                  generic_sagas
-├── daredevils.py             generic_daredevils
-├── openquest.py              generic_openquest3
-└── fate.py                   generic_fate
+├── common.py                 DerivedValue, fixed(...), CharacterClass, DnDAbility...
+├── norules.py                SpecificValuesNoRules, NoRulesCharacter, generic_norules
+├── dnd5e.py                  SpecificValuesDnD, DnDCharacter, generic_dnd5e
+├── pathfinder1.py            SpecificValuesPF1, PF1Character, generic_pf1
+├── cthulhu.py                SpecificValuesCthulhu, CthulhuCharacter, generic_cthulhu6
+├── fate.py                   SpecificValuesFate, FateCharacter, generic_fate
+├── sagas.py                  SpecificValuesSagas, SagasCharacter, generic_sagas
+├── daredevils.py             SpecificValuesDaredevils, DaredevilsCharacter, generic_daredevils
+└── openquest.py              SpecificValuesOpenQuest, OpenQuestCharacter, generic_openquest3
+characters.py                 AnyCharacter: union of every XxxCharacter, discriminated on `system`
 main.py                       imports the generic_* instances, exports JSON, validates round-trip
 ```
 
-The `SpecificValuesX` classes live in `systems/specific_values.py`, not in
-`models.py` — that module only depends on pydantic and `strict_model.py`,
-never on `Character`, so
-`models.py` can import the `SpecificValues` discriminated union from it
-without creating a circular import (`systems/<game>.py` modules still import
-`Character` from `models.py` to build their generic character templates).
-The union is written out next to the classes it lists, so adding a new
-system never requires editing `models.py`.
+Imports go one way only: `models.py` → `systems/<game>.py` → `characters.py`
+→ `main.py`. Each system module derives its own `XxxCharacter` from
+`CharacterBase`, narrowing `system` to a single-value `Literal` and
+`specific_values` to its own block, so there is no circular import and
+type checkers know the exact block of each character class.
+`characters.py` is the only file that lists every system: its `AnyCharacter`
+union reads a character JSON whatever its system, and gives the JSON Schema.
 
 Every model inherits from `StrictModel` (`extra="forbid"`): a JSON field that
 the model does not know, such as a typo or an obsolete field, raises a
@@ -51,13 +51,17 @@ each object with `"additionalProperties": false` accordingly.
 
 ## Architecture
 
-`Character` holds two complementary layers:
+A character (an `XxxCharacter`, derived from `CharacterBase`, which cannot be
+created directly) starts with `system` (`"sagas"`, `"dnd5e"`…), the first field
+of every JSON, then holds two complementary layers:
 
 - **Generic layer** — system-agnostic lists usable across all RPGs
-- **System-specific layer** (`specific_values`) — optional block for data that can't be expressed as `name + int value`
+- **System-specific layer** (`specific_values`) — the block of the system, for data that can't be expressed as `name + int value`
 
 ```text
-Character
+CharacterBase
+├── system:           str                   (narrowed to a Literal by each XxxCharacter)
+├── specific_values:  the system's block    (SpecificValuesSagas in SagasCharacter…)
 ├── name, description, age, occupation, background, additional_information   (free text)
 ├── attributes:       list[Attribute]       (name + AttributeCategory + int value)
 ├── skills:           list[Skill]           (name + SkillCategory + int value + optional checked,
@@ -67,9 +71,8 @@ Character
 ├── equipment:        list[EquipmentItem]   (name + ItemCategory + quantity …; money is an item
 │                                            whose quantity is the amount)
 ├── possessions:      list[str]             (what is not carried equipment: house, land, shares …)
-├── conditions:       list[Condition]       (lasting effects: name + kind Physical / Mental / Other +
-│                                            optional duration + description + cured)
-└── specific_values:  SpecificValues | None   (discriminated union on `system`)
+└── conditions:       list[Condition]       (lasting effects: name + kind Physical / Mental / Other +
+                                             optional duration + description + cured)
 ```
 
 ## What is stored
@@ -157,7 +160,7 @@ effect going in `description`.
 Used only for data that cannot be expressed as `name + int value`.
 
 Every block whose system has skills also declares `skill_value_meaning`, a
-single-value `Literal` with a default (like `system`): the meaning of
+single-value `Literal` with a default: the meaning of
 `Skill.value` is a fixed convention per system (`proficiency level: 0 none,
 1 proficient, 2 expertise` for D&D 5e, `ranks` for PF1, `percentage` for
 Cthulhu, `rating on the Fate ladder` for Fate, `skill level (associated
@@ -184,7 +187,7 @@ PF1). A future class-based system can reuse it.
 
 ## Generic templates
 
-Each `systems/<game>.py` module defines a `generic_<game>` `Character` with
+Each `systems/<game>.py` module defines a `generic_<game>` `XxxCharacter` with
 default values and the full official skill list; `main.py` exports them as
 ready-to-use JSON blueprints:
 
@@ -198,18 +201,21 @@ ready-to-use JSON blueprints:
 | `generic_fate.json` | FATE | 18 base skills + 1 example stunt (Feat ability) |
 | `generic_openquest3.json` | OpenQuest 3 | 7 characteristics (8 each + 30 points), current HP / MP; 31 skills at their base (27 base + 4 generic), Wealth included (optional rule) |
 | `generic_daredevils.json` | Daredevils | 6 attributes, 7 talents at 0, Off-hand Dexterity, Lethal / Subdual Damage; 87 skills (83 base + 4 generic) at 0, meaning not acquired (Daredevils has no base score; an acquired skill gets its initial score from the attributes and talent of the moment, then is independent of them) |
-| `schema_character.json` | all systems | Pydantic JSON Schema for `Character` |
+| `schema_character.json` | all systems | Pydantic JSON Schema of `AnyCharacter`: one branch per system, chosen by `system` |
 
 ## Adding a new system
 
-1. In `systems/specific_values.py`, create `SpecificValuesXxx(StrictModel)` with `system: Literal["xxx"]` (plus `skill_value_meaning` if the system has skills, `derived_values` if it has derived values) and add it to the `SpecificValues` union at the bottom of that file
-2. Create `systems/xxx.py`, put numeric data in the generic `attributes` / `skills` lists
-3. Import the new `generic_xxx` instance in `main.py` and add it to the `EXPORTS` list
+1. Create `systems/xxx.py` with:
+   - `SpecificValuesXxx(StrictModel)`, plus `skill_value_meaning` if the system has skills and `derived_values` if it has derived values (shared pieces come from `systems/common.py`);
+   - `XxxCharacter(CharacterBase)` with `system: Literal["xxx"]` and `specific_values: SpecificValuesXxx`;
+   - the `generic_xxx` template, putting numeric data in the generic `attributes` / `skills` lists
+2. Add `XxxCharacter` to the `AnyCharacter` union in `characters.py`
+3. Import `generic_xxx` in `main.py` and add it to the `EXPORTS` list
 
-`models.py` never needs to change — it imports the `SpecificValues` union
-as is, which is what keeps this scalable to dozens of systems.
+`models.py` never needs to change: it knows no system, which is what keeps
+this scalable to dozens of systems.
 
-Every `Character` field has a default (`""`, `None` or an empty list), so a
+Every generic `CharacterBase` field has a default (`""`, `None` or an empty list), so a
 system only fills what it uses. To keep unused fields out of its JSON, pass
 `exclude={...}` to `model_dump_json` in `main.py` (as `norules` does) or use
 `exclude_defaults=True` to drop every field still at its default. Excluded
@@ -218,17 +224,19 @@ fields come back as their defaults when the JSON is reloaded.
 ## Type annotations
 
 Python 3.10+ native syntax — no `List`, `Dict`, `Optional` or `Union` from
-`typing`. The `SpecificValues` union is written out explicitly with `|`, so
-type checkers (Pylance, mypy) know every member and can autocomplete
-system-specific fields:
+`typing`. Each `XxxCharacter` types `specific_values` with its own block,
+so type checkers (Pylance, mypy) autocomplete the system-specific fields;
+the `AnyCharacter` union is written out explicitly with `|`:
 
 ```python
-size: str | None = None
-SpecificValues = Annotated[
-    SpecificValuesDnD | SpecificValuesCthulhu | ...,
+class SagasCharacter(CharacterBase):
+    system: Literal["sagas"]
+    specific_values: SpecificValuesSagas
+
+AnyCharacter = Annotated[
+    DnDCharacter | SagasCharacter | ...,
     Field(discriminator="system"),
 ]
-skills: list[Skill]
 ```
 
 ## Requirements
@@ -244,5 +252,5 @@ uv sync
 
 ```bash
 python main.py     # exports every generic_*.json + schema_character.json,
-                   # then checks a JSON → Character round-trip for every template
+                   # then checks a JSON → AnyCharacter round-trip for every template
 ```

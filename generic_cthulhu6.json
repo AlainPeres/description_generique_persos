@@ -1,6 +1,6 @@
 {
+  "system": "cthulhu6",
   "specific_values": {
-    "system": "cthulhu6",
     "skill_value_meaning": "percentage",
     "derived_values": [
       {

@@ -1,5 +1,6 @@
 """
-Generic OpenQuest 3 character template.
+OpenQuest 3: system-specific block and derived values, the OpenQuestCharacter
+class, and the generic character template.
 
 Default values ("to be specified", the 30 creation points spread evenly over
 the characteristics, skills at their base) are meant to be replaced when
@@ -7,17 +8,71 @@ describing an actual character. A non-human's species goes in `description`,
 its traits and natural weapons in `abilities`.
 """
 
-from models import Character, Attribute, AttributeCategory, Skill, SkillCategory
-from systems.specific_values import SpecificValuesOpenQuest
+from pydantic import Field
+from typing import Annotated, Literal
 
-generic_openquest3 = Character(
+from models import CharacterBase, Attribute, AttributeCategory, Skill, SkillCategory
+from strict_model import StrictModel
+from systems.common import DerivedValue, fixed
+
+
+# ---------------------------------------------------------------------------
+# System-specific block: OpenQuest 3
+# ---------------------------------------------------------------------------
+OPENQUEST_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Damage Modifier", computed_from="STR + SIZ, Damage Modifier table"),
+    DerivedValue(name="Maximum Hit Points", computed_from="(SIZ + CON) / 2, rounded up"),
+    DerivedValue(name="Maximum Magic Points", computed_from="POW"),
+    DerivedValue(name="Mortal Wound", computed_from="current Hit Points below zero"),
+    DerivedValue(name="Movement Rate", computed_from="15 metres for humans, the creature's rate otherwise"),
+    DerivedValue(name="Skill Expertise", applies_to="skill",
+                 computed_from="0-25% Novice, 26-50% Apprentice, 51-75% Veteran, 76-99% Expert, 100% Master"),
+    DerivedValue(name="Growth Cost per +5%", applies_to="skill", computed_from="1, 2, 3, 5 or 10 depending on skill expertise"),
+)
+
+# Saga motives span a campaign, Quest motives the current adventure
+class Motive(StrictModel):
+    text: str                            # e.g. "Avenge my father"
+    kind: Literal["saga", "quest"]
+    brought_into_play: bool = False      # the * mark, cleared at the end of the Quest
+    completed: bool = False              # completed Saga motives stay on the sheet
+
+class SpecificValuesOpenQuest(StrictModel):
+    # The percentage rolled against: base + points spent + growth. The base
+    # (characteristics) only matters at creation, so the total is stored
+    skill_value_meaning: Literal["percentage (0-100)"] = "percentage (0-100)"
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(OPENQUEST_DERIVED)] = OPENQUEST_DERIVED
+    concept: str = ""                    # one sentence summing up the character
+    fortune_points: int = 2
+    growth_points: int = 0   # earned, not yet spent
+    motives: list[Motive] = Field(default_factory=list)
+    # Magical standing, free text: religion and rank (lay member, initiate,
+    # priest...), specialist caster (Shaman, Wise, Priest, Adept)
+    religion: str = ""
+    religious_rank: str = ""
+    specialist_caster: str = ""
+    # Names of Divine Magic Spell abilities already cast, which stay spent
+    # until regained
+    divine_spells_cast: list[str] = Field(default_factory=list)
+
+
+class OpenQuestCharacter(CharacterBase):
+    system: Literal["openquest3"]
+    specific_values: SpecificValuesOpenQuest
+
+
+# ---------------------------------------------------------------------------
+# Generic template
+# ---------------------------------------------------------------------------
+generic_openquest3 = OpenQuestCharacter(
+    system="openquest3",
     name="Generic OpenQuest 3 Character",
     description="to be specified",
     age="to be specified",
     background="to be specified",
     occupation="to be specified",
     additional_information="to be specified",
-    specific_values=SpecificValuesOpenQuest(system="openquest3"),
+    specific_values=SpecificValuesOpenQuest(),
     attributes=[
         # 8 each + 30 points (3 to 18 at creation, 21 at most for a human;
         # INT and SIZ never below 8, SIZ never grows)

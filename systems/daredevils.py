@@ -1,5 +1,6 @@
 """
-Generic Daredevils (FGU, 1982) character template.
+Daredevils (FGU, 1982): system-specific block and derived values, the DaredevilsCharacter
+class, and the generic character template.
 
 Default values ("to be specified", 75 attribute points spread evenly, talents
 and skill scores of 0) are meant to be replaced when describing an actual
@@ -8,17 +9,101 @@ contacts are described in `background`. Reputation is not modeled (its
 rules are not in the rulebook).
 """
 
-from models import Character, Attribute, AttributeCategory, Skill, SkillCategory
-from systems.specific_values import SpecificValuesDaredevils
+from pydantic import Field
+from typing import Annotated, Literal
 
-generic_daredevils = Character(
+from models import CharacterBase, Attribute, AttributeCategory, Skill, SkillCategory
+from strict_model import StrictModel
+from systems.common import Remaining, DerivedValue, fixed
+
+
+# ---------------------------------------------------------------------------
+# System-specific block: Daredevils (FGU)
+# ---------------------------------------------------------------------------
+# Keys of the attribute dictionaries below
+DaredevilsAttribute = Literal["Wit", "Will", "Strength", "Deftness", "Speed", "Health"]
+# Critical Hit Location Table (men)
+DaredevilsLocation = Literal[
+    "Head", "Chest", "Mid body", "Lower body",
+    "Upper right arm", "Upper left arm", "Right hand", "Left hand",
+    "Upper right leg", "Upper left leg", "Lower right leg", "Lower left leg",
+]
+
+# Unless stated otherwise, Daredevils rounds to the nearest (3.5 rounds up)
+DAREDEVILS_DERIVED: tuple[DerivedValue, ...] = (
+    DerivedValue(name="Current Attributes", applies_to=AttributeCategory.MAIN,
+                 computed_from="permanent value - attribute_loss; Deftness and Speed -50% when Seriously Wounded"),
+    DerivedValue(name="Attribute Groups and Effect Dice", applies_to=AttributeCategory.MAIN, computed_from="current value, Attribute Group Chart"),
+    DerivedValue(name="Attribute Saving Throws", applies_to=AttributeCategory.MAIN, computed_from="current value / 2, rounded down"),
+    DerivedValue(name="Critical Saving Throws", applies_to=AttributeCategory.MAIN, computed_from="current value / 3"),
+    DerivedValue(name="Basic Chance of Success", applies_to="skill", computed_from="skill score / 5, rounded down"),
+    DerivedValue(name="Combat Dodge Ability", computed_from="(current Deftness Group + current Speed Group) / 2"),
+    DerivedValue(name="Weapon Defense Ability", applies_to="skill", computed_from="hand-to-hand BCS / 4"),
+    # The glossary formula, followed by every example in the rules (§1.3.2
+    # gives the full sum of the three attributes)
+    DerivedValue(name="Damage Resistance Total",
+                 computed_from="permanent Health + permanent Strength / 2 + permanent Will / 2"),
+    DerivedValue(name="Seriously Wounded", computed_from="Lethal + Subdual Damage > Damage Resistance Total / 2"),
+    DerivedValue(name="Unconscious", computed_from="Lethal + Subdual Damage > Damage Resistance Total"),
+    DerivedValue(name="Dead", computed_from="Lethal Damage > Damage Resistance Total + Health Group"),
+    DerivedValue(name="Healing Rate", computed_from="Health Group, modified by care and activity"),
+    DerivedValue(name="Encumbrance Capacity", computed_from="5 + Strength Attribute Saving Throw, in kg"),
+    DerivedValue(name="Freely Improvable Skills Quota", computed_from="current Wit + current Will"),
+    DerivedValue(name="Learning Rate", computed_from="Wit Group"),
+    DerivedValue(name="Travel Rate", computed_from="10 + current Speed, in km per day"),
+    DerivedValue(name="Shock Factor", computed_from="10 + Health Group"),
+    DerivedValue(name="Size", computed_from="height and weight category, Physical Aspects Chart"),
+)
+
+class SpecificValuesDaredevils(StrictModel):
+    skill_value_meaning: Literal["score (0 or more); BCS = score / 5, rounded down"] = (
+        "score (0 or more); BCS = score / 5, rounded down"
+    )
+    derived_values: Annotated[tuple[DerivedValue, ...], fixed(DAREDEVILS_DERIVED)] = DAREDEVILS_DERIVED
+    # Attribute points lost to wounds, disease...; the current value is
+    # derived from the permanent one (the Attribute), e.g. {"Deftness": 3}
+    attribute_loss: dict[DaredevilsAttribute, Remaining] = Field(default_factory=dict)
+    # Optional rule 1.8.5b: +0.5 to the governing attribute per BCS point
+    # gained (the text says .05, its example gives 0.5); fractions toward the
+    # next full point, e.g. {"Deftness": 0.5}
+    attribute_progress: dict[DaredevilsAttribute, float] = Field(default_factory=dict)
+    # Critical damage per location: not added to the damage total, it
+    # disables the body part until healed, e.g. {"Upper left arm": 4}
+    critical_damage: dict[DaredevilsLocation, Remaining] = Field(default_factory=dict)
+    # Optional rule 3.1: points rolled before each adventure; None = not used
+    luck_points: int | None = None
+    favored_hand: Literal["right", "left"] = "right"
+    # Physical characteristics
+    height: str = ""                     # e.g. "5'4\""
+    weight_kg: int | None = None
+    looks: Literal["Ugly", "Homely", "Mediocre", "Average",
+                   "Good Looking", "Comely", "Handsome"] = "Average"
+    # Advanced rule: names of the designated skills
+    freely_improvable_skills: list[str] = Field(default_factory=list)
+    # The hero (§1.9), role-play guides with no game effect; finances,
+    # degrees, rank, record, licenses and contacts go in CharacterBase.background
+    hero_motivation: str = ""            # why: Revenge, Altruism, Challenge, Work...
+    hero_method: str = ""                # how: Vigilante, Lawman, Man of Mystery, Mastermind, Sidekick...
+    hero_code: str = ""                  # personal code of conduct, e.g. "never kills"
+
+
+class DaredevilsCharacter(CharacterBase):
+    system: Literal["daredevils"]
+    specific_values: SpecificValuesDaredevils
+
+
+# ---------------------------------------------------------------------------
+# Generic template
+# ---------------------------------------------------------------------------
+generic_daredevils = DaredevilsCharacter(
+    system="daredevils",
     name="Generic Daredevils Character",
     description="to be specified",
     age="to be specified",
     background="to be specified",
     occupation="to be specified",
     additional_information="to be specified",
-    specific_values=SpecificValuesDaredevils(system="daredevils"),
+    specific_values=SpecificValuesDaredevils(),
     attributes=[
         # Permanent ratings (1 to 40, 75 points at creation); current ratings
         # are derived from them and specific_values.attribute_loss

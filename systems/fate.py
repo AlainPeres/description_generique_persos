@@ -1,22 +1,65 @@
 """
-Generic Fate Core character template.
+Fate Core: system-specific block and derived values, the FateCharacter
+class, and the generic character template.
 
 Default values ("to be specified", skills at +0) are meant to be replaced
 when describing an actual character. Fate has no numeric attributes: the
 character is described by aspects, skills, stunts, stress and consequences.
 """
 
-from models import Character, Attribute, Skill, SkillCategory, Ability, AbilityCategory
-from systems.specific_values import SpecificValuesFate, StressBox, Consequence
+from pydantic import Field
+from typing import Literal
 
-generic_fate = Character(
+from models import CharacterBase, Attribute, Skill, SkillCategory, Ability, AbilityCategory
+from strict_model import StrictModel
+
+
+# ---------------------------------------------------------------------------
+# System-specific block: Fate
+# ---------------------------------------------------------------------------
+# `available` (StressBox and Consequence) starts from Physique / Will in Fate
+# Core, but stunts, extras or off-rules decisions can change it in ways no
+# calculator can foresee: it is not derivable, so it is stored
+class StressBox(StrictModel):
+    available: bool = True    # the box exists for this character
+    checked: bool = False     # the box is ticked
+
+class Consequence(StrictModel):
+    available: bool = True    # the slot exists for this character
+    value: int                # stress absorbed: 2, 4, 6 or 8 depending on severity
+    text: str = ""            # the consequence suffered, e.g. "Broken arm"
+
+class SpecificValuesFate(StrictModel):
+    skill_value_meaning: Literal["rating on the Fate ladder"] = "rating on the Fate ladder"
+    HighConcept: str          # main aspect: who the character is
+    Trouble: str              # aspect that gets the character into trouble
+    Aspects: list[str] = Field(default_factory=list)  # the other aspects
+    Extras: list[str] = Field(default_factory=list)   # gear, allies, powers given as aspects
+    FatePoints: int           # current points
+    Refresh: int              # points restored at the start of a session
+    # Stress tracks, keyed by box name ("Box 1" to "Box 4")
+    PhysicalStress: dict[str, StressBox] = Field(default_factory=dict)
+    MentalStress: dict[str, StressBox] = Field(default_factory=dict)
+    # Keyed by slot name ("Mild", "Moderate", "Severe", "Extreme", "Mild Physical"...)
+    Consequences: dict[str, Consequence] = Field(default_factory=dict)
+
+
+class FateCharacter(CharacterBase):
+    system: Literal["fate"]
+    specific_values: SpecificValuesFate
+
+
+# ---------------------------------------------------------------------------
+# Generic template
+# ---------------------------------------------------------------------------
+generic_fate = FateCharacter(
+    system="fate",
     name="Generic Fate Core Character",
     description="to be specified",
     age="to be specified",
     background="to be specified",
     additional_information="to be specified",
     specific_values=SpecificValuesFate(
-        system="fate",
         HighConcept="to be specified",
         Trouble="to be specified",
         Aspects=["to be specified"],
